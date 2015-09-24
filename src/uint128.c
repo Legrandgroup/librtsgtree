@@ -95,6 +95,47 @@ uint128_t uint128_t_dec(const uint128_t input) {
 	  return output;
 }
 
+uint128_t uint128_t_sub(const uint128_t from, uint128_t substraction) {
+	  uint128_t output;
+	  register int8_t byte_index;
+	  uint8_t index_of_last_byte = sizeof(output.uint128_a8) - 1;
+	  register int carry = 0;
+
+	  for (byte_index = index_of_last_byte; byte_index>=0; byte_index--) {
+		  if (carry) {	/* We are on LSB... so we should start the increment here, or we are propagating a carry up */
+			  if (++(substraction.uint128_a8[byte_index]) == 0)	{	/* Underflow occured if after increment, we get 0 */
+			  	  /* Keep carry for next byte */
+			  }
+			  else
+				  carry = 0;	/* No carry anymore, we have propagated the previous byte's carry */
+		  }
+		  if (from.uint128_a8[byte_index] < substraction.uint128_a8[byte_index]) {	/* We should propagate a carry */
+			  carry++;
+		  }
+		  output.uint128_a8[byte_index] = from.uint128_a8[byte_index] - substraction.uint128_a8[byte_index];
+	  }
+	  return output;
+}
+
+uint128_t uint8_t_to_uint128_t(uint8_t from) {
+
+	uint128_t result;
+
+	zero_uint128_t(result);
+	result.uint128_a8[sizeof(result.uint128_a8)-1] = from;
+	return result;
+}
+
+uint128_t uint16_t_to_uint128_t(uint16_t from) {
+
+	uint128_t result;
+
+	zero_uint128_t(result);
+	result.uint128_a8[sizeof(result.uint128_a16)-1] = (uint8_t)(from & 0xff);
+	result.uint128_a8[sizeof(result.uint128_a16)-2] = (uint8_t)(from >> 8);
+	return result;
+}
+
 void uint8_t_to_binstr(uint8_t input, const uint8_t bits_no, char output[9]) {
 
 	register uint8_t pos;

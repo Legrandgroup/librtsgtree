@@ -6,6 +6,7 @@
 #define __UINT128_H__
 
 #include <stdint.h>	// For uint*_t
+#include <netinet/in.h>	// For struct in6_addr
 
 /* Note: gcc or clang, on 64 bit platforms they have a builtin 128 bit types that come for free, __uint128_t and __int128_t */
 #ifdef UINT128_MAX
@@ -95,6 +96,36 @@ uint128_t uint128_t_inc(const uint128_t input);
  * \return The result of \p input - 1 in a uint128_t
 **/
 uint128_t uint128_t_dec(const uint128_t input);
+
+/**
+ * \brief Calculate the substraction between two uint128_t
+ *
+ * Note: underflow may occur... we handle positive integers only, so it is up to the caller to handle this
+ *
+ * \param from The uint128_t to substract from
+ * \param substraction The uint128_t to substract
+ *
+ * \return from - substraction as an uint128_t
+**/
+uint128_t uint128_t_sub(uint128_t from, uint128_t substraction);
+
+/**
+ * \brief Create a uint128_t from a uint8_t
+ *
+ * \param from The uint8_t value to store into a uint128_t
+ *
+ * \return the resulting uint128_t
+**/
+uint128_t uint8_t_to_uint128_t(uint8_t from);
+
+/**
+ * \brief Create a uint128_t from a uint16_t
+ *
+ * \param from The uint16_t value to store into a uint128_t
+ *
+ * \return the resulting uint128_t
+**/
+uint128_t uint16_t_to_uint128_t(uint16_t from);
 
 /**
  * \brief Dump a uint16_t word to a binary representation in a char*
