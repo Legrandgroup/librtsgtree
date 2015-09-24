@@ -653,3 +653,173 @@ void test_uint128_t_dec() {
 	}
 	printf("%s: tests passed\n", __func__);
 }
+
+void test_uint128_t_sub() {
+	uint128_t test1_u128;
+	uint128_t test2_u128;
+	uint128_t result_u128;
+	char result[33];
+	char* expected_result;
+
+	uint16_t dec_count;
+	uint16_t last_word16;
+
+	for (dec_count = 0; dec_count != 65535; dec_count++) {
+		test1_u128.uint128_a8[0] = 0xff;
+		test1_u128.uint128_a8[1] = 0xff;
+		test1_u128.uint128_a8[2] = 0xff;
+		test1_u128.uint128_a8[3] = 0xff;
+		test1_u128.uint128_a8[4] = 0xff;
+		test1_u128.uint128_a8[5] = 0xff;
+		test1_u128.uint128_a8[6] = 0xff;
+		test1_u128.uint128_a8[7] = 0xff;
+		test1_u128.uint128_a8[8] = 0xff;
+		test1_u128.uint128_a8[9] = 0xff;
+		test1_u128.uint128_a8[10] = 0xff;
+		test1_u128.uint128_a8[11] = 0xff;
+		test1_u128.uint128_a8[12] = 0xff;
+		test1_u128.uint128_a8[13] = 0xff;
+		test1_u128.uint128_a8[14] = 0xff;
+		test1_u128.uint128_a8[15] = 0xff;
+		result_u128 = uint128_t_sub(test1_u128, uint16_t_to_uint128_t(dec_count));
+		//uint128_t_to_hexstr(test1_u128, 16, result);
+		//printf("Value: %s\n", result);
+		last_word16 = ntohs(result_u128.uint128_a16[7]);
+		if (last_word16 != 65535-dec_count) {
+			fprintf(stderr, "%d: uint128_t_sub() failed at iteration %u: got %u, expected %u\n", __LINE__, dec_count, last_word16, 65535-dec_count);
+			//FAIL();
+			//exit(1);
+		}
+		if (result_u128.uint128_a16[0] != test1_u128.uint128_a16[0] ||	/* All other words (0 to 6) should remain unchanged */
+			result_u128.uint128_a16[1] != test1_u128.uint128_a16[1] ||
+			result_u128.uint128_a16[2] != test1_u128.uint128_a16[2] ||
+			result_u128.uint128_a16[3] != test1_u128.uint128_a16[3] ||
+			result_u128.uint128_a16[4] != test1_u128.uint128_a16[4] ||
+			result_u128.uint128_a16[5] != test1_u128.uint128_a16[5] ||
+			result_u128.uint128_a16[6] != test1_u128.uint128_a16[6]) {
+			fprintf(stderr, "%d: uint128_t_sub() failed at iteration %u: MSW have been altered\n", __LINE__, dec_count);
+			//FAIL();
+			//exit(1);
+		}
+	}
+	result_u128 = uint128_t_sub(test1_u128, uint128_t_inc(uint16_t_to_uint128_t(0xffff)));
+	uint128_t_to_hexstr(result_u128, 16, result);
+	expected_result = "fffffffffffffffffffffffffffeffff";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_sub() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	result_u128 = uint128_t_sub(result_u128, power2_to_uint128_t(23));
+	uint128_t_to_hexstr(result_u128, 16, result);
+	expected_result = "ffffffffffffffffffffffffff7effff";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_sub() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	result_u128 = uint128_t_sub(result_u128, uint128_t_dec(power2_to_uint128_t(64)));
+	uint128_t_to_hexstr(result_u128, 16, result);
+	expected_result = "fffffffffffffffeffffffffff7f0000";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_sub() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	result_u128 = uint128_t_sub(result_u128, uint128_t_dec(power2_to_uint128_t(127)));
+	uint128_t_to_hexstr(result_u128, 16, result);
+	expected_result = "effffffffffffffeffffffffff7f0000";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_sub() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	result_u128 = uint128_t_sub(result_u128, uint128_t_dec(result_u128));
+	uint128_t_to_hexstr(result_u128, 16, result);	/* Will underflow to -1 */
+	expected_result = "ffffffffffffffffffffffffffffffff";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_sub() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	zero_uint128_t(test1_u128);
+
+	test1_u128.uint128_a8[0] = 0x12;
+	test1_u128.uint128_a8[1] = 0x34;
+	test1_u128.uint128_a8[2] = 0x56;
+	test1_u128.uint128_a8[3] = 0x78;
+	test1_u128.uint128_a8[4] = 0x9a;
+	test1_u128.uint128_a8[5] = 0xbc;
+	test1_u128.uint128_a8[6] = 0xde;
+	test1_u128.uint128_a8[7] = 0xf0;
+	test1_u128.uint128_a8[8] = 0x12;
+	test1_u128.uint128_a8[9] = 0x34;
+	test1_u128.uint128_a8[10] = 0x56;
+	test1_u128.uint128_a8[11] = 0x78;
+	test1_u128.uint128_a8[12] = 0x9a;
+	test1_u128.uint128_a8[13] = 0xbc;
+	test1_u128.uint128_a8[14] = 0xde;
+	test1_u128.uint128_a8[15] = 0xf0;
+
+	test2_u128.uint128_a8[0] = 0xf0;
+	test2_u128.uint128_a8[1] = 0x1e;
+	test2_u128.uint128_a8[2] = 0x2d;
+	test2_u128.uint128_a8[3] = 0x3c;
+	test2_u128.uint128_a8[4] = 0x4b;
+	test2_u128.uint128_a8[5] = 0x5a;
+	test2_u128.uint128_a8[6] = 0x69;
+	test2_u128.uint128_a8[7] = 0x78;
+	test2_u128.uint128_a8[8] = 0x87;
+	test2_u128.uint128_a8[9] = 0x96;
+	test2_u128.uint128_a8[10] = 0xa5;
+	test2_u128.uint128_a8[11] = 0xb4;
+	test2_u128.uint128_a8[12] = 0xc3;
+	test2_u128.uint128_a8[13] = 0xd2;
+	test2_u128.uint128_a8[14] = 0xe1;
+	test2_u128.uint128_a8[15] = 0x0f;
+
+	expected_result = "ffffffffffffffffffffffffffffffff";
+	result_u128 = uint128_t_sub(test1_u128, test2_u128);
+	uint128_t_to_hexstr(result_u128, 16, result);
+	//printf("Overflow lead to \"%s\"\n", result);
+	//printf("Expecting \"%s\"\n", expected_result);
+
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_sub() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	zero_uint128_t(test1_u128);
+
+	expected_result = "ffffffffffffffffffffffffffffffff";
+	result_u128 = uint128_t_sub(test1_u128, test2_u128);
+	uint128_t_to_hexstr(result_u128, 16, result);
+	//printf("Overflow lead to \"%s\"\n", result);
+	//printf("Expecting \"%s\"\n", expected_result);
+
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_sub() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	printf("%s: tests passed\n", __func__);
+}
+
+void test_uint128_t_add() {
+}
+
+void test_uint128_t_mixed_add_sub() {
+	/* Take random value /*
+	 * Add random, sub random, make sure equal, repeat n times */
+}
+/* Mix inc/dec and add/sub */
+/* test sub -1 is inc */
+/* test add -1 is dec */
+/* test uint8_t to uint128_t */
+/* test uint16_t to uint128_t */
