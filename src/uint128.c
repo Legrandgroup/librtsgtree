@@ -84,8 +84,8 @@ uint128_t uint128_t_dec(const uint128_t input) {
 	  register int carry = 0;
 
 	  for (byte_index = index_of_last_byte; byte_index>=0; byte_index--) {
-		  if ((byte_index == index_of_last_byte) || carry) {	/* We are on LSB... so we should start the increment here, or we are propagating a carry up */
-			  carry = (output.uint128_a8[byte_index] == 0x00);	/* Should carry if overflow occurs on LSB */
+		  if ((byte_index == index_of_last_byte) || carry) {	/* We are on LSB... so we should start decrementing here, or we are propagating a carry up */
+			  carry = (output.uint128_a8[byte_index] == 0x00);	/* Should carry if underflow occurs on LSB */
 			  output.uint128_a8[byte_index]--;
 		  }
 		  else {
@@ -95,24 +95,48 @@ uint128_t uint128_t_dec(const uint128_t input) {
 	  return output;
 }
 
-uint128_t uint128_t_sub(const uint128_t from, uint128_t substraction) {
+uint128_t uint128_t_sub(const uint128_t from, uint128_t subtraction) {
 	  uint128_t output;
 	  register int8_t byte_index;
 	  uint8_t index_of_last_byte = sizeof(output.uint128_a8) - 1;
 	  register int carry = 0;
 
 	  for (byte_index = index_of_last_byte; byte_index>=0; byte_index--) {
-		  if (carry) {	/* We are on LSB... so we should start the increment here, or we are propagating a carry up */
-			  if (++(substraction.uint128_a8[byte_index]) == 0)	{	/* Underflow occured if after increment, we get 0 */
-			  	  /* Keep carry for next byte */
+		  if (carry) {	/* We are on LSB... so we should start subtracting here, or we are propagating a carry up */
+			  if (++(subtraction.uint128_a8[byte_index]) == 0) {
+				  /* If a carry needs to be propagated, we add it to the value to subtract */
+				  /* Overflow occurred (we get 0), then keep carry for next byte */
 			  }
 			  else
 				  carry = 0;	/* No carry anymore, we have propagated the previous byte's carry */
 		  }
-		  if (from.uint128_a8[byte_index] < substraction.uint128_a8[byte_index]) {	/* We should propagate a carry */
+		  if (from.uint128_a8[byte_index] < subtraction.uint128_a8[byte_index]) {	/* We should propagate a carry */
 			  carry++;
 		  }
-		  output.uint128_a8[byte_index] = from.uint128_a8[byte_index] - substraction.uint128_a8[byte_index];
+		  output.uint128_a8[byte_index] = from.uint128_a8[byte_index] - subtraction.uint128_a8[byte_index];
+	  }
+	  return output;
+}
+
+uint128_t uint128_t_add(const uint128_t first, uint128_t second) {
+	  uint128_t output;
+	  register int8_t byte_index;
+	  uint8_t index_of_last_byte = sizeof(output.uint128_a8) - 1;
+	  register int carry = 0;
+
+	  for (byte_index = index_of_last_byte; byte_index>=0; byte_index--) {
+		  if (carry) {	/* We are on LSB... so we should start adding  here, or we are propagating a carry up */
+			  if (++(second.uint128_a8[byte_index]) == 0) {
+				  /* If a carry needs to be propagated, we add it to the value to add */
+				  /* Overflow occurred (we get 0), then keep carry for next byte */
+			  }
+			  else
+				  carry = 0;	/* No carry anymore, we have propagated the previous byte's carry */
+		  }
+		  output.uint128_a8[byte_index] = first.uint128_a8[byte_index] + second.uint128_a8[byte_index];
+		  if (output.uint128_a8[byte_index] < first.uint128_a8[byte_index]) {	/* Result of addition is lower than the initial value... this is the symptom of overflow, so we should propagate a carry */
+			  carry++;
+		  }
 	  }
 	  return output;
 }

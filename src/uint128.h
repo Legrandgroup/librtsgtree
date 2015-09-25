@@ -98,16 +98,28 @@ uint128_t uint128_t_inc(const uint128_t input);
 uint128_t uint128_t_dec(const uint128_t input);
 
 /**
- * \brief Calculate the substraction between two uint128_t
+ * \brief Calculate the subtraction between two uint128_t
  *
  * Note: underflow may occur... we handle positive integers only, so it is up to the caller to handle this
  *
- * \param from The uint128_t to substract from
- * \param substraction The uint128_t to substract
+ * \param from The uint128_t to subtract from
+ * \param subtraction The uint128_t to subtract
  *
- * \return from - substraction as an uint128_t
+ * \return The result of (from - subtraction) as an uint128_t
 **/
-uint128_t uint128_t_sub(uint128_t from, uint128_t substraction);
+uint128_t uint128_t_sub(const uint128_t from, uint128_t subtraction);
+
+/**
+ * \brief Calculate the addition between two uint128_t
+ *
+ * Note: overflow may occur... we handle positive integers only, so it is up to the caller to handle this
+ *
+ * \param first The first operand of the addition
+ * \param second The second operand of the addition
+ *
+ * \return The result of (first + second) as an uint128_t
+**/
+uint128_t uint128_t_add(const uint128_t first, uint128_t second);
 
 /**
  * \brief Create a uint128_t from a uint8_t

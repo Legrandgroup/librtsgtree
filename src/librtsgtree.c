@@ -29,7 +29,11 @@ int main(void) {
 	test_uint128_t_mix_shift();
 	test_uint128_t_inc();
 	test_uint128_t_dec();
+	test_uint16_t_to_uint128_t();
+	test_uint8_t_to_uint128_t();
 	test_uint128_t_sub();
+	test_uint128_t_add();
+	test_uint128_t_mixed_add_sub_inc_dec();
 
 	char repr[INET6_ADDRSTRLEN+1];
 	struct in6_addr dst_in_addr;
