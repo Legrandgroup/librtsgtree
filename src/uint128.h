@@ -170,4 +170,13 @@ void uint128_t_to_binstr(const uint128_t input, const uint8_t nb_bits, char* out
 **/
 void uint128_t_to_hexstr(const uint128_t input, const uint8_t nb_bytes, char* output);
 
+/**
+ * \brief Count the number of lower significant bits set to 0 in \p input
+ *
+ * \param input The uint128_t on which to perform the calculation
+ *
+ * \return The number of bits set to 0 (will be >=0 and <=128)
+**/
+uint8_t uint128_t_right_0bit_count(const uint128_t input);
+
 #endif	// __UINT128_H__

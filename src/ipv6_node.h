@@ -10,7 +10,7 @@
 #include "utils.h"	// For assert()
 #include <string.h>	// For memcpy()
 
-typedef uint16_t rank_t;
+typedef uint8_t rank_t;
 typedef uint8_t prefix_t;
 
 typedef uint128_t node_id_t;
@@ -29,6 +29,7 @@ typedef enum {
 typedef struct {
   ip_protocol_t  ip_type; /*!< Type of IP addresses represented by the tree (IPv4, IPv6) */
   rank_t         Rmax; /*!< Maximum depth of the tree */
+  uint128_t      prefix;	/*!< Prefix for the tree's subnet */
   prefix_t       treeP; /*!< IP prefix for the range allocated to the tree */
   prefix_t       hostA; /*!< Host address size in bits */
 } self_ip_routing_tree_t;

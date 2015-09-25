@@ -19,7 +19,12 @@ node_id_t get_root_node_id(const self_ip_routing_tree_t* tree) {
 }
 
 rank_t node_id_to_rank(const self_ip_routing_tree_t* tree, node_id_t node) {
-	return 0;	// Lionel: TODO
+	rank_t b;
+
+	assert(tree);
+	/* Calculate the number of LSB bits set to 0 */
+	b = uint128_t_right_0bit_count((uint128_t)node);
+	return tree->Rmax - b;
 }
 
 node_id_t get_left_child_node_id(const self_ip_routing_tree_t* tree, const node_id_t parent_node) {

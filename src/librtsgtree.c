@@ -10,16 +10,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
-#include <arpa/inet.h>	// For inet_ntop() and htons()
 
 #include "utils.h"	// For assert()
 #include "ipv6_node.h"
 
 int main(void) {
-	node_id_t this_node;
-	char result[129];
-
 	test_zero_uint18_t();
 	test_uint128_t_to_binstr();
 	test_uint128_t_to_hexstr();
@@ -33,16 +28,12 @@ int main(void) {
 	test_uint8_t_to_uint128_t();
 	test_uint128_t_sub();
 	test_uint128_t_add();
-	test_uint128_t_mixed_add_sub_inc_dec();
+	//test_uint128_t_mixed_add_sub_inc_dec();
+	test_uint128_t_right_0bit_count();
 
-	char repr[INET6_ADDRSTRLEN+1];
-	struct in6_addr dst_in_addr;
-	//uint16_t_to_binstr(this_node.w0, 16, result);
-	uint128_t_to_binstr(this_node, 128, result);
-	node_id_to_ipv6(this_node, &dst_in_addr);
-	inet_ntop(AF_INET6, &dst_in_addr, repr, INET6_ADDRSTRLEN);
-	puts(repr);
-	puts(result);
-	printf("Tests passed\n");
+	//test_node_id_to_ipv6();
+	test_get_root_node_id();
+	test_get_left_child_node_id();
+
 	return EXIT_SUCCESS;
 }

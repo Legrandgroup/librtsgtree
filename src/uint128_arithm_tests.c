@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <arpa/inet.h>	// For inet_ntop() and htons()
+#include <stdint.h>
 #include <string.h>	// For memcpy()
 
 #include "utils.h"	// For assert()
@@ -972,8 +973,6 @@ void test_uint128_t_add() {
 	}
 	result_u128 = uint128_t_inc(result_u128);	/* Now result_u128=0x0000000000000000000000000000ffff */
 
-	uint128_t_to_hexstr(result_u128, 16, result);
-	printf("Value: %s\n", result);
 	/* Now test adding on byte index 13 (bit 16) */
 	result_u128 = uint128_t_add(result_u128, uint128_t_inc(uint16_t_to_uint128_t(0xffff)));
 	uint128_t_to_hexstr(result_u128, 16, result);
@@ -1092,4 +1091,34 @@ void test_uint128_t_mixed_add_sub_inc_dec() {
 	 * Add random, sub random, make sure equal, repeat n times */
 	/* test sub -1 is inc */
 	/* test add -1 is dec */
+	printf("%s: tests passed\n", __func__);
+}
+
+void test_uint128_t_right_0bit_count() {
+	uint128_t test_u128;
+	uint8_t bit_count;
+	uint8_t result;
+
+
+	zero_uint128_t(test_u128);
+	test_u128 = uint128_t_inc(test_u128);	/* test_u128 = (uint128_t)1 */
+
+	result = uint128_t_right_0bit_count(test_u128);
+	if (result != 0) {	/* LSB bit is 1... so we should count 0 */
+		fprintf(stderr, "%d: uint128_t_right_0bit_count() failed, got: %u, expected: %u\n", __LINE__, result, 0);
+		//FAIL();
+		exit(1);
+	}
+
+	for (bit_count = 1; bit_count<=128; bit_count++) {
+		test_u128 = uint128_t_left_shift(test_u128);
+		result = uint128_t_right_0bit_count(test_u128);
+		if (result != bit_count) {	/* LSB bit is 1... so we should count 0 */
+			fprintf(stderr, "%d: uint128_t_right_0bit_count() failed, got: %u, expected: %u\n", __LINE__, result, bit_count);
+			//FAIL();
+			exit(1);
+		}
+	}
+
+	printf("%s: tests passed\n", __func__);
 }

@@ -238,3 +238,34 @@ void uint128_t_to_hexstr(const uint128_t input, const uint8_t nb_bytes, char* ou
 	}
 	*output = '\0';	/* Terminate C-string */
 }
+
+uint8_t uint128_t_right_0bit_count(const uint128_t input) {
+
+	uint8_t result = 0;
+	uint8_t byte_index;
+	uint8_t mask;
+	uint8_t index_of_last_byte = sizeof(input.uint128_a8) - 1;
+
+	byte_index = index_of_last_byte;
+	while (1) {
+		if (input.uint128_a8[byte_index] == 0) {
+			/* We have a full byte set to 0... continue on higher significant byte... count 8 bits */
+			result+=8;
+		}
+		else {	/* The current byte is not full... count the right 0 bits */
+			for (mask = 1; mask != 0; mask<<=1) {	/* Start from bit 0 to bit 7 */
+				if ((input.uint128_a8[byte_index] & mask) == 0) {
+					result++;
+				}
+				else
+					return result;
+			}
+		}
+		if (byte_index ==0)
+			break;
+		else
+			byte_index--;
+	}
+
+	return result;
+}
