@@ -37,7 +37,7 @@ int main(void) {
 	test_get_left_child_node_id();
 	test_get_right_child_node_id();
 
-	printf("*** All unit tests passed successfully ***\n");
+	printf("\n*** All unit tests passed successfully ***\n");
 
 	return EXIT_SUCCESS;
 }
