@@ -5,8 +5,6 @@
 #include <stdint.h>
 #include <string.h>	// For memcpy()
 
-#include "utils.h"	// For assert()
-
 /* Unit test for node_id_to_ipv6()
  */
 void test_node_id_to_ipv6() {

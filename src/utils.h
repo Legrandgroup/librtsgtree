@@ -91,8 +91,8 @@ __END_DECLS
 
 /**
  * \def __ASSERT_FUNCTION
- * \brief AZ directive returning the name of the current fonction (depends on the compiler)
- * This macro points to the directive returning the name of the current fonction (could be __FUNCTION__ for GCC or __func__ etc...)
+ * \brief AZ directive returning the name of the current function (depends on the compiler)
+ * This macro points to the directive returning the name of the current function (could be __FUNCTION__ for GCC or __func__ etc...)
  */
 
 /* Version 2.4 and later of GCC define a magical variable `__PRETTY_FUNCTION__'

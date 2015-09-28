@@ -3,6 +3,7 @@
  */
 
 #include "ipv6_node.h"
+#include <assert.h>	// For assert()
 
 inline void node_id_to_ipv6(const node_id_t input, struct in6_addr* output) {
 	assert(sizeof(output->s6_addr) == sizeof(input.uint128_a8));

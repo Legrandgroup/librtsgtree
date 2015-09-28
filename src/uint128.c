@@ -2,7 +2,7 @@
  * file uint128.c
  */
 
-#include "uint128.h"	// For assert()
+#include "uint128.h"
 #include "utils.h"
 #include <stdlib.h>	// For abort()
 

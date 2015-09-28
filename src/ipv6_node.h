@@ -7,7 +7,6 @@
 
 #include "uint128.h"	// For uint128_t
 
-#include "utils.h"	// For assert()
 #include <string.h>	// For memcpy()
 
 typedef uint8_t rank_t;

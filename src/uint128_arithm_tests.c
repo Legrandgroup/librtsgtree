@@ -5,8 +5,6 @@
 #include <stdint.h>
 #include <string.h>	// For memcpy()
 
-#include "utils.h"	// For assert()
-
 #define zero_word_16bits "00000000" "00000000"
 
 /* Unit test for set_zero_uint128_t()

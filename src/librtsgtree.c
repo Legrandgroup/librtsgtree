@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "utils.h"	// For assert()
+#include <assert.h>	// For assert()
 #include "ipv6_node.h"
 
 int main(void) {
