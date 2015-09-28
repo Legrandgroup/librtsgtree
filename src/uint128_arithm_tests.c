@@ -9,7 +9,7 @@
 
 #define zero_word_16bits "00000000" "00000000"
 
-/* Unit test for zero_uint128_t()
+/* Unit test for set_zero_uint128_t()
  */
 void test_zero_uint18_t() {
 	uint128_t test_u128;
@@ -22,7 +22,7 @@ void test_zero_uint18_t() {
 	test_u128.uint128_a16[5] = 0xffff;
 	test_u128.uint128_a16[6] = 0xffff;
 	test_u128.uint128_a16[7] = 0xffff;
-	zero_uint128_t(test_u128);
+	set_zero_uint128_t(test_u128);
 	if (test_u128.uint128_a16[0] == 0 &&
 	    test_u128.uint128_a16[1] == 0 &&
 	    test_u128.uint128_a16[2] == 0 &&
@@ -33,10 +33,27 @@ void test_zero_uint18_t() {
 	    test_u128.uint128_a16[7] == 0) {
 	}
 	else {
-		fprintf(stderr, "zero_uint128_t() Failed\n");
+		fprintf(stderr, "set_zero_uint128_t() Failed\n");
 		//FAIL();
 		exit(1);
 	}
+
+	test_u128 = uint128t_zero();
+	if (test_u128.uint128_a16[0] == 0 &&
+	    test_u128.uint128_a16[1] == 0 &&
+	    test_u128.uint128_a16[2] == 0 &&
+	    test_u128.uint128_a16[3] == 0 &&
+	    test_u128.uint128_a16[4] == 0 &&
+	    test_u128.uint128_a16[5] == 0 &&
+	    test_u128.uint128_a16[6] == 0 &&
+	    test_u128.uint128_a16[7] == 0) {
+	}
+	else {
+		fprintf(stderr, "uint128t_zero() Failed\n");
+		//FAIL();
+		exit(1);
+	}
+
 	printf("%s: tests passed\n", __func__);
 }
 
@@ -48,7 +65,7 @@ void test_uint128_t_to_binstr() {
 	char* expected_result;
 	uint8_t nb_bits_missing;
 
-	zero_uint128_t(test_u128);
+	set_zero_uint128_t(test_u128);
 	uint128_t_to_binstr(test_u128, 128, result);
 	expected_result = zero_word_16bits /* Word 0 */ \
 	                  zero_word_16bits /* Word 1 */ \
@@ -64,7 +81,7 @@ void test_uint128_t_to_binstr() {
 		exit(1);
 	}
 
-	zero_uint128_t(test_u128);
+	set_zero_uint128_t(test_u128);
 	test_u128.uint128_a16[0] = htons(0xfe80);
 	test_u128.uint128_a16[6] = htons(0x8000);
 	test_u128.uint128_a16[7] = htons(0xa5a5);
@@ -84,7 +101,7 @@ void test_uint128_t_to_binstr() {
 	}
 
 	/* Test printing ipv6.google.com (2a00:1450:4007:80e::200e) IPv6 address as a unit128_t */
-	zero_uint128_t(test_u128);
+	set_zero_uint128_t(test_u128);
 	test_u128.uint128_a16[0] = htons(0x2a00);
 	test_u128.uint128_a16[1] = htons(0x1450);
 	test_u128.uint128_a16[2] = htons(0x4007);
@@ -105,7 +122,7 @@ void test_uint128_t_to_binstr() {
 		exit(1);
 	}
 	/* Same 128-bit value (2a00:1450:4007:80e::200e), but assigned byte-per-byte */
-	zero_uint128_t(test_u128);
+	set_zero_uint128_t(test_u128);
 	test_u128.uint128_a8[0] = 0x2a;
 	test_u128.uint128_a8[1] = 0x00;
 	test_u128.uint128_a8[2] = 0x14;
@@ -123,7 +140,7 @@ void test_uint128_t_to_binstr() {
 		exit(1);
 	}
 
-	zero_uint128_t(test_u128);
+	set_zero_uint128_t(test_u128);
 	test_u128.uint128_a8[0] = 0xa5;
 	test_u128.uint128_a8[1] = 0xa2;
 	test_u128.uint128_a8[2] = 0x15;
@@ -182,7 +199,7 @@ void test_uint128_t_to_hexstr() {
 	char* expected_result;
 	uint8_t nb_bytes_missing;
 
-	zero_uint128_t(test_u128);
+	set_zero_uint128_t(test_u128);
 	test_u128.uint128_a8[0] = 0xa5;
 	test_u128.uint128_a8[1] = 0xa2;
 	test_u128.uint128_a8[2] = 0x15;
@@ -541,7 +558,7 @@ void test_uint128_t_inc() {
 	uint16_t inc_count;
 	uint16_t last_word16;
 
-	zero_uint128_t(test_u128);
+	set_zero_uint128_t(test_u128);
 	for (inc_count = 0; inc_count != 65535; inc_count++) {
 		test_u128 = uint128_t_inc(test_u128);
 		//uint128_t_to_hexstr(test_u128, 16, result);
@@ -639,7 +656,7 @@ void test_uint128_t_dec() {
 		exit(1);
 	}
 
-	zero_uint128_t(test_u128);
+	set_zero_uint128_t(test_u128);
 
 	expected_result = "ffffffffffffffffffffffffffffffff";
 	test_u128 = uint128_t_dec(test_u128);
@@ -864,10 +881,10 @@ void test_uint128_t_sub() {
 		exit(1);
 	}
 
-	zero_uint128_t(test1_u128);
+	set_zero_uint128_t(test1_u128);
 	test1_u128 = uint128_t_dec(test1_u128);	/* test1_u128 = (uint128_t)-1 */
 
-	zero_uint128_t(test2_u128);
+	set_zero_uint128_t(test2_u128);
 	result_u128 = uint128_t_dec(uint128_t_sub(test2_u128, test1_u128));	/* Sub -1, thus +1, then decrement, should get 0 */
 	uint128_t_to_hexstr(result_u128, 16, result);
 
@@ -922,7 +939,7 @@ void test_uint128_t_sub() {
 		exit(1);
 	}
 
-	zero_uint128_t(test1_u128);
+	set_zero_uint128_t(test1_u128);
 	result_u128 = uint128_t_sub(result_u128, test1_u128);
 
 	uint128_t_to_hexstr(result_u128, 16, result);	/* substracting 0, should get same value as before */
@@ -949,7 +966,7 @@ void test_uint128_t_add() {
 	uint16_t last_word16;
 
 	for (inc_count = 0; inc_count != 65535; inc_count++) {
-		zero_uint128_t(test1_u128);
+		set_zero_uint128_t(test1_u128);
 		result_u128 = uint128_t_add(test1_u128, uint16_t_to_uint128_t(inc_count));
 		//uint128_t_to_hexstr(result_u128, 16, result);
 		//printf("Value: %s\n", result);
@@ -1012,10 +1029,10 @@ void test_uint128_t_add() {
 		exit(1);
 	}
 
-	zero_uint128_t(test1_u128);
+	set_zero_uint128_t(test1_u128);
 	test1_u128 = uint128_t_inc(test1_u128);	/* test1_u128 = (uint128_t)1 */
 
-	zero_uint128_t(test2_u128);
+	set_zero_uint128_t(test2_u128);
 	result_u128 = uint128_t_add(uint128_t_dec(test2_u128), test1_u128);	/* Add -1, thus subtract 1, then increment, should get 0 */
 	uint128_t_to_hexstr(result_u128, 16, result);
 
@@ -1071,7 +1088,7 @@ void test_uint128_t_add() {
 		exit(1);
 	}
 
-	zero_uint128_t(test1_u128);
+	set_zero_uint128_t(test1_u128);
 	result_u128 = uint128_t_add(result_u128, test1_u128);
 
 	uint128_t_to_hexstr(result_u128, 16, result);	/* adding 0, should get same value as before */
@@ -1100,7 +1117,7 @@ void test_uint128_t_right_0bit_count() {
 	uint8_t result;
 
 
-	zero_uint128_t(test_u128);
+	set_zero_uint128_t(test_u128);
 	test_u128 = uint128_t_inc(test_u128);	/* test_u128 = (uint128_t)1 */
 
 	result = uint128_t_right_0bit_count(test_u128);

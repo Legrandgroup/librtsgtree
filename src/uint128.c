@@ -6,12 +6,19 @@
 #include "utils.h"
 #include <stdlib.h>	// For abort()
 
+uint128_t uint128t_zero() {
+	uint128_t result_zero;
+
+	set_zero_uint128_t(result_zero);
+	return result_zero;
+}
+
 uint128_t power2_to_uint128_t(uint8_t power) {
 	uint128_t result;
 	uint8_t byte_index;
 
 	assert(power<128);
-	zero_uint128_t(result);
+	set_zero_uint128_t(result);
 
 	byte_index = 15 - power / 8;	/* Calculate which byte to change */
 	result.uint128_a8[byte_index] = 1<<(power % 8);	/* Set to 1 the appropriate bit of the matching byte */
@@ -145,7 +152,7 @@ uint128_t uint8_t_to_uint128_t(uint8_t from) {
 
 	uint128_t result;
 
-	zero_uint128_t(result);
+	set_zero_uint128_t(result);
 	result.uint128_a8[sizeof(result.uint128_a8)-1] = from;
 	return result;
 }
@@ -154,7 +161,7 @@ uint128_t uint16_t_to_uint128_t(uint16_t from) {
 
 	uint128_t result;
 
-	zero_uint128_t(result);
+	set_zero_uint128_t(result);
 	result.uint128_a8[sizeof(result.uint128_a16)-1] = (uint8_t)(from & 0xff);
 	result.uint128_a8[sizeof(result.uint128_a16)-2] = (uint8_t)(from >> 8);
 	return result;

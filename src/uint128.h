@@ -34,12 +34,12 @@ typedef struct {
 /* Lionel: on 32, 64bits archs, we could also perform operations on larger words for optimization */
 
 /**
- * \def zero_uint128_t(n)
+ * \def set_zero_uint128_t(n)
  *
  * Assigne the value zero to an uint128
  * \param n The uint128_t variable to set
  */
-#define zero_uint128_t(n) \
+#define set_zero_uint128_t(n) \
 	do { \
 		/*assert(typeof(n) == uint128_t);*/ \
 		n.uint128_a16[0] = 0; \
@@ -51,6 +51,13 @@ typedef struct {
 		n.uint128_a16[6] = 0; \
 		n.uint128_a16[7] = 0; \
 	} while(0)
+
+/**
+ * \brief Return 0 as an uint128_t
+ *
+ * \return (uint128_t)0
+ */
+inline uint128_t uint128t_zero();
 
 /**
  * \brief Calculate 2 ^ power for a 128-bit wide unsigned int

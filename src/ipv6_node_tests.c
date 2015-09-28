@@ -318,6 +318,16 @@ void test_get_left_child_node_id() {
 		exit(1);
 	}
 
+	test_node = (node_id_t)uint16_t_to_uint128_t(0xffff);
+	test_node = get_left_child_node_id(&tree, test_node);
+	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
+	expected_result = "0000000000000000" "0000000000000000";	/* Node 0xffff is invalid */
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: get_left_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
 	tree.Rmax = 6;
 	tree.ip_type = IPV4;
 
@@ -409,6 +419,16 @@ void test_get_left_child_node_id() {
 	test_node = get_left_child_node_id(&tree, test_node);
 	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
 	expected_result = "0000000000000000" "0000000000000000";	/* Left child for root node 33 is invalid */
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: get_left_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	test_node = (node_id_t)uint16_t_to_uint128_t(0xffff);
+	test_node = get_left_child_node_id(&tree, test_node);
+	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
+	expected_result = "0000000000000000" "0000000000000000";	/* Node 0xffff is invalid */
 	if (strcmp(result, expected_result) != 0) {
 		fprintf(stderr, "%d: get_left_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
 		//FAIL();

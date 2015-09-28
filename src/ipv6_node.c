@@ -42,19 +42,38 @@ node_id_t get_left_child_node_id(const self_ip_routing_tree_t* tree, const node_
 	assert(tree->Rmax - 1 <= 128);
 	Rmax_1 = tree->Rmax - 1;
 	parent_rank = node_id_to_rank(tree, parent_node);
+	if (parent_rank == 0)
+		return (node_id_t)uint128t_zero();
 	assert(parent_rank<=Rmax_1);
 	R = Rmax_1 - parent_rank;
-	return uint128_t_sub(parent_node, (node_id_t)power2_to_uint128_t(R));
+	return (node_id_t)uint128_t_sub(parent_node, (node_id_t)power2_to_uint128_t(R));
+}
+
+node_id_t get_right_child_node_id(const self_ip_routing_tree_t* tree, const node_id_t parent_node) {
+	rank_t Rmax_1, R;
+	rank_t parent_rank;
+
+	//Formula: LC(p) = p + 2^(Rmax - 1 - Rp)
+	assert(tree);
+	assert(tree->Rmax > 0);
+	assert(tree->Rmax - 1 <= 128);
+	Rmax_1 = tree->Rmax - 1;
+	parent_rank = node_id_to_rank(tree, parent_node);
+	if (parent_rank == 0)
+		return (node_id_t)uint128t_zero();
+	assert(parent_rank<=Rmax_1);
+	R = Rmax_1 - parent_rank;
+	return (node_id_t)uint128_t_add(parent_node, (node_id_t)power2_to_uint128_t(R));
 }
 
 node_id_t get_parent_node_id(self_ip_routing_tree_t tree, node_id_t child_node) {
 	node_id_t zero;
-	zero_uint128_t(zero);	//FIXME
+	set_zero_uint128_t(zero);	//FIXME
 	return zero;
 }
 
 node_id_t get_node_id_from_parent_hostname(self_ip_routing_tree_t tree, char* parent_hostname) {
 	node_id_t zero;
-	zero_uint128_t(zero);	//FIXME
+	set_zero_uint128_t(zero);	//FIXME
 	return zero;
 }
