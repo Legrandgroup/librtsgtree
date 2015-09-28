@@ -30,6 +30,7 @@ int main(void) {
 	test_uint128_t_add();
 	//test_uint128_t_mixed_add_sub_inc_dec();
 	test_uint128_t_right_0bit_count();
+	test_uint128_t_cmp();
 
 	//test_node_id_to_ipv6();
 	test_node_id_to_rank();

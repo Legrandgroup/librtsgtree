@@ -1137,3 +1137,61 @@ void test_uint128_t_right_0bit_count() {
 
 	printf("%s: tests passed\n", __func__);
 }
+
+void test_uint128_t_cmp() {
+	uint128_t test1_u128;
+	uint128_t test2_u128;
+
+	set_zero_uint128_t(test1_u128);
+	set_zero_uint128_t(test2_u128);
+	if (!(uint128_t_cmp(test1_u128, test2_u128) == 0)) {	/* Expect 0==0 */
+		fprintf(stderr, "%d: uint128_t_cmp() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	test1_u128 = uint128_t_inc(test1_u128);
+	if (!(uint128_t_cmp(test1_u128, test2_u128) > 0)) {	/* Expect 1>0 */
+		fprintf(stderr, "%d: uint128_t_cmp() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	test2_u128 = uint128_t_inc(test2_u128);
+	if (!(uint128_t_cmp(test1_u128, test2_u128) == 0)) {	/* Expect 1==1 */
+		fprintf(stderr, "%d: uint128_t_cmp() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	test1_u128 = uint128_t_dec(test1_u128);
+	if (!(uint128_t_cmp(test1_u128, test2_u128) < 0)) {	/* Expect 0<1 */
+		fprintf(stderr, "%d: uint128_t_cmp() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+
+	set_zero_uint128_t(test1_u128);
+	set_zero_uint128_t(test2_u128);
+	test1_u128 = uint128_t_dec(test1_u128);
+	if (!(uint128_t_cmp(test1_u128, test2_u128) > 0)) {	/* Expect (uint128_t)(-1)>0 */
+		fprintf(stderr, "%d: uint128_t_cmp() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	if (!(uint128_t_cmp(test2_u128, test1_u128) < 0)) {	/* Expect 0<(uint128_t)(-1) */
+		fprintf(stderr, "%d: uint128_t_cmp() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	test2_u128 = uint128_t_inc(test2_u128);
+	if (!(uint128_t_cmp(test1_u128, test2_u128) > 0)) {	/* Expect (uint128_t)(-1)>1 */
+		fprintf(stderr, "%d: uint128_t_cmp() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	if (!(uint128_t_cmp(test2_u128, test1_u128) < 0)) {	/* Expect 1<(uint128_t)(-1) */
+		fprintf(stderr, "%d: uint128_t_cmp() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+
+	printf("%s: tests passed\n", __func__);
+}

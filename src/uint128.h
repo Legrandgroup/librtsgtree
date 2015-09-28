@@ -186,4 +186,16 @@ void uint128_t_to_hexstr(const uint128_t input, const uint8_t nb_bytes, char* ou
 **/
 uint8_t uint128_t_right_0bit_count(const uint128_t input);
 
+/**
+ * \brief Compare \p first uint128_t and \p second uint128_t
+ *
+ * Note: We work on unsigned integers only, so be careful: possible "negative" results passed as \p first or \p second will not lead to expected result
+ *
+ * \param first The first operand of the comparison
+ * \param second The second operand of the comparison
+ *
+ * \return -1 if \p first is strictly lower than \p second, 0 is they are equal, and 1 if \p first is strictly higher than \p second
+**/
+int uint128_t_cmp(const uint128_t first, uint128_t second); // TODO: implement and add unit tests
+
 #endif	// __UINT128_H__

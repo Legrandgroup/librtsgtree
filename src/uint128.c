@@ -276,3 +276,16 @@ uint8_t uint128_t_right_0bit_count(const uint128_t input) {
 
 	return result;
 }
+
+int uint128_t_cmp(const uint128_t first, uint128_t second) {
+	  register int8_t byte_index;
+	  uint8_t index_of_last_byte = sizeof(first.uint128_a8) - 1;
+
+	  for (byte_index = index_of_last_byte; byte_index>=0; byte_index--) {
+		  if (first.uint128_a8[byte_index] > second.uint128_a8[byte_index])
+			  return 1;
+		  if (first.uint128_a8[byte_index] < second.uint128_a8[byte_index])
+			  return -1;
+	  }
+	  return 0;
+}
