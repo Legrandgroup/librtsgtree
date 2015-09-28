@@ -32,6 +32,7 @@ int main(void) {
 	test_uint128_t_right_0bit_count();
 
 	//test_node_id_to_ipv6();
+	test_node_id_to_rank();
 	test_get_root_node_id();
 	test_get_left_child_node_id();
 

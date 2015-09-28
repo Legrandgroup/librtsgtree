@@ -54,9 +54,10 @@ node_id_t get_root_node_id(const self_ip_routing_tree_t* tree);
 /**
  * \brief Get the rank associated with a given node ID in a routed self-generated tree
  *
- * \param tree The tree for which we want to calculate the rank
+ * \param tree The tree inside which we perform the calculation
+ * \param node The node ID for which we want to calculate the rank
  *
- * \return The rank (in the tree) of the requested \p node
+ * \return The rank (in the tree) of the requested \p node (or 0 if \p node is invalid for the provided \p tree)
  */
 rank_t node_id_to_rank(const self_ip_routing_tree_t* tree, node_id_t node);
 
