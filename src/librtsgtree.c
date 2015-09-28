@@ -35,6 +35,9 @@ int main(void) {
 	test_node_id_to_rank();
 	test_get_root_node_id();
 	test_get_left_child_node_id();
+	test_get_right_child_node_id();
+
+	printf("*** All unit tests passed successfully ***\n");
 
 	return EXIT_SUCCESS;
 }

@@ -295,7 +295,7 @@ void test_get_left_child_node_id() {
 	test_node = (node_id_t)uint16_t_to_uint128_t(12);
 	test_node = get_left_child_node_id(&tree, test_node);
 	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
-	expected_result = "0000000000000000" "000000000000000a";	/* Left child for root node 12 should have ID 10 */
+	expected_result = "0000000000000000" "000000000000000a";	/* Left child for node 12 should have ID 10 */
 	if (strcmp(result, expected_result) != 0) {
 		fprintf(stderr, "%d: get_left_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
 		//FAIL();
@@ -386,7 +386,7 @@ void test_get_left_child_node_id() {
 	test_node = (node_id_t)uint16_t_to_uint128_t(48);
 	test_node = get_left_child_node_id(&tree, test_node);
 	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
-	expected_result = "0000000000000000" "0000000000000028";	/* Left child for root node 48 should have ID 40 */
+	expected_result = "0000000000000000" "0000000000000028";	/* Left child for node 48 should have ID 40 */
 	if (strcmp(result, expected_result) != 0) {
 		fprintf(stderr, "%d: get_left_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
 		//FAIL();
@@ -431,6 +431,199 @@ void test_get_left_child_node_id() {
 	expected_result = "0000000000000000" "0000000000000000";	/* Node 0xffff is invalid */
 	if (strcmp(result, expected_result) != 0) {
 		fprintf(stderr, "%d: get_left_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	printf("%s: tests passed\n", __func__);
+}
+
+/* Unit test for get_right_child_node_id()
+ */
+void test_get_right_child_node_id() {
+	node_id_t test_node;
+	char result[17];
+	char* expected_result;
+	self_ip_routing_tree_t tree;
+
+	tree.Rmax = 4;
+	tree.ip_type = IPV6;
+
+	/* Start from root, and descent on right child at each rank */
+	test_node = get_root_node_id(&tree);
+	test_node = get_right_child_node_id(&tree, test_node);
+	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
+	expected_result = "0000000000000000" "000000000000000c";	/* Right child for root node 8 should have ID 12 */
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: get_right_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_node = get_right_child_node_id(&tree, test_node);
+	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
+	expected_result = "0000000000000000" "000000000000000e";	/* Right child for root node 12 should have ID 14 */
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: get_right_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_node = get_right_child_node_id(&tree, test_node);
+	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
+	expected_result = "0000000000000000" "000000000000000f";	/* Right child for root node 14 should have ID 15 */
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: get_right_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_node = get_right_child_node_id(&tree, test_node);
+	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
+	expected_result = "0000000000000000" "0000000000000000";	/* Right child for root node 15 is invalid */
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: get_right_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	/* Start from node 4, and descent on right child at each rank */
+	test_node = (node_id_t)uint16_t_to_uint128_t(4);
+	test_node = get_right_child_node_id(&tree, test_node);
+	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
+	expected_result = "0000000000000000" "000000000000000a";	/* Right child for node 12 should have ID 10 */
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: get_right_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_node = get_right_child_node_id(&tree, test_node);
+	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
+	expected_result = "0000000000000000" "0000000000000009";	/* Right child for root node 10 should have ID 9 */
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: get_right_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_node = get_right_child_node_id(&tree, test_node);
+	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
+	expected_result = "0000000000000000" "0000000000000000";	/* Right child for root node 9 is invalid */
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: get_right_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	test_node = (node_id_t)uint16_t_to_uint128_t(0xffff);
+	test_node = get_right_child_node_id(&tree, test_node);
+	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
+	expected_result = "0000000000000000" "0000000000000000";	/* Node 0xffff is invalid */
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: get_right_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	tree.Rmax = 6;
+	tree.ip_type = IPV4;
+
+	/* Start from root, and descent on right child at each rank */
+	test_node = get_root_node_id(&tree);
+	test_node = get_right_child_node_id(&tree, test_node);
+	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
+	expected_result = "0000000000000000" "0000000000000010";	/* Right child for root node 32 should have ID 16 */
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: get_right_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_node = get_right_child_node_id(&tree, test_node);
+	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
+	expected_result = "0000000000000000" "0000000000000008";	/* Right child for root node 16 should have ID 8 */
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: get_right_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_node = get_right_child_node_id(&tree, test_node);
+	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
+	expected_result = "0000000000000000" "0000000000000004";	/* Right child for root node 8 should have ID 4 */
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: get_right_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_node = get_right_child_node_id(&tree, test_node);
+	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
+	expected_result = "0000000000000000" "0000000000000002";	/* Right child for root node 4 should have ID 2 */
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: get_right_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_node = get_right_child_node_id(&tree, test_node);
+	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
+	expected_result = "0000000000000000" "0000000000000001";	/* Right child for root node 2 should have ID 1 */
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: get_right_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_node = get_right_child_node_id(&tree, test_node);
+	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
+	expected_result = "0000000000000000" "0000000000000000";	/* Right child for root node 1 is invalid */
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: get_right_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	/* Start from node 48, and descent on right child at each rank */
+	test_node = (node_id_t)uint16_t_to_uint128_t(48);
+	test_node = get_right_child_node_id(&tree, test_node);
+	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
+	expected_result = "0000000000000000" "0000000000000028";	/* Right child for node 48 should have ID 40 */
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: get_right_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_node = get_right_child_node_id(&tree, test_node);
+	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
+	expected_result = "0000000000000000" "0000000000000024";	/* Right child for root node 40 should have ID 36 */
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: get_right_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_node = get_right_child_node_id(&tree, test_node);
+	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
+	expected_result = "0000000000000000" "0000000000000022";	/* Right child for root node 36 should have ID 34 */
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: get_right_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_node = get_right_child_node_id(&tree, test_node);
+	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
+	expected_result = "0000000000000000" "0000000000000021";	/* Right child for root node 34 should have ID 33 */
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: get_right_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_node = get_right_child_node_id(&tree, test_node);
+	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
+	expected_result = "0000000000000000" "0000000000000000";	/* Right child for root node 33 is invalid */
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: get_right_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	test_node = (node_id_t)uint16_t_to_uint128_t(0xffff);
+	test_node = get_right_child_node_id(&tree, test_node);
+	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
+	expected_result = "0000000000000000" "0000000000000000";	/* Node 0xffff is invalid */
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: get_right_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
 		//FAIL();
 		exit(1);
 	}
