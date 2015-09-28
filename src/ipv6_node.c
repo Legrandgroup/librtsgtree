@@ -45,7 +45,8 @@ node_id_t get_left_child_node_id(const self_ip_routing_tree_t* tree, const node_
 	parent_rank = node_id_to_rank(tree, parent_node);
 	if (parent_rank == 0)
 		return (node_id_t)uint128t_zero();
-	assert(parent_rank<=Rmax_1);
+	if (parent_rank>Rmax_1)
+		return (node_id_t)uint128t_zero();
 	R = Rmax_1 - parent_rank;
 	return (node_id_t)uint128_t_sub(parent_node, (node_id_t)power2_to_uint128_t(R));
 }
@@ -62,7 +63,8 @@ node_id_t get_right_child_node_id(const self_ip_routing_tree_t* tree, const node
 	parent_rank = node_id_to_rank(tree, parent_node);
 	if (parent_rank == 0)
 		return (node_id_t)uint128t_zero();
-	assert(parent_rank<=Rmax_1);
+	if (parent_rank>Rmax_1)
+		return (node_id_t)uint128t_zero();
 	R = Rmax_1 - parent_rank;
 	return (node_id_t)uint128_t_add(parent_node, (node_id_t)power2_to_uint128_t(R));
 }
