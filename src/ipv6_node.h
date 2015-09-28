@@ -64,9 +64,22 @@ rank_t node_id_to_rank(const self_ip_routing_tree_t* tree, node_id_t node);
 /**
  * \brief Get the left child node ID based on a parent node ID
  *
- * \return The node ID or 0 if there was an error
+ * \param tree The tree inside which we perform the calculation
+ * \param node The node ID for which we want to calculate the left child
+ *
+ * \return The node ID for the left child or 0 if there was an error
 **/
 node_id_t get_left_child_node_id(const self_ip_routing_tree_t* tree, const node_id_t parent_node);
+
+/**
+ * \brief Get the left child node ID based on a parent node ID
+ *
+ * \param tree The tree inside which we perform the calculation
+ * \param node The node ID for which we want to calculate the left child
+ *
+ * \return The node ID for the left child or 0 if there was an error
+**/
+node_id_t get_right_child_node_id(const self_ip_routing_tree_t* tree, const node_id_t parent_node);
 
 /**
  *
