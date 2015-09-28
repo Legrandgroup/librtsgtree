@@ -59,7 +59,7 @@ node_id_t get_root_node_id(const self_ip_routing_tree_t* tree);
  *
  * \return The rank (in the tree) of the requested \p node (or 0 if \p node is invalid for the provided \p tree)
  */
-rank_t node_id_to_rank(const self_ip_routing_tree_t* tree, node_id_t node);
+inline rank_t node_id_to_rank(const self_ip_routing_tree_t* tree, node_id_t node);
 
 /**
  * \brief Get the left child node ID based on a parent node ID
