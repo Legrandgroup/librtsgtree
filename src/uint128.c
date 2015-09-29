@@ -44,6 +44,14 @@ uint128_t uint128_t_right_shift(const uint128_t input) {
 	  return output;
 }
 
+uint128_t uint128_t_right_shift_n(const uint128_t input, uint8_t n) {
+
+	uint128_t result = input;
+	while (n--!=0)
+		result = uint128_t_right_shift(result);
+	return result;
+}
+
 uint128_t uint128_t_left_shift(const uint128_t input) {
 
 	  uint128_t output = input;
@@ -61,6 +69,14 @@ uint128_t uint128_t_left_shift(const uint128_t input) {
 	  }
 
 	  return output;
+}
+
+uint128_t uint128_t_left_shift_n(const uint128_t input, uint8_t n) {
+
+	uint128_t result = input;
+	while (n--!=0)
+		result = uint128_t_left_shift(result);
+	return result;
 }
 
 uint128_t uint128_t_inc(const uint128_t input) {

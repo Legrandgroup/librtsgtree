@@ -18,6 +18,8 @@ int main(void) {
 	test_uint128_t_right_shift();
 	test_uint128_t_left_shift();
 	test_uint128_t_mix_shift();
+	test_uint128_t_right_shift_n();
+	test_uint128_t_left_shift_n();
 	test_uint128_t_inc();
 	test_uint128_t_dec();
 	test_uint16_t_to_uint128_t();

@@ -77,6 +77,15 @@ uint128_t power2_to_uint128_t(uint8_t power);
 uint128_t uint128_t_right_shift(const uint128_t input);
 
 /**
+ * \brief Right shift a uint128_t of \p n bits
+ *
+ * \param input The uint128_t to shift
+ *
+ * \return The resulting uint128_t once bit-shifted
+**/
+inline uint128_t uint128_t_right_shift_n(const uint128_t input, uint8_t n);
+
+/**
  * \brief Left shift a uint128_t of 1 bit
  *
  * \param input The uint128_t to shift
@@ -85,6 +94,14 @@ uint128_t uint128_t_right_shift(const uint128_t input);
 **/
 uint128_t uint128_t_left_shift(const uint128_t input);
 
+/**
+ * \brief Left shift a uint128_t of \p n bits
+ *
+ * \param input The uint128_t to shift
+ *
+ * \return The resulting uint128_t once bit-shifted
+**/
+inline uint128_t uint128_t_left_shift_n(const uint128_t input, uint8_t n);
 
 /**
  * \brief Increment a uint128_t

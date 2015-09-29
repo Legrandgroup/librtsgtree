@@ -377,6 +377,95 @@ void test_uint128_t_right_shift() {
 	printf("%s: tests passed\n", __func__);
 }
 
+/* Unit test for uint128_t_right_shift_n()
+ */
+void test_uint128_t_right_shift_n() {
+
+	uint128_t test_u128;
+	char result[129];
+	char* expected_result;
+
+	test_u128.uint128_a8[0] = 0xf0;
+	test_u128.uint128_a8[1] = 0x1e;
+	test_u128.uint128_a8[2] = 0x2d;
+	test_u128.uint128_a8[3] = 0x3c;
+	test_u128.uint128_a8[4] = 0x4b;
+	test_u128.uint128_a8[5] = 0x5a;
+	test_u128.uint128_a8[6] = 0x69;
+	test_u128.uint128_a8[7] = 0x78;
+	test_u128.uint128_a8[8] = 0x87;
+	test_u128.uint128_a8[9] = 0x96;
+	test_u128.uint128_a8[10] = 0xa5;
+	test_u128.uint128_a8[11] = 0xb4;
+	test_u128.uint128_a8[12] = 0xc3;
+	test_u128.uint128_a8[13] = 0xd2;
+	test_u128.uint128_a8[14] = 0xe1;
+	test_u128.uint128_a8[15] = 0x0f;
+
+
+	test_u128 = uint128_t_right_shift_n(test_u128, 0);	/* No shift */
+	uint128_t_to_hexstr(test_u128, 16, result);
+	expected_result = "f01e2d3c4b5a69788796a5b4c3d2e10f";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_right_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_u128 = uint128_t_right_shift_n(test_u128, 4);
+	uint128_t_to_hexstr(test_u128, 16, result);
+	expected_result = "0f01e2d3c4b5a69788796a5b4c3d2e10";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_right_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_u128 = uint128_t_right_shift_n(test_u128, 8);
+	uint128_t_to_hexstr(test_u128, 16, result);
+	expected_result = "000f01e2d3c4b5a69788796a5b4c3d2e";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_right_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_u128 = uint128_t_right_shift_n(test_u128, 16);
+	uint128_t_to_hexstr(test_u128, 16, result);
+	expected_result = "0000000f01e2d3c4b5a69788796a5b4c";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_right_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_u128 = uint128_t_right_shift_n(test_u128, 32);
+	uint128_t_to_hexstr(test_u128, 16, result);
+	expected_result = "000000000000000f01e2d3c4b5a69788";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_right_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_u128 = uint128_t_dec(uint128t_zero());	/* Get -1... all bits set to 1 */
+	test_u128 = uint128_t_right_shift_n(test_u128, 127);
+	uint128_t_to_hexstr(test_u128, 16, result);
+	expected_result = "00000000000000000000000000000001";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_right_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	test_u128 = uint128_t_dec(uint128t_zero());	/* Get -1... all bits set to 1 */
+	test_u128 = uint128_t_right_shift_n(test_u128, 128);
+	uint128_t_to_hexstr(test_u128, 16, result);
+	expected_result = "00000000000000000000000000000000";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_right_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	printf("%s: tests passed\n", __func__);
+}
+
 /* Unit test for uint128_t_left_shift()
  */
 void test_uint128_t_left_shift() {
@@ -459,6 +548,95 @@ void test_uint128_t_left_shift() {
 			}
 		}
 	}
+	printf("%s: tests passed\n", __func__);
+}
+
+/* Unit test for uint128_t_left_shift_n()
+ */
+void test_uint128_t_left_shift_n() {
+
+	uint128_t test_u128;
+	char result[129];
+	char* expected_result;
+
+	test_u128.uint128_a8[0] = 0xf0;
+	test_u128.uint128_a8[1] = 0x1e;
+	test_u128.uint128_a8[2] = 0x2d;
+	test_u128.uint128_a8[3] = 0x3c;
+	test_u128.uint128_a8[4] = 0x4b;
+	test_u128.uint128_a8[5] = 0x5a;
+	test_u128.uint128_a8[6] = 0x69;
+	test_u128.uint128_a8[7] = 0x78;
+	test_u128.uint128_a8[8] = 0x87;
+	test_u128.uint128_a8[9] = 0x96;
+	test_u128.uint128_a8[10] = 0xa5;
+	test_u128.uint128_a8[11] = 0xb4;
+	test_u128.uint128_a8[12] = 0xc3;
+	test_u128.uint128_a8[13] = 0xd2;
+	test_u128.uint128_a8[14] = 0xe1;
+	test_u128.uint128_a8[15] = 0x0f;
+
+
+	test_u128 = uint128_t_left_shift_n(test_u128, 0);	/* No shift */
+	uint128_t_to_hexstr(test_u128, 16, result);
+	expected_result = "f01e2d3c4b5a69788796a5b4c3d2e10f";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_left_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_u128 = uint128_t_left_shift_n(test_u128, 4);
+	uint128_t_to_hexstr(test_u128, 16, result);
+	expected_result = "01e2d3c4b5a69788796a5b4c3d2e10f0";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_left_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_u128 = uint128_t_left_shift_n(test_u128, 8);
+	uint128_t_to_hexstr(test_u128, 16, result);
+	expected_result = "e2d3c4b5a69788796a5b4c3d2e10f000";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_left_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_u128 = uint128_t_left_shift_n(test_u128, 16);
+	uint128_t_to_hexstr(test_u128, 16, result);
+	expected_result = "c4b5a69788796a5b4c3d2e10f0000000";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_left_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_u128 = uint128_t_left_shift_n(test_u128, 32);
+	uint128_t_to_hexstr(test_u128, 16, result);
+	expected_result = "88796a5b4c3d2e10f000000000000000";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_left_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+	test_u128 = uint128_t_dec(uint128t_zero());	/* Get -1... all bits set to 1 */
+	test_u128 = uint128_t_left_shift_n(test_u128, 127);
+	uint128_t_to_hexstr(test_u128, 16, result);
+	expected_result = "80000000000000000000000000000000";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_left_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	test_u128 = uint128_t_dec(uint128t_zero());	/* Get -1... all bits set to 1 */
+	test_u128 = uint128_t_left_shift_n(test_u128, 128);
+	uint128_t_to_hexstr(test_u128, 16, result);
+	expected_result = "00000000000000000000000000000000";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_left_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
 	printf("%s: tests passed\n", __func__);
 }
 
