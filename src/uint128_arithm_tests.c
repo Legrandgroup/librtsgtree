@@ -1346,6 +1346,186 @@ void test_uint128_t_mixed_add_sub_inc_dec() {
 	printf("%s: tests passed\n", __func__);
 }
 
+/* Unit test for uint128_t_or()
+ */
+void test_uint128_t_or() {
+	uint128_t test1_u128;
+	uint128_t test2_u128;
+	uint128_t result_u128;
+
+	set_zero_uint128_t(test1_u128);
+	test2_u128 = test1_u128;
+	result_u128 = uint128_t_or(test1_u128, test2_u128);	/* A or A = A */
+	if (!(uint128_t_cmp(result_u128, test1_u128) == 0)) {
+		fprintf(stderr, "%d: uint128_t_or() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+
+	set_zero_uint128_t(test1_u128);
+	test1_u128 = uint128_t_dec(test1_u128);
+	test2_u128 = test1_u128;
+	result_u128 = uint128_t_or(test1_u128, test2_u128);	/* A or A = A */
+	if (!(uint128_t_cmp(result_u128, test1_u128) == 0)) {
+		fprintf(stderr, "%d: uint128_t_or() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+
+	test1_u128.uint128_a8[0] = 0xa5;
+	test1_u128.uint128_a8[1] = 0x5a;
+	test1_u128.uint128_a8[2] = 0xa5;
+	test1_u128.uint128_a8[3] = 0x5a;
+	test1_u128.uint128_a8[4] = 0xa5;
+	test1_u128.uint128_a8[5] = 0x5a;
+	test1_u128.uint128_a8[6] = 0xa5;
+	test1_u128.uint128_a8[7] = 0x5a;
+	test1_u128.uint128_a8[8] = 0xa5;
+	test1_u128.uint128_a8[9] = 0x5a;
+	test1_u128.uint128_a8[10] = 0xa5;
+	test1_u128.uint128_a8[11] = 0x5a;
+	test1_u128.uint128_a8[12] = 0xa5;
+	test1_u128.uint128_a8[13] = 0x5a;
+	test1_u128.uint128_a8[14] = 0xa5;
+	test1_u128.uint128_a8[15] = 0x5a;
+	test2_u128 = test1_u128;
+	result_u128 = uint128_t_or(test1_u128, test2_u128);	/* A or A = A */
+	if (!(uint128_t_cmp(result_u128, test1_u128) == 0)) {
+		fprintf(stderr, "%d: uint128_t_or() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	result_u128 = uint128_t_or(test1_u128, uint128t_zero());	/* A or 0 = A */
+	if (!(uint128_t_cmp(result_u128, test1_u128) == 0)) {
+		fprintf(stderr, "%d: uint128_t_or() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	result_u128 = uint128_t_or(test1_u128, uint128_t_dec(uint128t_zero()));	/* A or (-1) = (-1) */
+	if (!(uint128_t_cmp(result_u128, uint128_t_dec(uint128t_zero())) == 0)) {
+		fprintf(stderr, "%d: uint128_t_or() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+
+	test2_u128.uint128_a8[0] = 0x5a;
+	test2_u128.uint128_a8[1] = 0xa5;
+	test2_u128.uint128_a8[2] = 0x5a;
+	test2_u128.uint128_a8[3] = 0xa5;
+	test2_u128.uint128_a8[4] = 0x5a;
+	test2_u128.uint128_a8[5] = 0xa5;
+	test2_u128.uint128_a8[6] = 0x5a;
+	test2_u128.uint128_a8[7] = 0xa5;
+	test2_u128.uint128_a8[8] = 0x5a;
+	test2_u128.uint128_a8[9] = 0xa5;
+	test2_u128.uint128_a8[10] = 0x5a;
+	test2_u128.uint128_a8[11] = 0xa5;
+	test2_u128.uint128_a8[12] = 0x5a;
+	test2_u128.uint128_a8[13] = 0xa5;
+	test2_u128.uint128_a8[14] = 0x5a;
+	test2_u128.uint128_a8[15] = 0xa5;
+
+	result_u128 = uint128_t_or(test1_u128, test2_u128);	/* A or !A = (uint128_t)(-1) */
+
+	if (!(uint128_t_cmp(result_u128, uint128_t_dec(uint128t_zero())) == 0)) {
+		fprintf(stderr, "%d: uint128_t_or() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+
+	printf("%s: tests passed\n", __func__);
+}
+
+/* Unit test for uint128_t_and()
+ */
+void test_uint128_t_and() {
+	uint128_t test1_u128;
+	uint128_t test2_u128;
+	uint128_t result_u128;
+
+	set_zero_uint128_t(test1_u128);
+	test2_u128 = test1_u128;
+	result_u128 = uint128_t_and(test1_u128, test2_u128);	/* A and A = A */
+	if (!(uint128_t_cmp(result_u128, test1_u128) == 0)) {
+		fprintf(stderr, "%d: uint128_t_and() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+
+	set_zero_uint128_t(test1_u128);
+	test1_u128 = uint128_t_dec(test1_u128);
+	test2_u128 = test1_u128;
+	result_u128 = uint128_t_and(test1_u128, test2_u128);	/* A and A = A */
+	if (!(uint128_t_cmp(result_u128, test1_u128) == 0)) {
+		fprintf(stderr, "%d: uint128_t_and() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+
+	test1_u128.uint128_a8[0] = 0xa5;
+	test1_u128.uint128_a8[1] = 0x5a;
+	test1_u128.uint128_a8[2] = 0xa5;
+	test1_u128.uint128_a8[3] = 0x5a;
+	test1_u128.uint128_a8[4] = 0xa5;
+	test1_u128.uint128_a8[5] = 0x5a;
+	test1_u128.uint128_a8[6] = 0xa5;
+	test1_u128.uint128_a8[7] = 0x5a;
+	test1_u128.uint128_a8[8] = 0xa5;
+	test1_u128.uint128_a8[9] = 0x5a;
+	test1_u128.uint128_a8[10] = 0xa5;
+	test1_u128.uint128_a8[11] = 0x5a;
+	test1_u128.uint128_a8[12] = 0xa5;
+	test1_u128.uint128_a8[13] = 0x5a;
+	test1_u128.uint128_a8[14] = 0xa5;
+	test1_u128.uint128_a8[15] = 0x5a;
+	test2_u128 = test1_u128;
+	result_u128 = uint128_t_and(test1_u128, test2_u128);	/* A and A = A */
+	if (!(uint128_t_cmp(result_u128, test1_u128) == 0)) {
+		fprintf(stderr, "%d: uint128_t_and() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	result_u128 = uint128_t_and(test1_u128, uint128_t_dec(uint128t_zero()));	/* A and (-1) = A */
+	if (!(uint128_t_cmp(result_u128, test1_u128) == 0)) {
+		fprintf(stderr, "%d: uint128_t_and() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	result_u128 = uint128_t_and(test1_u128, uint128t_zero());	/* A and 0 = 0 */
+	if (!(uint128_t_cmp(result_u128, uint128t_zero()) == 0)) {
+		fprintf(stderr, "%d: uint128_t_and() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+
+	test2_u128.uint128_a8[0] = 0x5a;
+	test2_u128.uint128_a8[1] = 0xa5;
+	test2_u128.uint128_a8[2] = 0x5a;
+	test2_u128.uint128_a8[3] = 0xa5;
+	test2_u128.uint128_a8[4] = 0x5a;
+	test2_u128.uint128_a8[5] = 0xa5;
+	test2_u128.uint128_a8[6] = 0x5a;
+	test2_u128.uint128_a8[7] = 0xa5;
+	test2_u128.uint128_a8[8] = 0x5a;
+	test2_u128.uint128_a8[9] = 0xa5;
+	test2_u128.uint128_a8[10] = 0x5a;
+	test2_u128.uint128_a8[11] = 0xa5;
+	test2_u128.uint128_a8[12] = 0x5a;
+	test2_u128.uint128_a8[13] = 0xa5;
+	test2_u128.uint128_a8[14] = 0x5a;
+	test2_u128.uint128_a8[15] = 0xa5;
+
+	result_u128 = uint128_t_and(test1_u128, test2_u128);	/* A and !A = 0 */
+
+	if (!(uint128_t_cmp(result_u128, uint128t_zero()) == 0)) {
+		fprintf(stderr, "%d: uint128_t_and() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+
+	printf("%s: tests passed\n", __func__);
+}
+
 void test_uint128_t_right_0bit_count() {
 	uint128_t test_u128;
 	uint8_t bit_count;

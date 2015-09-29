@@ -164,6 +164,24 @@ uint128_t uint128_t_add(const uint128_t first, uint128_t second) {
 	  return output;
 }
 
+uint128_t uint128_t_or(const uint128_t first, uint128_t second) {
+	  register int8_t byte_index;
+	  uint8_t index_of_last_byte = sizeof(first.uint128_a8) - 1;
+
+	  for (byte_index = index_of_last_byte; byte_index>=0; byte_index--)
+		  second.uint128_a8[byte_index] |= first.uint128_a8[byte_index];
+	  return second;
+}
+
+uint128_t uint128_t_and(const uint128_t first, uint128_t second) {
+	  register int8_t byte_index;
+	  uint8_t index_of_last_byte = sizeof(first.uint128_a8) - 1;
+
+	  for (byte_index = index_of_last_byte; byte_index>=0; byte_index--)
+		  second.uint128_a8[byte_index] &= first.uint128_a8[byte_index];
+	  return second;
+}
+
 uint128_t uint8_t_to_uint128_t(uint8_t from) {
 
 	uint128_t result;

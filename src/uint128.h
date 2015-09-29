@@ -143,7 +143,27 @@ uint128_t uint128_t_sub(const uint128_t from, uint128_t subtraction);
  *
  * \return The result of (first + second) as an uint128_t
 **/
-uint128_t uint128_t_add(const uint128_t first, uint128_t second);
+inline uint128_t uint128_t_add(const uint128_t first, uint128_t second);
+
+/**
+ * \brief Calculate the bitwise or operation between two uint128_t
+ *
+ * \param first The first operand of the bitwise or
+ * \param second The second operand of the bitwise or
+ *
+ * \return The result of (first | second) as an uint128_t
+**/
+inline uint128_t uint128_t_or(const uint128_t first, uint128_t second);
+
+/**
+ * \brief Calculate the bitwise and operation between two uint128_t
+ *
+ * \param first The first operand of the bitwise and
+ * \param second The second operand of the bitwise and
+ *
+ * \return The result of (first & second) as an uint128_t
+**/
+uint128_t uint128_t_and(const uint128_t first, uint128_t second);
 
 /**
  * \brief Create a uint128_t from a uint8_t

@@ -99,7 +99,7 @@ uint128_t get_top_interface_ipv6_addr(const self_ip_routing_tree_t* tree, const 
 	uint128_t result;
 
 	assert(tree);
-	//result = uint128_t_left_shift_n((uint128_t)node, tree->hostA);
+	result = uint128_t_left_shift_n((uint128_t)node, tree->hostA);
 	//return uint128_t_or(result,
 	//                    uint128_t_and(tree->prefix, uint128_create_msb_mask(get_hosts_prefix_len(tree));
 #warning WIP
