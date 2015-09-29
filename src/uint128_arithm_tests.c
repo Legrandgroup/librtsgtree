@@ -1101,11 +1101,70 @@ void test_uint128_t_add() {
 }
 
 void test_uint128_t_mixed_add_sub_inc_dec() {
-	/* Mix inc/dec and add/sub */
-	/* Take random value
-	 * Add random, sub random, make sure equal, repeat n times */
-	/* test sub -1 is inc */
-	/* test add -1 is dec */
+	uint128_t test1_u128;
+	uint128_t test2_u128;
+	uint16_t i;
+
+	set_zero_uint128_t(test1_u128);
+	test2_u128 = test1_u128;
+	test1_u128 = uint128_t_dec(test1_u128);	/* test1_u128 = (uint128_t)-1 */
+	test2_u128 = uint128_t_sub(test2_u128, uint16_t_to_uint128_t(0xffff));	/* test1_u128 = (uint128_t)-0xffff */
+	for (i = 0; i<0xffff; i++) {
+		test2_u128 = uint128_t_sub(test2_u128, test1_u128);	/* remove -1 (add 1) 0xffff times */
+	}
+	if (!(uint128_t_cmp(test2_u128, uint128t_zero()) == 0)) {	/* Expect test2_u128==0 */
+		fprintf(stderr, "%d: test failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	test1_u128 = power2_to_uint128_t(0);	/* test1_u128 = (uint128_t)1 */
+	set_zero_uint128_t(test2_u128);
+	test2_u128 = uint128_t_add(test2_u128, uint16_t_to_uint128_t(0xffff));	/* test1_u128 = (uint128_t)0xffff */
+	for (i = 0; i<0xffff; i++) {
+		test2_u128 = uint128_t_sub(test2_u128, test1_u128);	/* Remove 1 0xffff times */
+	}
+	if (!(uint128_t_cmp(test2_u128, uint128t_zero()) == 0)) {	/* Expect test2_u128==0 */
+		fprintf(stderr, "%d: test failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+
+	for (i = 0; i<0xffff; i++) {
+		test1_u128.uint128_a8[0] = rand() & 0xff;
+		test1_u128.uint128_a8[1] = rand() & 0xff;
+		test1_u128.uint128_a8[2] = rand() & 0xff;
+		test1_u128.uint128_a8[3] = rand() & 0xff;
+		test1_u128.uint128_a8[4] = rand() & 0xff;
+		test1_u128.uint128_a8[5] = rand() & 0xff;
+		test1_u128.uint128_a8[6] = rand() & 0xff;
+		test1_u128.uint128_a8[7] = rand() & 0xff;
+		test1_u128.uint128_a8[8] = rand() & 0xff;
+		test1_u128.uint128_a8[9] = rand() & 0xff;
+		test1_u128.uint128_a8[10] = rand() & 0xff;
+		test1_u128.uint128_a8[11] = rand() & 0xff;
+		test1_u128.uint128_a8[12] = rand() & 0xff;
+		test1_u128.uint128_a8[13] = rand() & 0xff;
+		test1_u128.uint128_a8[14] = rand() & 0xff;
+		test1_u128.uint128_a8[15] = rand() & 0xff;
+
+		test2_u128 = test1_u128;
+
+		test1_u128 = uint128_t_inc(test1_u128);	/* +1 */
+		test1_u128 = uint128_t_add(test1_u128, uint128_t_inc(uint128t_zero()));	/* +1 */
+		test1_u128 = uint128_t_dec(test1_u128);	/* -1 */
+		test1_u128 = uint128_t_sub(test1_u128, power2_to_uint128_t(1));	/* -2 */
+		test1_u128 = uint128_t_add(test1_u128, uint128_t_inc(uint128t_zero()));	/* +1 */
+		test1_u128 = uint128_t_add(test1_u128, power2_to_uint128_t(127));	/* + 2^127 */
+		test1_u128 = uint128_t_sub(test1_u128, uint128_t_dec(power2_to_uint128_t(127)));	/* - (2^127 - 1) */
+		test1_u128 = uint128_t_dec(test1_u128);	/* -1 */
+
+		if (!(uint128_t_cmp(test2_u128, test1_u128) == 0)) {	/* Expect test2_u128==0 */
+			fprintf(stderr, "%d: test failed\n", __LINE__);
+			//FAIL();
+			exit(1);
+		}
+	}
+
 	printf("%s: tests passed\n", __func__);
 }
 

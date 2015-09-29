@@ -24,7 +24,7 @@ int main(void) {
 	test_uint8_t_to_uint128_t();
 	test_uint128_t_sub();
 	test_uint128_t_add();
-	//test_uint128_t_mixed_add_sub_inc_dec();
+	test_uint128_t_mixed_add_sub_inc_dec();
 	test_uint128_t_right_0bit_count();
 	test_uint128_t_cmp();
 
