@@ -68,7 +68,7 @@ void test_uint128_t_to_ipv6() {
 	printf("%s: tests passed\n", __func__);
 }
 
-/* Unit test forget_tree_prefix_len()
+/* Unit test for get_tree_prefix_len()
  */
 void test_get_tree_prefix_len() {
 	self_ip_routing_tree_t tree;
@@ -103,6 +103,49 @@ void test_get_tree_prefix_len() {
 		exit(1);
 	}
 
+	printf("%s: tests passed\n", __func__);
+}
+
+/* Unit test for get_hosts_prefix_len()
+ */
+void test_get_hosts_prefix_len() {
+	self_ip_routing_tree_t tree;
+
+	tree.hostA = 0;
+	tree.ip_type = IPV6;
+	if (get_hosts_prefix_len(&tree) != 128) {
+		fprintf(stderr, "%d: get_hosts_prefix_len() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	tree.hostA = 2;
+	if (get_hosts_prefix_len(&tree) != 126) {
+		fprintf(stderr, "%d: get_hosts_prefix_len() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	tree.hostA = 8;
+	if (get_hosts_prefix_len(&tree) != 120) {
+		fprintf(stderr, "%d: get_hosts_prefix_len() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+
+	tree.hostA = 2;
+	tree.ip_type = IPV4;
+	if (get_hosts_prefix_len(&tree) != 30) {
+		fprintf(stderr, "%d: get_hosts_prefix_len() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	tree.hostA = 8;
+	if (get_hosts_prefix_len(&tree) != 24) {
+		fprintf(stderr, "%d: get_hosts_prefix_len() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+
+	printf("%s: tests passed\n", __func__);
 }
 
 /* Unit test for get_root_node_id()

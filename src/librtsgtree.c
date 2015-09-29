@@ -30,6 +30,7 @@ int main(void) {
 
 	test_uint128_t_to_ipv6();
 	test_get_tree_prefix_len();
+	test_get_hosts_prefix_len();
 	test_node_id_to_rank();
 	test_get_root_node_id();
 	test_get_left_child_node_id();
