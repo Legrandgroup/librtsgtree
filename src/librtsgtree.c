@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 #include <assert.h>	// For assert()
-#include "ipv6_node.h"
+#include "node.h"
 
 int main(void) {
 	test_zero_uint18_t();

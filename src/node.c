@@ -2,7 +2,7 @@
  * file ip_node.c
  */
 
-#include "ip_node.h"
+#include "node.h"
 #include <assert.h>	// For assert()
 
 inline void uint128_t_to_ipv6(const uint128_t input, struct in6_addr* output) {
