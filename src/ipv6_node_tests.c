@@ -1,24 +1,108 @@
-#include "ipv6_node.h"
+#include "ip_node.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <arpa/inet.h>	// For inet_ntop() and htons()
 #include <stdint.h>
 #include <string.h>	// For memcpy()
 
-/* Unit test for node_id_to_ipv6()
+/* Unit test for uint128_t_to_ipv6()
  */
-void test_node_id_to_ipv6() {
-	node_id_t this_node;
-	char result[129];
+void test_uint128_t_to_ipv6() {
+	node_id_t test_node;
+	char* expected_result;
 
-	char repr[INET6_ADDRSTRLEN+1];
+	char result[INET6_ADDRSTRLEN+1];
 	struct in6_addr dst_in_addr;
 
-	node_id_to_ipv6(this_node, &dst_in_addr);
-	inet_ntop(AF_INET6, &dst_in_addr, repr, INET6_ADDRSTRLEN);
-	//puts(repr);
-	//puts(result);
+	test_node.uint128_a8[0] = 0xa5;
+	test_node.uint128_a8[1] = 0xa2;
+	test_node.uint128_a8[2] = 0x15;
+	test_node.uint128_a8[3] = 0x02;
+	test_node.uint128_a8[4] = 0x45;
+	test_node.uint128_a8[5] = 0xa8;
+	test_node.uint128_a8[6] = 0x87;
+	test_node.uint128_a8[7] = 0xc4;
+	test_node.uint128_a8[8] = 0xe5;
+	test_node.uint128_a8[9] = 0x04;
+	test_node.uint128_a8[10] = 0x1a;
+	test_node.uint128_a8[11] = 0xfe;
+	test_node.uint128_a8[12] = 0x89;
+	test_node.uint128_a8[13] = 0x9c;
+	test_node.uint128_a8[14] = 0x47;
+	test_node.uint128_a8[15] = 0x0f;
+
+	uint128_t_to_ipv6(test_node, &dst_in_addr);
+	inet_ntop(AF_INET6, &dst_in_addr, result, INET6_ADDRSTRLEN);
+	expected_result="a5a2:1502:45a8:87c4:e504:1afe:899c:470f";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_to_ipv6() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	test_node.uint128_a8[0] = 0x20;
+	test_node.uint128_a8[1] = 0x01;
+	test_node.uint128_a8[2] = 0x41;
+	test_node.uint128_a8[3] = 0xc8;
+	test_node.uint128_a8[4] = 0x10;
+	test_node.uint128_a8[5] = 0x00;
+	test_node.uint128_a8[6] = 0x00;
+	test_node.uint128_a8[7] = 0x21;
+	test_node.uint128_a8[8] = 0x00;
+	test_node.uint128_a8[9] = 0x00;
+	test_node.uint128_a8[10] = 0x00;
+	test_node.uint128_a8[11] = 0x00;
+	test_node.uint128_a8[12] = 0x00;
+	test_node.uint128_a8[13] = 0x21;
+	test_node.uint128_a8[14] = 0x00;
+	test_node.uint128_a8[15] = 0x04;
+
+	uint128_t_to_ipv6(test_node, &dst_in_addr);
+	inet_ntop(AF_INET6, &dst_in_addr, result, INET6_ADDRSTRLEN);
+	expected_result="2001:41c8:1000:21::21:4";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: uint128_t_to_ipv6() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
 	printf("%s: tests passed\n", __func__);
+}
+
+/* Unit test forget_tree_prefix_len()
+ */
+void test_get_tree_prefix_len() {
+	self_ip_routing_tree_t tree;
+
+	tree.Rmax = 4;
+	tree.hostA = 0;
+	tree.ip_type = IPV6;
+	if (get_tree_prefix_len(&tree) != 124) {
+		fprintf(stderr, "%d: get_tree_prefix_len() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	tree.Rmax = 120;	/* 120 ranks IPv6 tree (maximum size for private addressing) */
+	if (get_tree_prefix_len(&tree) != 8) {
+		fprintf(stderr, "%d: get_tree_prefix_len() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+
+	tree.Rmax = 6;
+	tree.hostA = 2;
+	tree.ip_type = IPV4;
+	if (get_tree_prefix_len(&tree) != 24) {
+		fprintf(stderr, "%d: get_tree_prefix_len() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	tree.Rmax = 22;	/* 22 ranks IPv4 tree (maximum size for private addressing) */
+	if (get_tree_prefix_len(&tree) != 8) {
+		fprintf(stderr, "%d: get_tree_prefix_len() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+
 }
 
 /* Unit test for get_root_node_id()
@@ -67,7 +151,6 @@ void test_node_id_to_rank() {
 	tree.Rmax = 4;
 	tree.ip_type = IPV6;
 	tree.hostA = 0;
-	tree.treeP = 124;
 
 	if (node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(8))) != (rank_t)1) {
 		fprintf(stderr, "%d: node_id_to_rank() failed for rank 1\n", __LINE__);
@@ -126,7 +209,6 @@ void test_node_id_to_rank() {
 	tree.Rmax = 6;
 	tree.ip_type = IPV4;
 	tree.hostA = 2;
-	tree.treeP = 24;
 
 	if (node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(32))) != (rank_t)1) {
 		fprintf(stderr, "%d: node_id_to_rank() failed for rank 1\n", __LINE__);

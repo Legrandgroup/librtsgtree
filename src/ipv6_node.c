@@ -1,14 +1,40 @@
 /**
- * file ipv6_node.c
+ * file ip_node.c
  */
 
-#include "ipv6_node.h"
+#include "ip_node.h"
 #include <assert.h>	// For assert()
 
-inline void node_id_to_ipv6(const node_id_t input, struct in6_addr* output) {
+inline void uint128_t_to_ipv6(const uint128_t input, struct in6_addr* output) {
 	assert(sizeof(output->s6_addr) == sizeof(input.uint128_a8));
 
 	memcpy((void *)(output->s6_addr), (void *)(input.uint128_a8), sizeof(output->s6_addr));
+}
+
+prefix_t get_tree_prefix_len(const self_ip_routing_tree_t* tree) {
+	prefix_t result;
+
+	assert(tree);
+	result = get_hosts_prefix_len(tree);
+	assert(result > tree->Rmax);
+
+	return result - tree->Rmax;
+}
+
+prefix_t get_hosts_prefix_len(const self_ip_routing_tree_t* tree) {
+	prefix_t result;
+
+	assert(tree);
+	if (tree->ip_type == IPV6)
+		result = 128;
+	else if (tree->ip_type == IPV4)
+		result = 32;
+	else
+		assert(0);	/* Error */
+
+	assert(result > tree->hostA);
+
+	return result - tree->hostA;
 }
 
 node_id_t get_root_node_id(const self_ip_routing_tree_t* tree) {
@@ -69,14 +95,28 @@ node_id_t get_right_child_node_id(const self_ip_routing_tree_t* tree, const node
 	return (node_id_t)uint128_t_add(parent_node, (node_id_t)power2_to_uint128_t(R));
 }
 
-node_id_t get_parent_node_id(self_ip_routing_tree_t tree, node_id_t child_node) {
-	node_id_t zero;
-	set_zero_uint128_t(zero);	//FIXME
-	return zero;
+uint128_t get_top_interface_ipv6_addr(const self_ip_routing_tree_t* tree, const node_id_t node) {
+	uint128_t result;
+
+	assert(tree);
+	//result = uint128_t_left_shift_n((uint128_t)node, tree->hostA);
+	//return uint128_t_or(result,
+	//                    uint128_t_and(tree->prefix, uint128_create_msb_mask(get_hosts_prefix_len(tree));
+#warning WIP
+	return result;	/* TODO */
 }
 
-node_id_t get_node_id_from_parent_hostname(self_ip_routing_tree_t tree, char* parent_hostname) {
-	node_id_t zero;
-	set_zero_uint128_t(zero);	//FIXME
-	return zero;
+if_ip_addr_t get_top_interface_config(const self_ip_routing_tree_t* tree, const node_id_t node) {
+	if_ip_addr_t result;
+
+	result.ip_type = tree->ip_type;
+	if (tree->ip_type == IPV6) {
+		uint128_t_to_ipv6(get_top_interface_ipv6_addr(tree, (uint128_t)node), &(result.__in_addr.__ipv6_in6_addr));
+	}
+	else if (tree->ip_type == IPV4) {
+		assert(0);	/* Not implemented yet */
+	}
+	else
+		assert(0);	/* Force fail */
+	return result;
 }
