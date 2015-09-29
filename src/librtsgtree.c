@@ -1,10 +1,6 @@
 /*
  * \file librtsgtree.c
  *
- * TODO: Add unit tests on *binstr and *hexstr for dumping part of the uint128_t (not the whole 128 bits or 16 bytes)
- * TODO: Add tests on increment decrement
- * TODO: Split uint128_t to separate file than node_t
- * TODO: Implement node-specific functions
  * TODO: Use cpputest for unit testing
  */
 

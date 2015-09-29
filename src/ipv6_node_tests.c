@@ -25,7 +25,7 @@ void test_node_id_to_ipv6() {
  */
 void test_get_root_node_id() {
 	node_id_t test_node;
-	char result[17];
+	char result[33];
 	char* expected_result;
 	self_ip_routing_tree_t tree;
 
@@ -60,7 +60,7 @@ void test_get_root_node_id() {
  */
 void test_node_id_to_rank() {
 	node_id_t test_node;
-	char result[17];
+	char result[33];
 	char* expected_result;
 	self_ip_routing_tree_t tree;
 
@@ -107,12 +107,11 @@ void test_node_id_to_rank() {
 		//FAIL();
 		exit(1);
 	}
-	/* TODO: add the test below (requires implementing uint128_t_is_lt)
 	if (node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(0xffff))) != (rank_t)0) {
 		fprintf(stderr, "%d: node_id_to_rank() failed for invalid node ID 0xffff\n", __LINE__);
 		//FAIL();
 		exit(1);
-	} */
+	}
 	if (node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(0x8000))) != (rank_t)0) {
 		fprintf(stderr, "%d: node_id_to_rank() failed for invalid node ID 0x8000\n", __LINE__);
 		//FAIL();
@@ -223,12 +222,11 @@ void test_node_id_to_rank() {
 		//FAIL();
 		exit(1);
 	}
-	/* TODO: add the test below (requires implementing uint128_t_is_lt)
 	if (node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(0xffff))) != (rank_t)0) {
 		fprintf(stderr, "%d: node_id_to_rank() failed for invalid node ID 0xffff\n", __LINE__);
 		//FAIL();
 		exit(1);
-	}*/
+	}
 	if (node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(0x8000))) != (rank_t)0) {
 		fprintf(stderr, "%d: node_id_to_rank() failed for invalid node ID 0x8000\n", __LINE__);
 		//FAIL();
@@ -247,7 +245,7 @@ void test_node_id_to_rank() {
  */
 void test_get_left_child_node_id() {
 	node_id_t test_node;
-	char result[17];
+	char result[33];
 	char* expected_result;
 	self_ip_routing_tree_t tree;
 
@@ -440,7 +438,7 @@ void test_get_left_child_node_id() {
  */
 void test_get_right_child_node_id() {
 	node_id_t test_node;
-	char result[17];
+	char result[33];
 	char* expected_result;
 	self_ip_routing_tree_t tree;
 

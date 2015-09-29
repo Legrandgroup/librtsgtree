@@ -153,7 +153,7 @@ uint128_t uint16_t_to_uint128_t(uint16_t from);
  *
  * \param(in] input The 16-bit word to dump
  * \param[in] bits_no The number of LSB to dump (value accepted 0 to 16)
- * \param[out] output A pointer to a 17-byte array where the resulting string will be stored
+ * \param[out] output A pointer to a 33-byte array where the resulting string will be stored
 **/
 void uint8_t_to_binstr(uint8_t input, const uint8_t bits_no, char output[9]);
 
@@ -196,6 +196,6 @@ uint8_t uint128_t_right_0bit_count(const uint128_t input);
  *
  * \return -1 if \p first is strictly lower than \p second, 0 is they are equal, and 1 if \p first is strictly higher than \p second
 **/
-int uint128_t_cmp(const uint128_t first, uint128_t second); // TODO: implement and add unit tests
+int uint128_t_cmp(const uint128_t first, uint128_t second);
 
 #endif	// __UINT128_H__

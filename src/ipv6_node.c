@@ -23,9 +23,9 @@ rank_t node_id_to_rank(const self_ip_routing_tree_t* tree, node_id_t node) {
 	rank_t b;
 
 	assert(tree);
-	/* Test if node is inside the addressable values (<2^Rmax) */
-	//if (!uint128_t_is_lt((uint128_t)node, power2_to_uint128_t(tree->Rmax)))
-	//	return 0;
+	/* Test if node is inside the addressable values (<2^Rmax)... if not, return 0 as an error */
+	if (uint128_t_cmp((uint128_t)node, power2_to_uint128_t(tree->Rmax))>=0)
+		return 0;
 	/* Calculate the number of LSB bits set to 0 */
 	b = uint128_t_right_0bit_count((uint128_t)node);
 	if (tree->Rmax < b)	/* Error... invalid node ID for this tree */
