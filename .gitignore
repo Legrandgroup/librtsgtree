@@ -1,0 +1,4 @@
+librtsgt.a
+src/*.o
+test
+
