@@ -157,6 +157,8 @@ if_ip_addr_t get_top_interface_config(const self_ip_routing_tree_t* tree, const 
  * \brief Get the IP configuration for the bottom left network interface of a node
  *
  * Note: tree.ip_type, tree.Rmax, tree.hostA and tree.prefix must be provisioned correctly in argument \p tree to get a correct result
+ * Warning: You have to check that the returned ip_type is not NONE.
+ * If it is NONE, it means there is no expected IP configuration for this interface
  *
  * \param tree The tree inside which we perform the calculation
  * \param node The node ID of which we want to calculate the network interface characteristics
@@ -169,6 +171,8 @@ if_ip_addr_t get_left_interface_config(const self_ip_routing_tree_t* tree, const
  * \brief Get the IP configuration for the bottom right network interface of a node
  *
  * Note: tree.ip_type, tree.Rmax, tree.hostA and tree.prefix must be provisioned correctly in argument \p tree to get a correct result
+ * Warning: You have to check that the returned ip_type is not NONE.
+ * If it is NONE, it means there is no expected IP configuration for this interface
  *
  * \param tree The tree inside which we perform the calculation
  * \param node The node ID of which we want to calculate the network interface characteristics
