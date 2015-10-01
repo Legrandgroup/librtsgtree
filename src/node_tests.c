@@ -11,7 +11,7 @@
 void test_Rmax_to_max_node_id() {
 	node_id_t test_node;
 
-	if (uint128_t_cmp(Rmax_to_max_node_id(0), uint128_t_zero()) != 0) {
+	if (!U128_IS_ZERO(Rmax_to_max_node_id(0))) {
 		fprintf(stderr, "%d: Rmax_to_max_node_id() failed\n", __LINE__);
 		//FAIL();
 		exit(1);

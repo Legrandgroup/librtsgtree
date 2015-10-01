@@ -1290,7 +1290,7 @@ void test_uint128_t_mixed_add_sub_inc_dec() {
 	for (i = 0; i<0xffff; i++) {
 		test2_u128 = uint128_t_sub(test2_u128, test1_u128);	/* remove -1 (add 1) 0xffff times */
 	}
-	if (!(uint128_t_cmp(test2_u128, uint128_t_zero()) == 0)) {	/* Expect test2_u128==0 */
+	if (!U128_IS_ZERO(test2_u128)) {	/* Expect test2_u128==0 */
 		fprintf(stderr, "%d: test failed\n", __LINE__);
 		//FAIL();
 		exit(1);
@@ -1301,7 +1301,7 @@ void test_uint128_t_mixed_add_sub_inc_dec() {
 	for (i = 0; i<0xffff; i++) {
 		test2_u128 = uint128_t_sub(test2_u128, test1_u128);	/* Remove 1 0xffff times */
 	}
-	if (!(uint128_t_cmp(test2_u128, uint128_t_zero()) == 0)) {	/* Expect test2_u128==0 */
+	if (!U128_IS_ZERO(test2_u128)) {	/* Expect test2_u128==0 */
 		fprintf(stderr, "%d: test failed\n", __LINE__);
 		//FAIL();
 		exit(1);
@@ -1492,7 +1492,7 @@ void test_uint128_t_and() {
 		exit(1);
 	}
 	result_u128 = uint128_t_and(test1_u128, uint128_t_zero());	/* A and 0 = 0 */
-	if (!(uint128_t_cmp(result_u128, uint128_t_zero()) == 0)) {
+	if (!U128_IS_ZERO(result_u128)) {
 		fprintf(stderr, "%d: uint128_t_and() failed\n", __LINE__);
 		//FAIL();
 		exit(1);
@@ -1517,7 +1517,7 @@ void test_uint128_t_and() {
 
 	result_u128 = uint128_t_and(test1_u128, test2_u128);	/* A and !A = 0 */
 
-	if (!(uint128_t_cmp(result_u128, uint128_t_zero()) == 0)) {
+	if (!U128_IS_ZERO(result_u128)) {
 		fprintf(stderr, "%d: uint128_t_and() failed\n", __LINE__);
 		//FAIL();
 		exit(1);

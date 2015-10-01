@@ -36,7 +36,8 @@ typedef struct {
 /**
  * \def U128_SET_ZERO(n)
  *
- * Assigne the value zero to an uint128
+ * \brief Assign the value zero to an uint128_t variable \p n
+ *
  * \param n The uint128_t variable to set
  */
 #define U128_SET_ZERO(n) \
@@ -51,6 +52,23 @@ typedef struct {
 		n.uint128_a16[6] = 0; \
 		n.uint128_a16[7] = 0; \
 	} while(0)
+
+/**
+ * \def U128_IS_ZERO(n)
+ *
+ * \brief Check if an uint128_t variable \p n equals 0
+ *
+ * \param n The uint128_t variable to check
+ */
+#define U128_IS_ZERO(n) \
+	(	n.uint128_a16[0] == 0 && \
+		n.uint128_a16[1] == 0 && \
+		n.uint128_a16[2] == 0 && \
+		n.uint128_a16[3] == 0 && \
+		n.uint128_a16[4] == 0 && \
+		n.uint128_a16[5] == 0 && \
+		n.uint128_a16[6] == 0 && \
+		n.uint128_a16[7] == 0 )
 
 /**
  * \brief Return 0 as an uint128_t
