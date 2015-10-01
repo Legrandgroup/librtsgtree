@@ -58,12 +58,10 @@ help:
 .SUFFIXES:
 
 SRC_PATH = src
-SRCS +=     $(SRC_PATH)/ipv6_node.c \
-            $(SRC_PATH)/uint128.c \
-            $(SRC_PATH)/utils.c 
+SRCS +=     $(SRC_PATH)/node.c \
+            $(SRC_PATH)/uint128.c
 
-TEST_SRCS +=$(SRC_PATH)/ipv6_node_tests.c \
-            $(SRC_PATH)/node_utest.c \
+TEST_SRCS +=$(SRC_PATH)/node_tests.c \
             $(SRC_PATH)/uint128_arithm_tests.c \
             $(SRC_PATH)/librtsgtree.c \
 
