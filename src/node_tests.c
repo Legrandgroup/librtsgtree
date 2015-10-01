@@ -148,6 +148,61 @@ void test_get_hosts_prefix_len() {
 	printf("%s: tests passed\n", __func__);
 }
 
+/* Unit test for ipv6_prefix_to_uint128_t_mask()
+ */
+void test_ipv6_prefix_to_uint128_t_mask() {
+	uint128_t test_netmask;
+	char result[33];
+	char* expected_result;
+
+	test_netmask = ipv6_prefix_to_uint128_t_mask(0);
+	uint128_t_to_hexstr((uint128_t)test_netmask, 16, result);
+	expected_result = "0000000000000000" "0000000000000000";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: ipv6_prefix_to_uint128_t_mask() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	test_netmask = ipv6_prefix_to_uint128_t_mask(1);
+	uint128_t_to_hexstr((uint128_t)test_netmask, 16, result);
+	expected_result = "8000000000000000" "0000000000000000";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: ipv6_prefix_to_uint128_t_mask() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	test_netmask = ipv6_prefix_to_uint128_t_mask(64);
+	uint128_t_to_hexstr((uint128_t)test_netmask, 16, result);
+	expected_result = "ffffffffffffffff" "0000000000000000";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: ipv6_prefix_to_uint128_t_mask() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	test_netmask = ipv6_prefix_to_uint128_t_mask(127);
+	uint128_t_to_hexstr((uint128_t)test_netmask, 16, result);
+	expected_result = "ffffffffffffffff" "fffffffffffffffe";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: ipv6_prefix_to_uint128_t_mask() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	test_netmask = ipv6_prefix_to_uint128_t_mask(128);
+	uint128_t_to_hexstr((uint128_t)test_netmask, 16, result);
+	expected_result = "ffffffffffffffff" "ffffffffffffffff";
+	if (strcmp(result, expected_result) != 0) {
+		fprintf(stderr, "%d: ipv6_prefix_to_uint128_t_mask() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	printf("%s: tests passed\n", __func__);
+}
+
 /* Unit test for get_root_node_id()
  */
 void test_get_root_node_id() {

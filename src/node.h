@@ -75,6 +75,15 @@ prefix_t get_tree_prefix_len(const self_ip_routing_tree_t* tree);
 prefix_t get_hosts_prefix_len(const self_ip_routing_tree_t* tree);
 
 /**
+ * \brief Create a 128-bit IPv6 netmask from a prefix length
+ *
+ * \prarm prefix The prefix (value should be >=0 and <=128)
+ *
+ * \return The 128-bit netmask as a uint128_t
+ */
+uint128_t ipv6_prefix_to_uint128_t_mask(prefix_t prefix);
+
+/**
  * \brief Get the node ID of the root node in a routed self-generated tree
  *
  * \param tree The tree for which we want to get the root node ID
