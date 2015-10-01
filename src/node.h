@@ -141,16 +141,40 @@ node_id_t get_left_child_node_id(const self_ip_routing_tree_t* tree, const node_
 node_id_t get_right_child_node_id(const self_ip_routing_tree_t* tree, const node_id_t parent_node);
 
 /**
- * \brief Get the right child node ID based on a parent node ID
+ * \brief Get the IP configuration for the top network interface of a node
  *
  * Note: tree.ip_type, tree.Rmax, tree.hostA and tree.prefix must be provisioned correctly in argument \p tree to get a correct result
  *
  * \param tree The tree inside which we perform the calculation
- * \param node The node ID for which we want to calculate the right child
+ * \param node The node ID of which we want to calculate the network interface characteristics
  *
- * \return The node ID for the right child or 0 if there was an error
+ * \return The IP addressing of the top network interface for \p node
 **/
 if_ip_addr_t get_top_interface_config(const self_ip_routing_tree_t* tree, const node_id_t node);
+
+/**
+ * \brief Get the IP configuration for the bottom left network interface of a node
+ *
+ * Note: tree.ip_type, tree.Rmax, tree.hostA and tree.prefix must be provisioned correctly in argument \p tree to get a correct result
+ *
+ * \param tree The tree inside which we perform the calculation
+ * \param node The node ID of which we want to calculate the network interface characteristics
+ *
+ * \return The IP addressing of the left network interface for \p node
+**/
+if_ip_addr_t get_left_interface_config(const self_ip_routing_tree_t* tree, const node_id_t node);
+
+/**
+ * \brief Get the IP configuration for the bottom right network interface of a node
+ *
+ * Note: tree.ip_type, tree.Rmax, tree.hostA and tree.prefix must be provisioned correctly in argument \p tree to get a correct result
+ *
+ * \param tree The tree inside which we perform the calculation
+ * \param node The node ID of which we want to calculate the network interface characteristics
+ *
+ * \return The IP addressing of the right network interface for \p node
+**/
+if_ip_addr_t get_right_interface_config(const self_ip_routing_tree_t* tree, const node_id_t node);
 
 /**
  * \def assert_valid_node_id_for_tree(n, t)

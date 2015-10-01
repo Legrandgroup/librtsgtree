@@ -996,6 +996,7 @@ void test_get_top_interface_config() {
 	tree.prefix.uint128_a8[15] = 0;	/* Prefix is 192.168.0.0/24 */
 
 	//ip_addr_result = get_top_interface_config(&tree, test_node);
+	//FIXME: Add unit test for get_top_interface_config() on IPv4 trees
 
 	if (tree.ip_type != IPV4) {	/* ip_type should not be altered */
 		fprintf(stderr, "%d: get_top_interface_config() modified ip_type field\n", __LINE__);
