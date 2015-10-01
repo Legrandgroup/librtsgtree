@@ -207,15 +207,67 @@ if_ip_addr_t get_right_interface_config(const self_ip_routing_tree_t* tree, cons
 	else
 		assert(0);	/* Force fail */
 	return result;
-
 }
 
 ip_route_t get_top_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node) {
-	assert(0);
+	ip_route_t result;
+	rank_t     node_rank;
+
+	assert(tree);
+	assert(tree->ip_type);
+	assert_valid_node_id_for_tree(node, *tree);	/* Make sure node contains a valid value for this tree */
+
+	node_rank = node_id_to_rank(tree, node);
+
+	result.ip_type = tree->ip_type;
+	if (tree->ip_type == IPV6) {
+		assert(0);	/* Not implemented yet */
+		//TODO: support IPv6 trees for routes
+	}
+	else if (tree->ip_type == IPV4) {
+		assert(0);	/* Not implemented yet */
+		//TODO: support IPv4 trees for routes
+	}
+	else
+		assert(0);	/* Force fail */
+	return result;
 }
 
 ip_route_t get_left_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node) {
-	assert(0);
+	ip_route_t result;
+	rank_t     node_rank;
+
+	assert(tree);
+	assert(tree->ip_type);
+	assert_valid_node_id_for_tree(node, *tree);	/* Make sure node contains a valid value for this tree */
+
+	node_rank = node_id_to_rank(tree, node);
+
+	result.ip_type = tree->ip_type;
+	if (tree->ip_type == IPV6) {
+		if (node_rank == tree->Rmax) {	/* In IPv6 leaves have no route to left of right */
+			result.ip_type = NONE;
+			uint128_t_to_ipv6(uint128_t_zero(), &(result.in_addr_range.__ipv6_in6_addr));
+			uint128_t_to_ipv6(uint128_t_zero(), &(result.in_addr_next_hop.__ipv6_in6_addr));
+			result.range_prefix = 128;
+		}
+		else if (node_rank+1 == tree->Rmax) {	/* We are on the penultimate rank */
+			uint128_t_to_ipv6(get_top_interface_ipv6_addr(tree, get_left_child_node_id(tree, node)), &(result.in_addr_range.__ipv6_in6_addr));
+			//TODO: which IPv6 address should we use? The link-local one together with interface scope? Store it in in_addr_next_hop or let the caller do it...
+			result.range_prefix = 128;
+		}
+		else {	/* We are on any other rank */
+			uint128_t_to_ipv6(get_top_interface_ipv6_addr(tree, get_left_child_node_id(tree, node)), &(result.in_addr_range.__ipv6_in6_addr));
+			assert(0);	/* TODO: this needs to be continued */
+		}
+	}
+	else if (tree->ip_type == IPV4) {
+		assert(0);	/* Not implemented yet */
+		//TODO: support IPv4 trees for routes
+	}
+	else
+		assert(0);	/* Force fail */
+	return result;
 }
 
 ip_route_t get_right_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node) {
