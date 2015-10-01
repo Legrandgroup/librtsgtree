@@ -11,6 +11,12 @@ inline void uint128_t_to_ipv6(const uint128_t input, struct in6_addr* output) {
 	memcpy((void *)(output->s6_addr), (void *)(input.uint128_a8), sizeof(output->s6_addr));
 }
 
+inline void uint32_t_to_ipv4(const uint32_t input, struct in_addr* output) {
+	assert(sizeof(output->s_addr) == sizeof(input));
+
+	memcpy((void *)(output->s_addr), (void *)input, sizeof(output->s_addr));
+}
+
 prefix_t get_tree_prefix_len(const self_ip_routing_tree_t* tree) {
 	prefix_t result;
 
@@ -131,9 +137,12 @@ if_ip_addr_t get_top_interface_config(const self_ip_routing_tree_t* tree, const 
 	result.ip_type = tree->ip_type;
 	if (tree->ip_type == IPV6) {
 		uint128_t_to_ipv6(get_top_interface_ipv6_addr(tree, (uint128_t)node), &(result.__in_addr.__ipv6_in6_addr));
+		result.prefix = get_hosts_prefix_len(tree);
 	}
 	else if (tree->ip_type == IPV4) {
 		assert(0);	/* Not implemented yet */
+		//uint32_t_to_ipv4(get_top_interface_ipv4_addr(tree, (uint128_t)node), &(result.__in_addr.__ipv4_in_addr));
+		result.prefix = get_hosts_prefix_len(tree);
 	}
 	else
 		assert(0);	/* Force fail */
