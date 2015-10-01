@@ -885,7 +885,7 @@ void test_get_top_interface_config() {
 	test_node = get_root_node_id(&tree);	/* Will get 8 */
 	ip_addr_result = get_top_interface_config(&tree, test_node);
 
-	inet_ntop(AF_INET6, &(ip_addr_result.__in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
+	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 
 	//TODO: check that tree was not altered as side effect when passed as a reference above
 	if (ip_addr_result.ip_type != IPV6) {	/* ip_type should have been propagated as is to result */
@@ -907,7 +907,7 @@ void test_get_top_interface_config() {
 	test_node = get_left_child_node_id(&tree, get_root_node_id(&tree));	/* Will get 4 */
 	ip_addr_result = get_top_interface_config(&tree, test_node);
 
-	inet_ntop(AF_INET6, &(ip_addr_result.__in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
+	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 
 	//TODO: check that tree was not altered as side effect when passed as a reference above
 	if (ip_addr_result.ip_type != IPV6) {	/* ip_type should have been propagated as is to result */
@@ -929,7 +929,7 @@ void test_get_top_interface_config() {
 	test_node = get_right_child_node_id(&tree, get_root_node_id(&tree));	/* Will get 12 */
 	ip_addr_result = get_top_interface_config(&tree, test_node);
 
-	inet_ntop(AF_INET6, &(ip_addr_result.__in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
+	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 
 	//TODO: check that tree was not altered as side effect when passed as a reference above
 	if (ip_addr_result.ip_type != IPV6) {	/* ip_type should have been propagated as is to result */
@@ -951,7 +951,7 @@ void test_get_top_interface_config() {
 	test_node = uint8_t_to_uint128_t(1);	/* Take left-most leaf of tree (ID 1) */
 	ip_addr_result = get_top_interface_config(&tree, test_node);
 
-	inet_ntop(AF_INET6, &(ip_addr_result.__in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
+	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 
 	//TODO: check that tree was not altered as side effect when passed as a reference above
 	if (ip_addr_result.ip_type != IPV6) {	/* ip_type should have been propagated as is to result */
@@ -972,7 +972,7 @@ void test_get_top_interface_config() {
 	test_node = uint8_t_to_uint128_t(15);	/* Take right-most leaf of tree (ID 15) */
 	ip_addr_result = get_top_interface_config(&tree, test_node);
 
-	inet_ntop(AF_INET6, &(ip_addr_result.__in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
+	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 
 	//TODO: check that tree was not altered as side effect when passed as a reference above
 	if (ip_addr_result.ip_type != IPV6) {	/* ip_type should have been propagated as is to result */
@@ -1029,7 +1029,7 @@ void test_get_left_interface_config() {
 	test_node = get_root_node_id(&tree);	/* Will get 8 */
 	ip_addr_result = get_left_interface_config(&tree, test_node);
 
-	inet_ntop(AF_INET6, &(ip_addr_result.__in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
+	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 
 	//TODO: check that tree was not altered as side effect when passed as a reference above
 	if (ip_addr_result.ip_type != NONE) {	/* IP type should be set to none, IPv6 trees do require setting addresses to interfaces to children */
@@ -1076,7 +1076,7 @@ void test_get_right_interface_config() {
 	test_node = get_root_node_id(&tree);	/* Will get 8 */
 	ip_addr_result = get_left_interface_config(&tree, test_node);
 
-	inet_ntop(AF_INET6, &(ip_addr_result.__in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
+	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 
 	//TODO: check that tree was not altered as side effect when passed as a reference above
 	if (ip_addr_result.ip_type != NONE) {	/* IP type should be set to none, IPv6 trees do require setting addresses to interfaces to children */

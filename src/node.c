@@ -147,7 +147,7 @@ if_ip_addr_t get_top_interface_config(const self_ip_routing_tree_t* tree, const 
 
 	result.ip_type = tree->ip_type;
 	if (tree->ip_type == IPV6) {
-		uint128_t_to_ipv6(get_top_interface_ipv6_addr(tree, (uint128_t)node), &(result.__in_addr.__ipv6_in6_addr));
+		uint128_t_to_ipv6(get_top_interface_ipv6_addr(tree, (uint128_t)node), &(result.in_addr.__ipv6_in6_addr));
 		result.prefix = get_hosts_prefix_len(tree);
 	}
 	else if (tree->ip_type == IPV4) {
@@ -170,7 +170,7 @@ if_ip_addr_t get_left_interface_config(const self_ip_routing_tree_t* tree, const
 
 	result.ip_type = tree->ip_type;
 	if (tree->ip_type == IPV6) {
-		uint128_t_to_ipv6(uint128t_zero(), &(result.__in_addr.__ipv6_in6_addr));
+		uint128_t_to_ipv6(uint128t_zero(), &(result.in_addr.__ipv6_in6_addr));
 		result.prefix = 128;
 		result.ip_type = NONE;	/* Left interface has no IP address in IPv6 trees (only link-local fe80::/64 addresses are used on interfaces with children) */
 	}
@@ -194,7 +194,7 @@ if_ip_addr_t get_right_interface_config(const self_ip_routing_tree_t* tree, cons
 
 	result.ip_type = tree->ip_type;
 	if (tree->ip_type == IPV6) {
-		uint128_t_to_ipv6(uint128t_zero(), &(result.__in_addr.__ipv6_in6_addr));
+		uint128_t_to_ipv6(uint128t_zero(), &(result.in_addr.__ipv6_in6_addr));
 		result.prefix = 128;
 		result.ip_type = NONE;	/* Right interface has no IP address in IPv6 trees (only link-local fe80::/64 addresses are used on interfaces with children) */
 	}
@@ -208,4 +208,16 @@ if_ip_addr_t get_right_interface_config(const self_ip_routing_tree_t* tree, cons
 		assert(0);	/* Force fail */
 	return result;
 
+}
+
+ip_route_t get_top_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node) {
+	assert(0);
+}
+
+ip_route_t get_left_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node) {
+	assert(0);
+}
+
+ip_route_t get_right_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node) {
+	assert(0);
 }
