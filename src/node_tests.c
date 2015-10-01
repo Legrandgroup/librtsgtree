@@ -945,6 +945,47 @@ void test_get_top_interface_config() {
 		exit(1);
 	}
 
+	test_node = uint8_t_to_uint128_t(1);	/* Take left-most leaf of tree (ID 1) */
+	ip_addr_result = get_top_interface_config(&tree, test_node);
+
+	inet_ntop(AF_INET6, &(ip_addr_result.__in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
+
+	if (tree.ip_type != IPV6) {	/* ip_type should not be altered */
+		fprintf(stderr, "%d: get_top_interface_config() modified ip_type field\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	if (strcmp(ip_addr_str, "fd00::1") != 0) {	/* Should get fd00::f for tree's left-most leaf's top interface */
+		fprintf(stderr, "%d: get_top_interface_config() got wrong IP address: %s\n", __LINE__, ip_addr_str);
+		//FAIL();
+		exit(1);
+	}
+	if (ip_addr_result.prefix != 128) {	/* Should get /128 for root node's top interface netmask */
+		fprintf(stderr, "%d: get_top_interface_config() got wrong netmask: %d\n", __LINE__, ip_addr_result.prefix);
+		//FAIL();
+		exit(1);
+	}
+	test_node = uint8_t_to_uint128_t(15);	/* Take right-most leaf of tree (ID 15) */
+	ip_addr_result = get_top_interface_config(&tree, test_node);
+
+	inet_ntop(AF_INET6, &(ip_addr_result.__in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
+
+	if (tree.ip_type != IPV6) {	/* ip_type should not be altered */
+		fprintf(stderr, "%d: get_top_interface_config() modified ip_type field\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	if (strcmp(ip_addr_str, "fd00::f") != 0) {	/* Should get fd00::f for tree's right-most leaf's top interface */
+		fprintf(stderr, "%d: get_top_interface_config() got wrong IP address: %s\n", __LINE__, ip_addr_str);
+		//FAIL();
+		exit(1);
+	}
+	if (ip_addr_result.prefix != 128) {	/* Should get /128 for root node's top interface netmask */
+		fprintf(stderr, "%d: get_top_interface_config() got wrong netmask: %d\n", __LINE__, ip_addr_result.prefix);
+		//FAIL();
+		exit(1);
+	}
+
 	tree.ip_type = IPV4;
 	tree.Rmax = 6;
 	tree.hostA = 2;
