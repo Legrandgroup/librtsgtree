@@ -57,7 +57,7 @@ typedef struct {
  *
  * \return (uint128_t)0
  */
-inline uint128_t uint128t_zero();
+inline uint128_t uint128_t_zero();
 
 /**
  * \brief Calculate 2 ^ power for a 128-bit wide unsigned int

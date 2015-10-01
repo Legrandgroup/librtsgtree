@@ -36,7 +36,7 @@ void test_zero_uint18_t() {
 		exit(1);
 	}
 
-	test_u128 = uint128t_zero();
+	test_u128 = uint128_t_zero();
 	if (test_u128.uint128_a16[0] == 0 &&
 	    test_u128.uint128_a16[1] == 0 &&
 	    test_u128.uint128_a16[2] == 0 &&
@@ -47,7 +47,7 @@ void test_zero_uint18_t() {
 	    test_u128.uint128_a16[7] == 0) {
 	}
 	else {
-		fprintf(stderr, "uint128t_zero() Failed\n");
+		fprintf(stderr, "uint128_t_zero() Failed\n");
 		//FAIL();
 		exit(1);
 	}
@@ -443,7 +443,7 @@ void test_uint128_t_right_shift_n() {
 		//FAIL();
 		exit(1);
 	}
-	test_u128 = uint128_t_dec(uint128t_zero());	/* Get -1... all bits set to 1 */
+	test_u128 = uint128_t_dec(uint128_t_zero());	/* Get -1... all bits set to 1 */
 	test_u128 = uint128_t_right_shift_n(test_u128, 127);
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "00000000000000000000000000000001";
@@ -453,7 +453,7 @@ void test_uint128_t_right_shift_n() {
 		exit(1);
 	}
 
-	test_u128 = uint128_t_dec(uint128t_zero());	/* Get -1... all bits set to 1 */
+	test_u128 = uint128_t_dec(uint128_t_zero());	/* Get -1... all bits set to 1 */
 	test_u128 = uint128_t_right_shift_n(test_u128, 128);
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "00000000000000000000000000000000";
@@ -617,7 +617,7 @@ void test_uint128_t_left_shift_n() {
 		//FAIL();
 		exit(1);
 	}
-	test_u128 = uint128_t_dec(uint128t_zero());	/* Get -1... all bits set to 1 */
+	test_u128 = uint128_t_dec(uint128_t_zero());	/* Get -1... all bits set to 1 */
 	test_u128 = uint128_t_left_shift_n(test_u128, 127);
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "80000000000000000000000000000000";
@@ -627,7 +627,7 @@ void test_uint128_t_left_shift_n() {
 		exit(1);
 	}
 
-	test_u128 = uint128_t_dec(uint128t_zero());	/* Get -1... all bits set to 1 */
+	test_u128 = uint128_t_dec(uint128_t_zero());	/* Get -1... all bits set to 1 */
 	test_u128 = uint128_t_left_shift_n(test_u128, 128);
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "00000000000000000000000000000000";
@@ -1290,7 +1290,7 @@ void test_uint128_t_mixed_add_sub_inc_dec() {
 	for (i = 0; i<0xffff; i++) {
 		test2_u128 = uint128_t_sub(test2_u128, test1_u128);	/* remove -1 (add 1) 0xffff times */
 	}
-	if (!(uint128_t_cmp(test2_u128, uint128t_zero()) == 0)) {	/* Expect test2_u128==0 */
+	if (!(uint128_t_cmp(test2_u128, uint128_t_zero()) == 0)) {	/* Expect test2_u128==0 */
 		fprintf(stderr, "%d: test failed\n", __LINE__);
 		//FAIL();
 		exit(1);
@@ -1301,7 +1301,7 @@ void test_uint128_t_mixed_add_sub_inc_dec() {
 	for (i = 0; i<0xffff; i++) {
 		test2_u128 = uint128_t_sub(test2_u128, test1_u128);	/* Remove 1 0xffff times */
 	}
-	if (!(uint128_t_cmp(test2_u128, uint128t_zero()) == 0)) {	/* Expect test2_u128==0 */
+	if (!(uint128_t_cmp(test2_u128, uint128_t_zero()) == 0)) {	/* Expect test2_u128==0 */
 		fprintf(stderr, "%d: test failed\n", __LINE__);
 		//FAIL();
 		exit(1);
@@ -1328,10 +1328,10 @@ void test_uint128_t_mixed_add_sub_inc_dec() {
 		test2_u128 = test1_u128;
 
 		test1_u128 = uint128_t_inc(test1_u128);	/* +1 */
-		test1_u128 = uint128_t_add(test1_u128, uint128_t_inc(uint128t_zero()));	/* +1 */
+		test1_u128 = uint128_t_add(test1_u128, uint128_t_inc(uint128_t_zero()));	/* +1 */
 		test1_u128 = uint128_t_dec(test1_u128);	/* -1 */
 		test1_u128 = uint128_t_sub(test1_u128, power2_to_uint128_t(1));	/* -2 */
-		test1_u128 = uint128_t_add(test1_u128, uint128_t_inc(uint128t_zero()));	/* +1 */
+		test1_u128 = uint128_t_add(test1_u128, uint128_t_inc(uint128_t_zero()));	/* +1 */
 		test1_u128 = uint128_t_add(test1_u128, power2_to_uint128_t(127));	/* + 2^127 */
 		test1_u128 = uint128_t_sub(test1_u128, uint128_t_dec(power2_to_uint128_t(127)));	/* - (2^127 - 1) */
 		test1_u128 = uint128_t_dec(test1_u128);	/* -1 */
@@ -1395,14 +1395,14 @@ void test_uint128_t_or() {
 		//FAIL();
 		exit(1);
 	}
-	result_u128 = uint128_t_or(test1_u128, uint128t_zero());	/* A or 0 = A */
+	result_u128 = uint128_t_or(test1_u128, uint128_t_zero());	/* A or 0 = A */
 	if (!(uint128_t_cmp(result_u128, test1_u128) == 0)) {
 		fprintf(stderr, "%d: uint128_t_or() failed\n", __LINE__);
 		//FAIL();
 		exit(1);
 	}
-	result_u128 = uint128_t_or(test1_u128, uint128_t_dec(uint128t_zero()));	/* A or (-1) = (-1) */
-	if (!(uint128_t_cmp(result_u128, uint128_t_dec(uint128t_zero())) == 0)) {
+	result_u128 = uint128_t_or(test1_u128, uint128_t_dec(uint128_t_zero()));	/* A or (-1) = (-1) */
+	if (!(uint128_t_cmp(result_u128, uint128_t_dec(uint128_t_zero())) == 0)) {
 		fprintf(stderr, "%d: uint128_t_or() failed\n", __LINE__);
 		//FAIL();
 		exit(1);
@@ -1427,7 +1427,7 @@ void test_uint128_t_or() {
 
 	result_u128 = uint128_t_or(test1_u128, test2_u128);	/* A or !A = (uint128_t)(-1) */
 
-	if (!(uint128_t_cmp(result_u128, uint128_t_dec(uint128t_zero())) == 0)) {
+	if (!(uint128_t_cmp(result_u128, uint128_t_dec(uint128_t_zero())) == 0)) {
 		fprintf(stderr, "%d: uint128_t_or() failed\n", __LINE__);
 		//FAIL();
 		exit(1);
@@ -1485,14 +1485,14 @@ void test_uint128_t_and() {
 		//FAIL();
 		exit(1);
 	}
-	result_u128 = uint128_t_and(test1_u128, uint128_t_dec(uint128t_zero()));	/* A and (-1) = A */
+	result_u128 = uint128_t_and(test1_u128, uint128_t_dec(uint128_t_zero()));	/* A and (-1) = A */
 	if (!(uint128_t_cmp(result_u128, test1_u128) == 0)) {
 		fprintf(stderr, "%d: uint128_t_and() failed\n", __LINE__);
 		//FAIL();
 		exit(1);
 	}
-	result_u128 = uint128_t_and(test1_u128, uint128t_zero());	/* A and 0 = 0 */
-	if (!(uint128_t_cmp(result_u128, uint128t_zero()) == 0)) {
+	result_u128 = uint128_t_and(test1_u128, uint128_t_zero());	/* A and 0 = 0 */
+	if (!(uint128_t_cmp(result_u128, uint128_t_zero()) == 0)) {
 		fprintf(stderr, "%d: uint128_t_and() failed\n", __LINE__);
 		//FAIL();
 		exit(1);
@@ -1517,7 +1517,7 @@ void test_uint128_t_and() {
 
 	result_u128 = uint128_t_and(test1_u128, test2_u128);	/* A and !A = 0 */
 
-	if (!(uint128_t_cmp(result_u128, uint128t_zero()) == 0)) {
+	if (!(uint128_t_cmp(result_u128, uint128_t_zero()) == 0)) {
 		fprintf(stderr, "%d: uint128_t_and() failed\n", __LINE__);
 		//FAIL();
 		exit(1);

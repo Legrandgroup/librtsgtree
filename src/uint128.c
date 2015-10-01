@@ -6,7 +6,7 @@
 #include "utils.h"
 #include <stdlib.h>	// For abort()
 
-uint128_t uint128t_zero() {
+uint128_t uint128_t_zero() {
 	uint128_t result_zero;
 
 	set_zero_uint128_t(result_zero);

@@ -246,6 +246,6 @@ ip_route_t get_right_interface_route(const self_ip_routing_tree_t* tree, const n
  * \param n A node_id_t variable to test
  * \param t A self_ip_routing_tree_t variable containing the tree description
  */
-#define assert_valid_node_id_for_tree(n, t) assert(!(uint128_t_cmp(n, Rmax_to_max_node_id((t).Rmax)) > 0 || uint128_t_cmp(n, uint128t_zero()) == 0))
+#define assert_valid_node_id_for_tree(n, t) assert(!(uint128_t_cmp(n, Rmax_to_max_node_id((t).Rmax)) > 0 || uint128_t_cmp(n, uint128_t_zero()) == 0))
 
 #endif	// __IPV6_NODE_H__
