@@ -3,7 +3,7 @@
  */
 
 #include "uint128.h"
-#include "utils.h"
+#include <assert.h>	// For assert()
 #include <stdlib.h>	// For abort()
 
 uint128_t uint128_t_zero() {
