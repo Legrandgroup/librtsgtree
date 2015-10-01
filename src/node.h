@@ -44,13 +44,31 @@ typedef struct {
 	prefix_t       prefix; /*!< The prefix length (CIDR for IPv4) or netmask */
 } if_ip_addr_t;
 
+
+/**
+ * \brief Compute the maximum node ID given a Rmax
+ *
+ * \param Rmax The value for Rmax
+ *
+ * \result The maximum node ID (B = 2^(Rmax - 1))
+ */
+inline uint128_t Rmax_to_max_node_id(const rank_t Rmax);
+
 /**
  * \brief Convert a uint128_t to an IPv6 address represented as a struct in6_addr
  *
- * \param[in] input The node ID to convert
+ * \param[in] input The 128-bit value representing the IPv6 address to convert
  * \param[out] output A struct in6_addr for which s6_addr will be filled-in based on \p input (note: other fields are unchanged)
 **/
 inline void uint128_t_to_ipv6(const uint128_t input, struct in6_addr* output);
+
+/**
+ * \brief Convert a uint32_t to an IPv4 address represented as a struct in_addr
+ *
+ * \param[in] input The 32-bit value representing the IPv4 address to convert
+ * \param[out] output A struct in_addr for which s_addr will be filled-in based on \p input (note: other fields are unchanged)
+**/
+inline void uint32_t_to_ipv4(const uint32_t input, struct in_addr* output);
 
 /**
  * \brief Get the number of most significant bits that form the network part of a tree (common prefix bitmask between all hosts of the tree)
@@ -125,11 +143,23 @@ node_id_t get_right_child_node_id(const self_ip_routing_tree_t* tree, const node
 /**
  * \brief Get the right child node ID based on a parent node ID
  *
+ * Note: tree.ip_type, tree.Rmax, tree.hostA and tree.prefix must be provisioned correctly in argument \p tree to get a correct result
+ *
  * \param tree The tree inside which we perform the calculation
  * \param node The node ID for which we want to calculate the right child
  *
  * \return The node ID for the right child or 0 if there was an error
 **/
 if_ip_addr_t get_top_interface_config(const self_ip_routing_tree_t* tree, const node_id_t node);
+
+/**
+ * \def assert_valid_node_id_for_tree(n, t)
+ *
+ * \brief Makes sure the node id \p n is valid for the tree \t (does not exceed the maximum node ID, and is not 0)
+ *
+ * \param n A node_id_t variable to test
+ * \param t A self_ip_routing_tree_t variable containing the tree description
+ */
+#define assert_valid_node_id_for_tree(n, t) assert(!(uint128_t_cmp(n, Rmax_to_max_node_id((t).Rmax)) > 0 || uint128_t_cmp(n, uint128t_zero()) == 0))
 
 #endif	// __IPV6_NODE_H__

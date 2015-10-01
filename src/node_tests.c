@@ -5,6 +5,70 @@
 #include <stdint.h>
 #include <string.h>	// For memcpy()
 
+
+/* Unit test for Rmax_to_max_node_id()
+ */
+void test_Rmax_to_max_node_id() {
+	node_id_t test_node;
+
+	if (uint128_t_cmp(Rmax_to_max_node_id(0), uint128t_zero()) != 0) {
+		fprintf(stderr, "%d: Rmax_to_max_node_id() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	if (uint128_t_cmp(Rmax_to_max_node_id(1), uint8_t_to_uint128_t(1)) != 0) {
+		fprintf(stderr, "%d: Rmax_to_max_node_id() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	if (uint128_t_cmp(Rmax_to_max_node_id(2), uint8_t_to_uint128_t(3)) != 0) {
+		fprintf(stderr, "%d: Rmax_to_max_node_id() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	if (uint128_t_cmp(Rmax_to_max_node_id(8), uint8_t_to_uint128_t(0xff)) != 0) {
+		fprintf(stderr, "%d: Rmax_to_max_node_id() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	if (uint128_t_cmp(Rmax_to_max_node_id(16), uint16_t_to_uint128_t(0xffff)) != 0) {
+		fprintf(stderr, "%d: Rmax_to_max_node_id() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+
+	test_node.uint128_a8[0] = 0x7f;
+	test_node.uint128_a8[1] = 0xff;
+	test_node.uint128_a8[2] = 0xff;
+	test_node.uint128_a8[3] = 0xff;
+	test_node.uint128_a8[4] = 0xff;
+	test_node.uint128_a8[5] = 0xff;
+	test_node.uint128_a8[6] = 0xff;
+	test_node.uint128_a8[7] = 0xff;
+	test_node.uint128_a8[8] = 0xff;
+	test_node.uint128_a8[9] = 0xff;
+	test_node.uint128_a8[10] = 0xff;
+	test_node.uint128_a8[11] = 0xff;
+	test_node.uint128_a8[12] = 0xff;
+	test_node.uint128_a8[13] = 0xff;
+	test_node.uint128_a8[14] = 0xff;
+	test_node.uint128_a8[15] = 0xff;
+	if (uint128_t_cmp(Rmax_to_max_node_id(127), test_node) != 0) {
+		fprintf(stderr, "%d: Rmax_to_max_node_id() failed\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+
+	//Lionel: FIXME: commented-out as we get an assertion error for 128 bits (non-supported value)
+//	test_node.uint128_a8[0] = 0xff;	/* uint128_t(-1) */
+//	if (uint128_t_cmp(Rmax_to_max_node_id(128), test_node) != 0) {
+//		fprintf(stderr, "%d: Rmax_to_max_node_id() failed\n", __LINE__);
+//		//FAIL();
+//		exit(1);
+//	}
+	printf("%s: tests passed\n", __func__);
+}
+
 /* Unit test for uint128_t_to_ipv6()
  */
 void test_uint128_t_to_ipv6() {
@@ -241,9 +305,6 @@ void test_get_root_node_id() {
 /* Unit test for node_id_to_rank()
  */
 void test_node_id_to_rank() {
-	node_id_t test_node;
-	char result[33];
-	char* expected_result;
 	self_ip_routing_tree_t tree;
 
 	tree.Rmax = 4;
@@ -800,6 +861,103 @@ void test_get_right_child_node_id() {
 	expected_result = "0000000000000000" "0000000000000000";	/* Node 0xffff is invalid */
 	if (strcmp(result, expected_result) != 0) {
 		fprintf(stderr, "%d: get_right_child_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		//FAIL();
+		exit(1);
+	}
+
+	printf("%s: tests passed\n", __func__);
+}
+
+/* Unit test for get_right_child_node_id()
+ */
+void test_get_top_interface_config() {
+	node_id_t test_node;
+	self_ip_routing_tree_t tree;
+	if_ip_addr_t ip_addr_result;
+	char ip_addr_str[INET6_ADDRSTRLEN+1];
+
+	tree.ip_type = IPV6;
+	tree.Rmax = 4;
+	tree.hostA = 0;
+	set_zero_uint128_t(tree.prefix);
+	tree.prefix.uint128_a8[0] = 0xfd;	/* Prefix is fd00::/124 */
+
+	test_node = get_root_node_id(&tree);	/* Will get 8 */
+	ip_addr_result = get_top_interface_config(&tree, test_node);
+
+	inet_ntop(AF_INET6, &(ip_addr_result.__in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
+
+	if (tree.ip_type != IPV6) {	/* ip_type should not be altered */
+		fprintf(stderr, "%d: get_top_interface_config() modified ip_type field\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	if (strcmp(ip_addr_str, "fd00::8") != 0) {	/* Should get fd00::8 for root node's top interface */
+		fprintf(stderr, "%d: get_top_interface_config() got wrong IP address: %s\n", __LINE__, ip_addr_str);
+		//FAIL();
+		exit(1);
+	}
+	if (ip_addr_result.prefix != 128) {	/* Should get /128 for root node's top interface netmask */
+		fprintf(stderr, "%d: get_top_interface_config() got wrong netmask: %d\n", __LINE__, ip_addr_result.prefix);
+		//FAIL();
+		exit(1);
+	}
+
+	test_node = get_left_child_node_id(&tree, get_root_node_id(&tree));	/* Will get 4 */
+	ip_addr_result = get_top_interface_config(&tree, test_node);
+
+	inet_ntop(AF_INET6, &(ip_addr_result.__in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
+
+	if (tree.ip_type != IPV6) {	/* ip_type should not be altered */
+		fprintf(stderr, "%d: get_top_interface_config() modified ip_type field\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	if (strcmp(ip_addr_str, "fd00::4") != 0) {	/* Should get fd00::8 for root node's top interface */
+		fprintf(stderr, "%d: get_top_interface_config() got wrong IP address: %s\n", __LINE__, ip_addr_str);
+		//FAIL();
+		exit(1);
+	}
+	if (ip_addr_result.prefix != 128) {	/* Should get /128 for root node's top interface netmask */
+		fprintf(stderr, "%d: get_top_interface_config() got wrong netmask: %d\n", __LINE__, ip_addr_result.prefix);
+		//FAIL();
+		exit(1);
+	}
+
+	test_node = get_right_child_node_id(&tree, get_root_node_id(&tree));	/* Will get 12 */
+	ip_addr_result = get_top_interface_config(&tree, test_node);
+
+	inet_ntop(AF_INET6, &(ip_addr_result.__in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
+
+	if (tree.ip_type != IPV6) {	/* ip_type should not be altered */
+		fprintf(stderr, "%d: get_top_interface_config() modified ip_type field\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	if (strcmp(ip_addr_str, "fd00::c") != 0) {	/* Should get fd00::8 for root node's top interface */
+		fprintf(stderr, "%d: get_top_interface_config() got wrong IP address: %s\n", __LINE__, ip_addr_str);
+		//FAIL();
+		exit(1);
+	}
+	if (ip_addr_result.prefix != 128) {	/* Should get /128 for root node's top interface netmask */
+		fprintf(stderr, "%d: get_top_interface_config() got wrong netmask: %d\n", __LINE__, ip_addr_result.prefix);
+		//FAIL();
+		exit(1);
+	}
+
+	tree.ip_type = IPV4;
+	tree.Rmax = 6;
+	tree.hostA = 2;
+	set_zero_uint128_t(tree.prefix);
+	tree.prefix.uint128_a8[12] = 192;
+	tree.prefix.uint128_a8[13] = 168;
+	tree.prefix.uint128_a8[14] = 0;
+	tree.prefix.uint128_a8[15] = 0;	/* Prefix is 192.168.0.0/24 */
+
+	//ip_addr_result = get_top_interface_config(&tree, test_node);
+
+	if (tree.ip_type != IPV4) {	/* ip_type should not be altered */
+		fprintf(stderr, "%d: get_top_interface_config() modified ip_type field\n", __LINE__);
 		//FAIL();
 		exit(1);
 	}

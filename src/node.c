@@ -5,16 +5,22 @@
 #include "node.h"
 #include <assert.h>	// For assert()
 
+inline node_id_t Rmax_to_max_node_id(const rank_t Rmax) {
+	assert(Rmax != 128);
+
+	return uint128_t_dec(power2_to_uint128_t(Rmax));	/* FIXME: Why not use a dedicated right bit-filling function like ipv6_prefix_to_uint128_t_mask() to be more efficient? */
+}
+
 inline void uint128_t_to_ipv6(const uint128_t input, struct in6_addr* output) {
 	assert(sizeof(output->s6_addr) == sizeof(input.uint128_a8));
 
-	memcpy((void *)(output->s6_addr), (void *)(input.uint128_a8), sizeof(output->s6_addr));
+	memcpy((void *)(output->s6_addr), (void *)(input.uint128_a8), sizeof(input.uint128_a8));
 }
 
 inline void uint32_t_to_ipv4(const uint32_t input, struct in_addr* output) {
 	assert(sizeof(output->s_addr) == sizeof(input));
 
-	memcpy((void *)(output->s_addr), (void *)input, sizeof(output->s_addr));
+	output->s_addr = input;
 }
 
 prefix_t get_tree_prefix_len(const self_ip_routing_tree_t* tree) {
@@ -133,6 +139,9 @@ uint128_t get_top_interface_ipv6_addr(const self_ip_routing_tree_t* tree, const 
 
 if_ip_addr_t get_top_interface_config(const self_ip_routing_tree_t* tree, const node_id_t node) {
 	if_ip_addr_t result;
+
+	assert(tree);
+	assert_valid_node_id_for_tree(node, *tree);	/* Make sure node contains a valid value for this tree */
 
 	result.ip_type = tree->ip_type;
 	if (tree->ip_type == IPV6) {
