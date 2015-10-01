@@ -879,7 +879,7 @@ void test_get_top_interface_config() {
 	tree.ip_type = IPV6;
 	tree.Rmax = 4;
 	tree.hostA = 0;
-	set_zero_uint128_t(tree.prefix);
+	U128_SET_ZERO(tree.prefix);
 	tree.prefix.uint128_a8[0] = 0xfd;	/* Prefix is fd00::/124 */
 
 	test_node = get_root_node_id(&tree);	/* Will get 8 */
@@ -994,7 +994,7 @@ void test_get_top_interface_config() {
 	tree.ip_type = IPV4;
 	tree.Rmax = 6;
 	tree.hostA = 2;
-	set_zero_uint128_t(tree.prefix);
+	U128_SET_ZERO(tree.prefix);
 	tree.prefix.uint128_a8[12] = 192;
 	tree.prefix.uint128_a8[13] = 168;
 	tree.prefix.uint128_a8[14] = 0;
@@ -1023,7 +1023,7 @@ void test_get_left_interface_config() {
 	tree.ip_type = IPV6;
 	tree.Rmax = 4;
 	tree.hostA = 0;
-	set_zero_uint128_t(tree.prefix);
+	U128_SET_ZERO(tree.prefix);
 	tree.prefix.uint128_a8[0] = 0xfd;	/* Prefix is fd00::/124 */
 
 	test_node = get_root_node_id(&tree);	/* Will get 8 */
@@ -1041,7 +1041,7 @@ void test_get_left_interface_config() {
 	tree.ip_type = IPV4;
 	tree.Rmax = 6;
 	tree.hostA = 2;
-	set_zero_uint128_t(tree.prefix);
+	U128_SET_ZERO(tree.prefix);
 	tree.prefix.uint128_a8[12] = 192;
 	tree.prefix.uint128_a8[13] = 168;
 	tree.prefix.uint128_a8[14] = 0;
@@ -1070,7 +1070,7 @@ void test_get_right_interface_config() {
 	tree.ip_type = IPV6;
 	tree.Rmax = 4;
 	tree.hostA = 0;
-	set_zero_uint128_t(tree.prefix);
+	U128_SET_ZERO(tree.prefix);
 	tree.prefix.uint128_a8[0] = 0xfd;	/* Prefix is fd00::/124 */
 
 	test_node = get_root_node_id(&tree);	/* Will get 8 */
@@ -1088,7 +1088,7 @@ void test_get_right_interface_config() {
 	tree.ip_type = IPV4;
 	tree.Rmax = 6;
 	tree.hostA = 2;
-	set_zero_uint128_t(tree.prefix);
+	U128_SET_ZERO(tree.prefix);
 	tree.prefix.uint128_a8[12] = 192;
 	tree.prefix.uint128_a8[13] = 168;
 	tree.prefix.uint128_a8[14] = 0;

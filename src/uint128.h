@@ -34,12 +34,12 @@ typedef struct {
 /* Lionel: on 32, 64bits archs, we could also perform operations on larger words for optimization */
 
 /**
- * \def set_zero_uint128_t(n)
+ * \def U128_SET_ZERO(n)
  *
  * Assigne the value zero to an uint128
  * \param n The uint128_t variable to set
  */
-#define set_zero_uint128_t(n) \
+#define U128_SET_ZERO(n) \
 	do { \
 		/*assert(typeof(n) == uint128_t);*/ \
 		n.uint128_a16[0] = 0; \
