@@ -42,6 +42,8 @@ int main(void) {
 	test_get_left_child_node_id();
 	test_get_right_child_node_id();
 	test_get_top_interface_config();
+	test_get_left_interface_config();
+	test_get_right_interface_config();
 
 	printf("\n*** All unit tests passed successfully ***\n");
 

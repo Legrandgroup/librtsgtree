@@ -18,7 +18,8 @@ typedef uint128_t node_id_t;
  * \brief IP protocol type (IPV4/IPV6)
 **/
 typedef enum {
-	  IPV4 = 0,
+	  NONE = 0,
+	  IPV4,
 	  IPV6,
 } ip_protocol_t;
 

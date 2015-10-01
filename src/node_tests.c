@@ -868,7 +868,7 @@ void test_get_right_child_node_id() {
 	printf("%s: tests passed\n", __func__);
 }
 
-/* Unit test for get_right_child_node_id()
+/* Unit test for get_top_interface_config()
  */
 void test_get_top_interface_config() {
 	node_id_t test_node;
@@ -887,7 +887,8 @@ void test_get_top_interface_config() {
 
 	inet_ntop(AF_INET6, &(ip_addr_result.__in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 
-	if (tree.ip_type != IPV6) {	/* ip_type should not be altered */
+	//TODO: check that tree was not altered as side effect when passed as a reference above
+	if (ip_addr_result.ip_type != IPV6) {	/* ip_type should have been propagated as is to result */
 		fprintf(stderr, "%d: get_top_interface_config() modified ip_type field\n", __LINE__);
 		//FAIL();
 		exit(1);
@@ -908,7 +909,8 @@ void test_get_top_interface_config() {
 
 	inet_ntop(AF_INET6, &(ip_addr_result.__in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 
-	if (tree.ip_type != IPV6) {	/* ip_type should not be altered */
+	//TODO: check that tree was not altered as side effect when passed as a reference above
+	if (ip_addr_result.ip_type != IPV6) {	/* ip_type should have been propagated as is to result */
 		fprintf(stderr, "%d: get_top_interface_config() modified ip_type field\n", __LINE__);
 		//FAIL();
 		exit(1);
@@ -929,7 +931,8 @@ void test_get_top_interface_config() {
 
 	inet_ntop(AF_INET6, &(ip_addr_result.__in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 
-	if (tree.ip_type != IPV6) {	/* ip_type should not be altered */
+	//TODO: check that tree was not altered as side effect when passed as a reference above
+	if (ip_addr_result.ip_type != IPV6) {	/* ip_type should have been propagated as is to result */
 		fprintf(stderr, "%d: get_top_interface_config() modified ip_type field\n", __LINE__);
 		//FAIL();
 		exit(1);
@@ -950,7 +953,8 @@ void test_get_top_interface_config() {
 
 	inet_ntop(AF_INET6, &(ip_addr_result.__in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 
-	if (tree.ip_type != IPV6) {	/* ip_type should not be altered */
+	//TODO: check that tree was not altered as side effect when passed as a reference above
+	if (ip_addr_result.ip_type != IPV6) {	/* ip_type should have been propagated as is to result */
 		fprintf(stderr, "%d: get_top_interface_config() modified ip_type field\n", __LINE__);
 		//FAIL();
 		exit(1);
@@ -970,7 +974,8 @@ void test_get_top_interface_config() {
 
 	inet_ntop(AF_INET6, &(ip_addr_result.__in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 
-	if (tree.ip_type != IPV6) {	/* ip_type should not be altered */
+	//TODO: check that tree was not altered as side effect when passed as a reference above
+	if (ip_addr_result.ip_type != IPV6) {	/* ip_type should have been propagated as is to result */
 		fprintf(stderr, "%d: get_top_interface_config() modified ip_type field\n", __LINE__);
 		//FAIL();
 		exit(1);
@@ -998,11 +1003,105 @@ void test_get_top_interface_config() {
 	//ip_addr_result = get_top_interface_config(&tree, test_node);
 	//FIXME: Add unit test for get_top_interface_config() on IPv4 trees
 
-	if (tree.ip_type != IPV4) {	/* ip_type should not be altered */
-		fprintf(stderr, "%d: get_top_interface_config() modified ip_type field\n", __LINE__);
+	//if (ip_addr_result.ip_type != IPV4) {	/* ip_type should have been propagated as is to result */
+	//	fprintf(stderr, "%d: get_top_interface_config() modified ip_type field\n", __LINE__);
+	//	//FAIL();
+	//	exit(1);
+	//}
+
+	printf("%s: tests passed\n", __func__);
+}
+
+/* Unit test for get_left_interface_config()
+ */
+void test_get_left_interface_config() {
+	node_id_t test_node;
+	self_ip_routing_tree_t tree;
+	if_ip_addr_t ip_addr_result;
+	char ip_addr_str[INET6_ADDRSTRLEN+1];
+
+	tree.ip_type = IPV6;
+	tree.Rmax = 4;
+	tree.hostA = 0;
+	set_zero_uint128_t(tree.prefix);
+	tree.prefix.uint128_a8[0] = 0xfd;	/* Prefix is fd00::/124 */
+
+	test_node = get_root_node_id(&tree);	/* Will get 8 */
+	ip_addr_result = get_left_interface_config(&tree, test_node);
+
+	inet_ntop(AF_INET6, &(ip_addr_result.__in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
+
+	//TODO: check that tree was not altered as side effect when passed as a reference above
+	if (ip_addr_result.ip_type != NONE) {	/* IP type should be set to none, IPv6 trees do require setting addresses to interfaces to children */
+		fprintf(stderr, "%d: get_left_interface_config() modified ip_type field\n", __LINE__);
 		//FAIL();
 		exit(1);
 	}
+
+	tree.ip_type = IPV4;
+	tree.Rmax = 6;
+	tree.hostA = 2;
+	set_zero_uint128_t(tree.prefix);
+	tree.prefix.uint128_a8[12] = 192;
+	tree.prefix.uint128_a8[13] = 168;
+	tree.prefix.uint128_a8[14] = 0;
+	tree.prefix.uint128_a8[15] = 0;	/* Prefix is 192.168.0.0/24 */
+
+	//ip_addr_result = get_left_interface_config(&tree, test_node);
+	//FIXME: Add unit test for get_left_interface_config() on IPv4 trees
+
+	//if (ip_addr_result.ip_type != IPV4) {	/* ip_type should have been propagated as is to result */
+	//	fprintf(stderr, "%d: get_left_interface_config() modified ip_type field\n", __LINE__);
+	//	//FAIL();
+	//	exit(1);
+	//}
+
+	printf("%s: tests passed\n", __func__);
+}
+
+/* Unit test for get_right_interface_config()
+ */
+void test_get_right_interface_config() {
+	node_id_t test_node;
+	self_ip_routing_tree_t tree;
+	if_ip_addr_t ip_addr_result;
+	char ip_addr_str[INET6_ADDRSTRLEN+1];
+
+	tree.ip_type = IPV6;
+	tree.Rmax = 4;
+	tree.hostA = 0;
+	set_zero_uint128_t(tree.prefix);
+	tree.prefix.uint128_a8[0] = 0xfd;	/* Prefix is fd00::/124 */
+
+	test_node = get_root_node_id(&tree);	/* Will get 8 */
+	ip_addr_result = get_left_interface_config(&tree, test_node);
+
+	inet_ntop(AF_INET6, &(ip_addr_result.__in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
+
+	//TODO: check that tree was not altered as side effect when passed as a reference above
+	if (ip_addr_result.ip_type != NONE) {	/* IP type should be set to none, IPv6 trees do require setting addresses to interfaces to children */
+		fprintf(stderr, "%d: get_right_interface_config() modified ip_type field\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+
+	tree.ip_type = IPV4;
+	tree.Rmax = 6;
+	tree.hostA = 2;
+	set_zero_uint128_t(tree.prefix);
+	tree.prefix.uint128_a8[12] = 192;
+	tree.prefix.uint128_a8[13] = 168;
+	tree.prefix.uint128_a8[14] = 0;
+	tree.prefix.uint128_a8[15] = 0;	/* Prefix is 192.168.0.0/24 */
+
+	//ip_addr_result = get_right_interface_config(&tree, test_node);
+	//FIXME: Add unit test for get_right_interface_config() on IPv4 trees
+
+	//if (ip_addr_result.ip_type != IPV4) {	/* ip_type should have been propagated as is to result */
+	//	fprintf(stderr, "%d: get_right_interface_config() modified ip_type field\n", __LINE__);
+	//	//FAIL();
+	//	exit(1);
+	//}
 
 	printf("%s: tests passed\n", __func__);
 }

@@ -37,6 +37,7 @@ prefix_t get_hosts_prefix_len(const self_ip_routing_tree_t* tree) {
 	prefix_t result;
 
 	assert(tree);
+	assert(tree->ip_type);
 	if (tree->ip_type == IPV6)
 		result = 128;
 	else if (tree->ip_type == IPV4)
@@ -141,6 +142,7 @@ if_ip_addr_t get_top_interface_config(const self_ip_routing_tree_t* tree, const 
 	if_ip_addr_t result;
 
 	assert(tree);
+	assert(tree->ip_type);
 	assert_valid_node_id_for_tree(node, *tree);	/* Make sure node contains a valid value for this tree */
 
 	result.ip_type = tree->ip_type;
@@ -150,10 +152,60 @@ if_ip_addr_t get_top_interface_config(const self_ip_routing_tree_t* tree, const 
 	}
 	else if (tree->ip_type == IPV4) {
 		assert(0);	/* Not implemented yet */
+		//TODO: implement function get_top_interface_ipv4_addr() to support IPv4 trees
 		//uint32_t_to_ipv4(get_top_interface_ipv4_addr(tree, (uint128_t)node), &(result.__in_addr.__ipv4_in_addr));
 		result.prefix = get_hosts_prefix_len(tree);
 	}
 	else
 		assert(0);	/* Force fail */
 	return result;
+}
+
+if_ip_addr_t get_left_interface_config(const self_ip_routing_tree_t* tree, const node_id_t node) {
+	if_ip_addr_t result;
+
+	assert(tree);
+	assert(tree->ip_type);
+	assert_valid_node_id_for_tree(node, *tree);	/* Make sure node contains a valid value for this tree */
+
+	result.ip_type = tree->ip_type;
+	if (tree->ip_type == IPV6) {
+		uint128_t_to_ipv6(uint128t_zero(), &(result.__in_addr.__ipv6_in6_addr));
+		result.prefix = 128;
+		result.ip_type = NONE;	/* Left interface has no IP address in IPv6 trees (only link-local fe80::/64 addresses are used on interfaces with children) */
+	}
+	else if (tree->ip_type == IPV4) {
+		assert(0);	/* Not implemented yet */
+		//TODO: implement function get_left_interface_ipv4_addr() to support IPv4 trees
+		//uint32_t_to_ipv4(get_left_interface_ipv4_addr(tree, (uint128_t)node), &(result.__in_addr.__ipv4_in_addr));
+		result.prefix = get_hosts_prefix_len(tree);
+	}
+	else
+		assert(0);	/* Force fail */
+	return result;
+}
+
+if_ip_addr_t get_right_interface_config(const self_ip_routing_tree_t* tree, const node_id_t node) {
+	if_ip_addr_t result;
+
+	assert(tree);
+	assert(tree->ip_type);
+	assert_valid_node_id_for_tree(node, *tree);	/* Make sure node contains a valid value for this tree */
+
+	result.ip_type = tree->ip_type;
+	if (tree->ip_type == IPV6) {
+		uint128_t_to_ipv6(uint128t_zero(), &(result.__in_addr.__ipv6_in6_addr));
+		result.prefix = 128;
+		result.ip_type = NONE;	/* Right interface has no IP address in IPv6 trees (only link-local fe80::/64 addresses are used on interfaces with children) */
+	}
+	else if (tree->ip_type == IPV4) {
+		assert(0);	/* Not implemented yet */
+		//TODO: implement function get_right_interface_ipv4_addr() to support IPv4 trees
+		//uint32_t_to_ipv4(get_right_interface_ipv4_addr(tree, (uint128_t)node), &(result.__in_addr.__ipv4_in_addr));
+		result.prefix = get_hosts_prefix_len(tree);
+	}
+	else
+		assert(0);	/* Force fail */
+	return result;
+
 }
