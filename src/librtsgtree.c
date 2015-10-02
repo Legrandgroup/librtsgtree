@@ -32,11 +32,15 @@ int main(void) {
 	test_uint128_t_right_0bit_count();
 	test_uint128_t_cmp();
 
+#ifdef IPV6_SUPPORT
 	test_uint128_t_to_ipv6();
+#endif
 	test_get_tree_prefix_len();
 	test_get_hosts_prefix_len();
 	test_Rmax_to_max_node_id();
+#ifdef IPV6_SUPPORT
 	test_ipv6_prefix_to_uint128_t_mask();
+#endif
 	test_node_id_to_rank();
 	test_get_root_node_id();
 	test_get_left_child_node_id();

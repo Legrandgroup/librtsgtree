@@ -55,6 +55,7 @@ void test_Rmax_to_max_node_id() {
 	printf("%s: tests passed\n", __func__);
 }
 
+#ifdef IPV6_SUPPORT
 /* Unit test for uint128_t_to_ipv6()
  */
 void test_uint128_t_to_ipv6() {
@@ -117,12 +118,14 @@ void test_uint128_t_to_ipv6() {
 	}
 	printf("%s: tests passed\n", __func__);
 }
+#endif	// IPV6_SUPPORT
 
 /* Unit test for get_tree_prefix_len()
  */
 void test_get_tree_prefix_len() {
 	self_ip_routing_tree_t tree;
 
+#ifdef IPV6_SUPPORT
 	tree.Rmax = 4;
 	tree.hostA = 0;
 	tree.ip_type = IPV6;
@@ -137,7 +140,9 @@ void test_get_tree_prefix_len() {
 		//FAIL();
 		exit(1);
 	}
+#endif	// IPV6_SUPPORT
 
+#ifdef IPV4_SUPPORT
 	tree.Rmax = 6;
 	tree.hostA = 2;
 	tree.ip_type = IPV4;
@@ -152,6 +157,7 @@ void test_get_tree_prefix_len() {
 		//FAIL();
 		exit(1);
 	}
+#endif	// IPV4_SUPPORT
 
 	printf("%s: tests passed\n", __func__);
 }
@@ -161,6 +167,7 @@ void test_get_tree_prefix_len() {
 void test_get_hosts_prefix_len() {
 	self_ip_routing_tree_t tree;
 
+#ifdef IPV6_SUPPORT
 	tree.hostA = 0;
 	tree.ip_type = IPV6;
 	if (get_hosts_prefix_len(&tree) != 128) {
@@ -180,7 +187,9 @@ void test_get_hosts_prefix_len() {
 		//FAIL();
 		exit(1);
 	}
+#endif	// IPV6_SUPPORT
 
+#ifdef IPV4_SUPPORT
 	tree.hostA = 2;
 	tree.ip_type = IPV4;
 	if (get_hosts_prefix_len(&tree) != 30) {
@@ -194,10 +203,12 @@ void test_get_hosts_prefix_len() {
 		//FAIL();
 		exit(1);
 	}
+#endif	// IPV4_SUPPORT
 
 	printf("%s: tests passed\n", __func__);
 }
 
+#ifdef IPV6_SUPPORT
 /* Unit test for ipv6_prefix_to_uint128_t_mask()
  */
 void test_ipv6_prefix_to_uint128_t_mask() {
@@ -252,6 +263,7 @@ void test_ipv6_prefix_to_uint128_t_mask() {
 
 	printf("%s: tests passed\n", __func__);
 }
+#endif	// IPV6_SUPPORT
 
 /* Unit test for get_root_node_id()
  */
@@ -261,6 +273,7 @@ void test_get_root_node_id() {
 	char* expected_result;
 	self_ip_routing_tree_t tree;
 
+#ifdef IPV6_SUPPORT
 	tree.Rmax = 4;
 	tree.ip_type = IPV6;
 
@@ -272,7 +285,9 @@ void test_get_root_node_id() {
 		//FAIL();
 		exit(1);
 	}
+#endif	// IPV6_SUPPORT
 
+#ifdef IPV4_SUPPORT
 	tree.Rmax = 6;
 	tree.ip_type = IPV4;
 
@@ -284,6 +299,7 @@ void test_get_root_node_id() {
 		//FAIL();
 		exit(1);
 	}
+#endif	// IPV4_SUPPORT
 
 	printf("%s: tests passed\n", __func__);
 }
@@ -293,6 +309,7 @@ void test_get_root_node_id() {
 void test_node_id_to_rank() {
 	self_ip_routing_tree_t tree;
 
+#ifdef IPV6_SUPPORT
 	tree.Rmax = 4;
 	tree.ip_type = IPV6;
 	tree.hostA = 0;
@@ -350,7 +367,9 @@ void test_node_id_to_rank() {
 		//FAIL();
 		exit(1);
 	}
+#endif	// IPV6_SUPPORT
 
+#ifdef IPV4_SUPPORT
 	tree.Rmax = 6;
 	tree.ip_type = IPV4;
 	tree.hostA = 2;
@@ -464,6 +483,7 @@ void test_node_id_to_rank() {
 		//FAIL();
 		exit(1);
 	}
+#endif	// IPV4_SUPPORT
 
 	printf("%s: tests passed\n", __func__);
 }
@@ -476,6 +496,7 @@ void test_get_left_child_node_id() {
 	char* expected_result;
 	self_ip_routing_tree_t tree;
 
+#ifdef IPV6_SUPPORT
 	tree.Rmax = 4;
 	tree.ip_type = IPV6;
 
@@ -550,7 +571,9 @@ void test_get_left_child_node_id() {
 		//FAIL();
 		exit(1);
 	}
+#endif	// IPV6_SUPPORT
 
+#ifdef IPV4_SUPPORT
 	tree.Rmax = 6;
 	tree.ip_type = IPV4;
 
@@ -657,6 +680,7 @@ void test_get_left_child_node_id() {
 		//FAIL();
 		exit(1);
 	}
+#endif	// IPV4_SUPPORT
 
 	printf("%s: tests passed\n", __func__);
 }
@@ -669,6 +693,7 @@ void test_get_right_child_node_id() {
 	char* expected_result;
 	self_ip_routing_tree_t tree;
 
+#ifdef IPV6_SUPPORT
 	tree.Rmax = 4;
 	tree.ip_type = IPV6;
 
@@ -743,7 +768,9 @@ void test_get_right_child_node_id() {
 		//FAIL();
 		exit(1);
 	}
+#endif	// IPV6_SUPPORT
 
+#ifdef IPV4_SUPPORT
 	tree.Rmax = 6;
 	tree.ip_type = IPV4;
 
@@ -850,6 +877,7 @@ void test_get_right_child_node_id() {
 		//FAIL();
 		exit(1);
 	}
+#endif // IPV4_SUPPORT
 
 	printf("%s: tests passed\n", __func__);
 }
@@ -862,6 +890,7 @@ void test_get_top_interface_config() {
 	if_ip_addr_t ip_addr_result;
 	char ip_addr_str[INET6_ADDRSTRLEN+1];
 
+#ifdef IPV6_SUPPORT
 	tree.ip_type = IPV6;
 	tree.Rmax = 4;
 	tree.hostA = 0;
@@ -977,6 +1006,9 @@ void test_get_top_interface_config() {
 		exit(1);
 	}
 
+#endif	// IPV6_SUPPORT
+
+#ifdef IPV4_SUPPORT
 	tree.ip_type = IPV4;
 	tree.Rmax = 6;
 	tree.hostA = 2;
@@ -986,6 +1018,7 @@ void test_get_top_interface_config() {
 	tree.prefix.uint128_a8[14] = 0;
 	tree.prefix.uint128_a8[15] = 0;	/* Prefix is 192.168.0.0/24 */
 
+#warning Test for IPv4 is not implemented yet
 	//ip_addr_result = get_top_interface_config(&tree, test_node);
 	//FIXME: Add unit test for get_top_interface_config() on IPv4 trees
 
@@ -994,6 +1027,7 @@ void test_get_top_interface_config() {
 	//	//FAIL();
 	//	exit(1);
 	//}
+#endif	// IPV4_SUPPORT
 
 	printf("%s: tests passed\n", __func__);
 }
@@ -1006,6 +1040,7 @@ void test_get_left_interface_config() {
 	if_ip_addr_t ip_addr_result;
 	char ip_addr_str[INET6_ADDRSTRLEN+1];
 
+#ifdef IPV6_SUPPORT
 	tree.ip_type = IPV6;
 	tree.Rmax = 4;
 	tree.hostA = 0;
@@ -1023,7 +1058,9 @@ void test_get_left_interface_config() {
 		//FAIL();
 		exit(1);
 	}
+#endif	// IPV6_SUPPORT
 
+#ifdef IPV4_SUPPORT
 	tree.ip_type = IPV4;
 	tree.Rmax = 6;
 	tree.hostA = 2;
@@ -1033,6 +1070,7 @@ void test_get_left_interface_config() {
 	tree.prefix.uint128_a8[14] = 0;
 	tree.prefix.uint128_a8[15] = 0;	/* Prefix is 192.168.0.0/24 */
 
+#warning Test for IPv4 is not implemented yet
 	//ip_addr_result = get_left_interface_config(&tree, test_node);
 	//FIXME: Add unit test for get_left_interface_config() on IPv4 trees
 
@@ -1041,6 +1079,7 @@ void test_get_left_interface_config() {
 	//	//FAIL();
 	//	exit(1);
 	//}
+#endif	// IPV4_SUPPORT
 
 	printf("%s: tests passed\n", __func__);
 }
@@ -1053,6 +1092,7 @@ void test_get_right_interface_config() {
 	if_ip_addr_t ip_addr_result;
 	char ip_addr_str[INET6_ADDRSTRLEN+1];
 
+#ifdef IPV6_SUPPORT
 	tree.ip_type = IPV6;
 	tree.Rmax = 4;
 	tree.hostA = 0;
@@ -1070,7 +1110,9 @@ void test_get_right_interface_config() {
 		//FAIL();
 		exit(1);
 	}
+#endif	// IPV6_SUPPORT
 
+#ifdef IPV4_SUPPORT
 	tree.ip_type = IPV4;
 	tree.Rmax = 6;
 	tree.hostA = 2;
@@ -1080,6 +1122,7 @@ void test_get_right_interface_config() {
 	tree.prefix.uint128_a8[14] = 0;
 	tree.prefix.uint128_a8[15] = 0;	/* Prefix is 192.168.0.0/24 */
 
+#warning Test for IPv4 is not implemented yet
 	//ip_addr_result = get_right_interface_config(&tree, test_node);
 	//FIXME: Add unit test for get_right_interface_config() on IPv4 trees
 
@@ -1088,6 +1131,7 @@ void test_get_right_interface_config() {
 	//	//FAIL();
 	//	exit(1);
 	//}
+#endif	// IPV4_SUPPORT
 
 	printf("%s: tests passed\n", __func__);
 }

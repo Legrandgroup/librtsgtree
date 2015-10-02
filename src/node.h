@@ -1,9 +1,18 @@
 /**
- * file ip_node.h
+ * file node.h
  */
 
-#ifndef __IPV6_NODE_H__
-#define __IPV6_NODE_H__
+#ifndef __NODE_H__
+#define __NODE_H__
+
+#define IPV4_SUPPORT
+//#define IPV6_SUPPORT
+
+#ifndef IPV4_SUPPORT
+#ifndef IPV6_SUPPORT
+#error IPV4_SUPPORT and/or IPV6_SUPPORT compiler directives must be set in order to use this library
+#endif
+#endif
 
 #include "uint128.h"	// For uint128_t
 
@@ -19,8 +28,12 @@ typedef uint128_t node_id_t;
 **/
 typedef enum {
 	  NONE = 0,
-	  IPV4,
-	  IPV6,
+#ifdef IPV4_SUPPORT
+	  IPV4 = 0x800, /* We follow the Ethernet type numbering */
+#endif
+#ifdef IPV6_SUPPORT
+	  IPV6 = 0x86dd, /* We follow the Ethernet type numbering */
+#endif
 } ip_protocol_t;
 
 /**
@@ -38,12 +51,32 @@ typedef struct {
  */
 typedef struct {
 	union {
+#ifdef IPV4_SUPPORT
 		struct in_addr  __ipv4_in_addr;	/*!< The in_addr if ip_type == IPv4 */
-		struct in6_addr __ipv6_in6_addr; /*!< The in_addr if ip_type == IPv6 */
+#endif
+#ifdef IPV6_SUPPORT
+		struct in6_addr __ipv6_in6_addr; /*!< The in6_addr if ip_type == IPv6 */
+#endif
 	} in_addr;	/*!< The IPv4 or IPv6 address stored inside this entry */
 	ip_protocol_t  ip_type; /*!< Type of IP addresses described inside this entry (IPv4, IPv6) */
 	prefix_t       prefix; /*!< The prefix length (CIDR for IPv4) or netmask */
 } if_ip_addr_t;
+
+/**
+ * \brief Specification of the 3 interfaces of a node
+ */
+typedef struct {
+#ifdef IPV4_SUPPORT
+	if_ip_addr_t top_if_ipv4; /*!< IPv4 address for the top interface */
+	if_ip_addr_t bottom_left_if_ipv4;	/*!< IPv4 address for the left interface */
+	if_ip_addr_t bottom_right_if_ipv4;	/*!< IPv4 address for the right interface */
+#endif
+#ifdef IPV6_SUPPORT
+	if_ip_addr_t top_if_ipv6; /*!< IPv6 address for the top interface */
+	if_ip_addr_t bottom_left_if_ipv6;	/*!< IPv6 address for the left interface */
+	if_ip_addr_t bottom_right_if_ipv6;	/*!< IPv6 address for the right interface */
+#endif
+} node_interfaces_t;
 
 /**
  * \brief Specification of an IP route (IP range + next hop)
@@ -70,6 +103,7 @@ typedef struct {
  */
 inline uint128_t Rmax_to_max_node_id(const rank_t Rmax);
 
+#ifdef IPV6_SUPPORT
 /**
  * \brief Convert a uint128_t to an IPv6 address represented as a struct in6_addr
  *
@@ -77,7 +111,9 @@ inline uint128_t Rmax_to_max_node_id(const rank_t Rmax);
  * \param[out] output A struct in6_addr for which s6_addr will be filled-in based on \p input (note: other fields are unchanged)
 **/
 inline void uint128_t_to_ipv6(const uint128_t input, struct in6_addr* output);
+#endif	// IPV6_SUPPORT
 
+#ifdef IPV4_SUPPORT
 /**
  * \brief Convert a uint32_t to an IPv4 address represented as a struct in_addr
  *
@@ -85,6 +121,7 @@ inline void uint128_t_to_ipv6(const uint128_t input, struct in6_addr* output);
  * \param[out] output A struct in_addr for which s_addr will be filled-in based on \p input (note: other fields are unchanged)
 **/
 inline void uint32_t_to_ipv4(const uint32_t input, struct in_addr* output);
+#endif	// IPV4_SUPPORT
 
 /**
  * \brief Get the number of most significant bits that form the network part of a tree (common prefix bitmask between all hosts of the tree)
@@ -108,6 +145,7 @@ prefix_t get_tree_prefix_len(const self_ip_routing_tree_t* tree);
  */
 prefix_t get_hosts_prefix_len(const self_ip_routing_tree_t* tree);
 
+#ifdef IPV6_SUPPORT
 /**
  * \brief Create a 128-bit IPv6 netmask from a prefix length
  *
@@ -116,6 +154,7 @@ prefix_t get_hosts_prefix_len(const self_ip_routing_tree_t* tree);
  * \return The 128-bit netmask as a uint128_t
  */
 uint128_t ipv6_prefix_to_uint128_t_mask(prefix_t prefix);
+#endif	// IPV6_SUPPORT
 
 /**
  * \brief Get the node ID of the root node in a routed self-generated tree

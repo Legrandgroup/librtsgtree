@@ -1,5 +1,5 @@
 /**
- * file ip_node.c
+ * file node.c
  */
 
 #include "node.h"
@@ -38,18 +38,24 @@ prefix_t get_hosts_prefix_len(const self_ip_routing_tree_t* tree) {
 
 	assert(tree);
 	assert(tree->ip_type);
+#ifdef IPV6_SUPPORT
 	if (tree->ip_type == IPV6)
 		result = 128;
-	else if (tree->ip_type == IPV4)
-		result = 32;
 	else
-		assert(0);	/* Error */
+#endif
+#ifdef IPV4_SUPPORT
+		if (tree->ip_type == IPV4)
+			result = 32;
+		else
+#endif
+			assert(0);	/* Error */
 
 	assert(result > tree->hostA);
 
 	return result - tree->hostA;
 }
 
+#ifdef IPV6_SUPPORT
 uint128_t ipv6_prefix_to_uint128_t_mask(prefix_t prefix) {
 	uint8_t byte_pos;
 	uint128_t result;
@@ -70,6 +76,7 @@ uint128_t ipv6_prefix_to_uint128_t_mask(prefix_t prefix) {
 	}
 	return result;
 }
+#endif	// IPV6_SUPPORT
 
 node_id_t get_root_node_id(const self_ip_routing_tree_t* tree) {
 
@@ -129,6 +136,7 @@ node_id_t get_right_child_node_id(const self_ip_routing_tree_t* tree, const node
 	return (node_id_t)uint128_t_add(parent_node, (node_id_t)power2_to_uint128_t(R));
 }
 
+#ifdef IPV6_SUPPORT
 uint128_t get_top_interface_ipv6_addr(const self_ip_routing_tree_t* tree, const node_id_t node) {
 	uint128_t result;
 
@@ -137,6 +145,7 @@ uint128_t get_top_interface_ipv6_addr(const self_ip_routing_tree_t* tree, const 
 	return uint128_t_or(result,
 	                    uint128_t_and(tree->prefix, ipv6_prefix_to_uint128_t_mask(get_hosts_prefix_len(tree))));
 }
+#endif	// IPV6_SUPPORT
 
 if_ip_addr_t get_top_interface_config(const self_ip_routing_tree_t* tree, const node_id_t node) {
 	if_ip_addr_t result;
@@ -146,18 +155,24 @@ if_ip_addr_t get_top_interface_config(const self_ip_routing_tree_t* tree, const 
 	assert_valid_node_id_for_tree(node, *tree);	/* Make sure node contains a valid value for this tree */
 
 	result.ip_type = tree->ip_type;
+#ifdef IPV6_SUPPORT
 	if (tree->ip_type == IPV6) {
 		uint128_t_to_ipv6(get_top_interface_ipv6_addr(tree, (uint128_t)node), &(result.in_addr.__ipv6_in6_addr));
 		result.prefix = get_hosts_prefix_len(tree);
 	}
-	else if (tree->ip_type == IPV4) {
-		assert(0);	/* Not implemented yet */
-		//TODO: implement function get_top_interface_ipv4_addr() to support IPv4 trees
-		//uint32_t_to_ipv4(get_top_interface_ipv4_addr(tree, (uint128_t)node), &(result.__in_addr.__ipv4_in_addr));
-		result.prefix = get_hosts_prefix_len(tree);
-	}
 	else
-		assert(0);	/* Force fail */
+#endif
+#ifdef IPV4_SUPPORT
+		if (tree->ip_type == IPV4) {
+			assert(0);	/* Not implemented yet */
+			//TODO: implement function get_top_interface_ipv4_addr() to support IPv4 trees
+			//uint32_t_to_ipv4(get_top_interface_ipv4_addr(tree, (uint128_t)node), &(result.__in_addr.__ipv4_in_addr));
+			result.prefix = get_hosts_prefix_len(tree);
+		}
+		else
+#endif
+			assert(0);	/* Force fail */
+
 	return result;
 }
 
@@ -169,19 +184,25 @@ if_ip_addr_t get_left_interface_config(const self_ip_routing_tree_t* tree, const
 	assert_valid_node_id_for_tree(node, *tree);	/* Make sure node contains a valid value for this tree */
 
 	result.ip_type = tree->ip_type;
+#ifdef IPV6_SUPPORT
 	if (tree->ip_type == IPV6) {
 		uint128_t_to_ipv6(uint128_t_zero(), &(result.in_addr.__ipv6_in6_addr));
 		result.prefix = 128;
 		result.ip_type = NONE;	/* Left interface has no IP address in IPv6 trees (only link-local fe80::/64 addresses are used on interfaces with children) */
 	}
-	else if (tree->ip_type == IPV4) {
-		assert(0);	/* Not implemented yet */
-		//TODO: implement function get_left_interface_ipv4_addr() to support IPv4 trees
-		//uint32_t_to_ipv4(get_left_interface_ipv4_addr(tree, (uint128_t)node), &(result.__in_addr.__ipv4_in_addr));
-		result.prefix = get_hosts_prefix_len(tree);
-	}
 	else
-		assert(0);	/* Force fail */
+#endif
+#ifdef IPV4_SUPPORT
+		if (tree->ip_type == IPV4) {
+			assert(0);	/* Not implemented yet */
+			//TODO: implement function get_left_interface_ipv4_addr() to support IPv4 trees
+			//uint32_t_to_ipv4(get_left_interface_ipv4_addr(tree, (uint128_t)node), &(result.__in_addr.__ipv4_in_addr));
+			result.prefix = get_hosts_prefix_len(tree);
+		}
+		else
+#endif
+			assert(0);	/* Force fail */
+
 	return result;
 }
 
@@ -193,19 +214,25 @@ if_ip_addr_t get_right_interface_config(const self_ip_routing_tree_t* tree, cons
 	assert_valid_node_id_for_tree(node, *tree);	/* Make sure node contains a valid value for this tree */
 
 	result.ip_type = tree->ip_type;
+#ifdef IPV6_SUPPORT
 	if (tree->ip_type == IPV6) {
 		uint128_t_to_ipv6(uint128_t_zero(), &(result.in_addr.__ipv6_in6_addr));
 		result.prefix = 128;
 		result.ip_type = NONE;	/* Right interface has no IP address in IPv6 trees (only link-local fe80::/64 addresses are used on interfaces with children) */
 	}
-	else if (tree->ip_type == IPV4) {
-		assert(0);	/* Not implemented yet */
-		//TODO: implement function get_right_interface_ipv4_addr() to support IPv4 trees
-		//uint32_t_to_ipv4(get_right_interface_ipv4_addr(tree, (uint128_t)node), &(result.__in_addr.__ipv4_in_addr));
-		result.prefix = get_hosts_prefix_len(tree);
-	}
 	else
-		assert(0);	/* Force fail */
+#endif
+#ifdef IPV4_SUPPORT
+		if (tree->ip_type == IPV4) {
+			assert(0);	/* Not implemented yet */
+			//TODO: implement function get_right_interface_ipv4_addr() to support IPv4 trees
+			//uint32_t_to_ipv4(get_right_interface_ipv4_addr(tree, (uint128_t)node), &(result.__in_addr.__ipv4_in_addr));
+			result.prefix = get_hosts_prefix_len(tree);
+		}
+		else
+#endif
+			assert(0);	/* Force fail */
+
 	return result;
 }
 
@@ -220,16 +247,22 @@ ip_route_t get_top_interface_route(const self_ip_routing_tree_t* tree, const nod
 	node_rank = node_id_to_rank(tree, node);
 
 	result.ip_type = tree->ip_type;
+#ifdef IPV6_SUPPORT
 	if (tree->ip_type == IPV6) {
 		assert(0);	/* Not implemented yet */
 		//TODO: support IPv6 trees for routes
 	}
-	else if (tree->ip_type == IPV4) {
-		assert(0);	/* Not implemented yet */
-		//TODO: support IPv4 trees for routes
-	}
 	else
-		assert(0);	/* Force fail */
+#endif
+#ifdef IPV4_SUPPORT
+		if (tree->ip_type == IPV4) {
+			assert(0);	/* Not implemented yet */
+			//TODO: support IPv4 trees for routes
+		}
+		else
+#endif
+			assert(0);	/* Force fail */
+
 	return result;
 }
 
@@ -244,6 +277,7 @@ ip_route_t get_left_interface_route(const self_ip_routing_tree_t* tree, const no
 	node_rank = node_id_to_rank(tree, node);
 
 	result.ip_type = tree->ip_type;
+#ifdef IPV6_SUPPORT
 	if (tree->ip_type == IPV6) {
 		if (node_rank == tree->Rmax) {	/* In IPv6 leaves have no route to left of right */
 			result.ip_type = NONE;
@@ -261,12 +295,17 @@ ip_route_t get_left_interface_route(const self_ip_routing_tree_t* tree, const no
 			assert(0);	/* TODO: this needs to be continued */
 		}
 	}
-	else if (tree->ip_type == IPV4) {
-		assert(0);	/* Not implemented yet */
-		//TODO: support IPv4 trees for routes
-	}
 	else
-		assert(0);	/* Force fail */
+#endif
+#ifdef IPV4_SUPPORT
+		if (tree->ip_type == IPV4) {
+			assert(0);	/* Not implemented yet */
+			//TODO: support IPv4 trees for routes
+		}
+		else
+#endif
+			assert(0);	/* Force fail */
+
 	return result;
 }
 
