@@ -28,8 +28,8 @@ typedef enum {
 **/
 typedef struct {
 	ip_protocol_t  ip_type; /*!< Type of IP addresses represented by the tree (IPv4, IPv6) */
-	rank_t         Rmax; /*!< Maximum depth of the tree */
 	uint128_t      prefix;	/*!< Prefix for the tree's subnet */
+	rank_t         Rmax; /*!< Maximum depth of the tree */
 	prefix_t       hostA; /*!< Host address size in bits */
 } self_ip_routing_tree_t;
 
@@ -37,11 +37,11 @@ typedef struct {
  * \brief Specification of an IP address + a prefix length (netmask)
  */
 typedef struct {
-	ip_protocol_t  ip_type; /*!< Type of IP addresses described inside this entry (IPv4, IPv6) */
 	union {
 		struct in_addr  __ipv4_in_addr;	/*!< The in_addr if ip_type == IPv4 */
 		struct in6_addr __ipv6_in6_addr; /*!< The in_addr if ip_type == IPv6 */
 	} in_addr;	/*!< The IPv4 or IPv6 address stored inside this entry */
+	ip_protocol_t  ip_type; /*!< Type of IP addresses described inside this entry (IPv4, IPv6) */
 	prefix_t       prefix; /*!< The prefix length (CIDR for IPv4) or netmask */
 } if_ip_addr_t;
 
@@ -49,16 +49,16 @@ typedef struct {
  * \brief Specification of an IP route (IP range + next hop)
  */
 typedef struct {
-	ip_protocol_t  ip_type; /*!< Type of IP addresses described inside this entry (IPv4, IPv6) */
 	union {
 		struct in_addr  __ipv4_in_addr;	/*!< The in_addr if ip_type == IPv4 */
 		struct in6_addr __ipv6_in6_addr; /*!< The in_addr if ip_type == IPv6 */
 	} in_addr_range;	/*!< The IP address of the network range concerned by this route */
-	prefix_t       range_prefix; /*!< The prefix length (CIDR for IPv4) or netmask of the range concerned by this route */
 	union {
 		struct in_addr  __ipv4_in_addr;	/*!< The in_addr if ip_type == IPv4 */
 		struct in6_addr __ipv6_in6_addr; /*!< The in_addr if ip_type == IPv6 */
 	} in_addr_next_hop;	/*!< The next hop (router) for this route */
+	prefix_t       range_prefix; /*!< The prefix length (CIDR for IPv4) or netmask of the range concerned by this route */
+	ip_protocol_t  ip_type; /*!< Type of IP addresses described inside this entry (IPv4, IPv6) */
 } ip_route_t;
 
 /**
