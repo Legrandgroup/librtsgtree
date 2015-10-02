@@ -25,6 +25,8 @@ define HELP
 endef
 export HELP
 
+CFLAGS += -DIPV6_SUPPORT -DIPV4_SUPPORT
+
 GIT_HASH = $(shell git log -1 --format=%h)
 
 #Set this to @ to keep the makefile quiet

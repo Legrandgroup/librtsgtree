@@ -5,9 +5,6 @@
 #ifndef __NODE_H__
 #define __NODE_H__
 
-#define IPV4_SUPPORT
-//#define IPV6_SUPPORT
-
 #ifndef IPV4_SUPPORT
 #ifndef IPV6_SUPPORT
 #error IPV4_SUPPORT and/or IPV6_SUPPORT compiler directives must be set in order to use this library
