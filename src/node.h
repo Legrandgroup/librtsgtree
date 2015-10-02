@@ -60,36 +60,11 @@ typedef struct {
 } if_ip_addr_t;
 
 /**
- * \brief Specification of the 3 interfaces of a node
+ * \brief Specification of an IP route
+ *
+ * This contains the same fields as if_ip_addr_t, but the in_addr field contains the IP range base address, and the prefix field contains the range prefix
  */
-typedef struct {
-#ifdef IPV4_SUPPORT
-	if_ip_addr_t top_if_ipv4; /*!< IPv4 address for the top interface */
-	if_ip_addr_t bottom_left_if_ipv4;	/*!< IPv4 address for the left interface */
-	if_ip_addr_t bottom_right_if_ipv4;	/*!< IPv4 address for the right interface */
-#endif
-#ifdef IPV6_SUPPORT
-	if_ip_addr_t top_if_ipv6; /*!< IPv6 address for the top interface */
-	if_ip_addr_t bottom_left_if_ipv6;	/*!< IPv6 address for the left interface */
-	if_ip_addr_t bottom_right_if_ipv6;	/*!< IPv6 address for the right interface */
-#endif
-} node_interfaces_t;
-
-/**
- * \brief Specification of an IP route (IP range + next hop)
- */
-typedef struct {
-	union {
-		struct in_addr  __ipv4_in_addr;	/*!< The in_addr if ip_type == IPv4 */
-		struct in6_addr __ipv6_in6_addr; /*!< The in_addr if ip_type == IPv6 */
-	} in_addr_range;	/*!< The IP address of the network range concerned by this route */
-	union {
-		struct in_addr  __ipv4_in_addr;	/*!< The in_addr if ip_type == IPv4 */
-		struct in6_addr __ipv6_in6_addr; /*!< The in_addr if ip_type == IPv6 */
-	} in_addr_next_hop;	/*!< The next hop (router) for this route */
-	prefix_t       range_prefix; /*!< The prefix length (CIDR for IPv4) or netmask of the range concerned by this route */
-	ip_protocol_t  ip_type; /*!< Type of IP addresses described inside this entry (IPv4, IPv6) */
-} ip_route_t;
+typedef if_ip_addr_t ip_route_t;
 
 /**
  * \brief Compute the maximum node ID given a Rmax
@@ -238,11 +213,13 @@ if_ip_addr_t get_right_interface_config(const self_ip_routing_tree_t* tree, cons
  * Note: tree.ip_type, tree.Rmax, tree.hostA and tree.prefix must be provisioned correctly in argument \p tree to get a correct result
  * Warning: You have to check that the returned ip_type is not NONE.
  * If it is NONE, it means there is no expected route for this interface
+ * If is is not NONE, it will match \p tree .ip_type, the returned ip_route_t will contain the range and prefix for the route via this interface.
+ * It is up to the caller to determine which next hop should be used on this interface to reach the resulting subnet
  *
  * \param tree The tree inside which we perform the calculation
  * \param node The node ID of which we want to calculate the route
  *
- * \return The route for the top network interface of \p node
+ * \return The route for the top network interface of \p node (the IP type (IPv4/IPv6) of the route will match IP type of \p tree)
 **/
 ip_route_t get_top_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node);
 
@@ -251,12 +228,14 @@ ip_route_t get_top_interface_route(const self_ip_routing_tree_t* tree, const nod
  *
  * Note: tree.ip_type, tree.Rmax, tree.hostA and tree.prefix must be provisioned correctly in argument \p tree to get a correct result
  * Warning: You have to check that the returned ip_type is not NONE.
- * If it is NONE, it means there is no expected route for this interface
+ * If it is NONE, it means there is no expected route for this interface.
+ * If is is not NONE, it will match \p tree .ip_type, the returned ip_route_t will contain the range and prefix for the route via this interface.
+ * It is up to the caller to determine which next hop should be used on this interface to reach the resulting subnet
  *
  * \param tree The tree inside which we perform the calculation
  * \param node The node ID of which we want to calculate the route
  *
- * \return The route for the left network interface of \p node
+ * \return The route for the left network interface of \p node (the IP type (IPv4/IPv6) of the route will match IP type of \p tree)
 **/
 ip_route_t get_left_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node);
 
@@ -266,11 +245,13 @@ ip_route_t get_left_interface_route(const self_ip_routing_tree_t* tree, const no
  * Note: tree.ip_type, tree.Rmax, tree.hostA and tree.prefix must be provisioned correctly in argument \p tree to get a correct result
  * Warning: You have to check that the returned ip_type is not NONE.
  * If it is NONE, it means there is no expected route for this interface
+ * If is is not NONE, it will match \p tree .ip_type, the returned ip_route_t will contain the range and prefix for the route via this interface.
+ * It is up to the caller to determine which next hop should be used on this interface to reach the resulting subnet
  *
  * \param tree The tree inside which we perform the calculation
  * \param node The node ID of which we want to calculate the route
  *
- * \return The route for the left network interface of \p node
+ * \return The route for the left network interface of \p node (the IP type (IPv4/IPv6) of the route will match IP type of \p tree)
 **/
 ip_route_t get_right_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node);
 

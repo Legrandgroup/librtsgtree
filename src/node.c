@@ -248,6 +248,7 @@ ip_route_t get_top_interface_route(const self_ip_routing_tree_t* tree, const nod
 
 	result.ip_type = tree->ip_type;
 #ifdef IPV6_SUPPORT
+#warning IPv6 support is not implemented
 	if (tree->ip_type == IPV6) {
 		assert(0);	/* Not implemented yet */
 		//TODO: support IPv6 trees for routes
@@ -255,6 +256,7 @@ ip_route_t get_top_interface_route(const self_ip_routing_tree_t* tree, const nod
 	else
 #endif
 #ifdef IPV4_SUPPORT
+#warning IPv4 support is not implemented
 		if (tree->ip_type == IPV4) {
 			assert(0);	/* Not implemented yet */
 			//TODO: support IPv4 trees for routes
@@ -266,9 +268,87 @@ ip_route_t get_top_interface_route(const self_ip_routing_tree_t* tree, const nod
 	return result;
 }
 
-ip_route_t get_left_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node) {
+/**
+ * \def get_child_func_t
+ *
+ * Pointer to either get_left_child_node_id() or get_right_child_node_id()
+ */
+typedef ip_route_t (*get_child_func_t)(const self_ip_routing_tree_t* tree, const node_id_t node);
+
+/**
+ * \brief Private function returning a ip_route_t value meaning "no valid route"
+ *
+ * \return "no valid route" value, with ip_type = NONE
+ */
+inline ip_route_t no_interface_route() {
 	ip_route_t result;
-	rank_t     node_rank;
+
+	memset(&result, 0, sizeof(result));	/* Fill IP address with 0 */
+	result.ip_type = NONE;
+	return result;
+}
+
+/**
+ * \brief Private function that allows to implement get_left_interface_route() and get_right_interface_route() with a unique source code
+ *
+ * get_left_interface_route() and get_right_interface_route() are mostly identical, except for the child node ID used in the calculation.
+ * get_left_interface_route() and get_right_interface_route() are thus implemented as two wrappers around this function
+ * We take the same parameters as these functions, plus an extra \p child_node
+ *
+ * \param tree The tree inside which we perform the calculation
+ * \param node The node ID of which we want to calculate the route
+ * \param node_rank The rank for \p node in \p tree
+ * \param child_node The node ID of the child (left or right) for which we cant to calculate the route
+ */
+ip_route_t get_bottom_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node, const rank_t node_rank, const node_id_t child_node) {
+	ip_route_t result;
+
+	assert(tree);
+	assert(tree->ip_type);
+	assert_valid_node_id_for_tree(node, *tree);	/* Make sure node contains a valid value for this tree */
+
+	result.ip_type = tree->ip_type;
+#ifdef IPV6_SUPPORT
+	if (tree->ip_type == IPV6) {
+		assert(node_rank != tree->Rmax);	/* node_rank == tree->Rmax case must be handled by caller */
+		if (node_rank+1 == tree->Rmax) {	/* We are on the penultimate rank */
+			uint128_t_to_ipv6(
+			                  get_top_interface_ipv6_addr(tree, child_node),	/* get_child_func_t being either get_left_child_node_id() or get_right_child_node_id() */
+			                  &(result.in_addr.__ipv6_in6_addr)
+			                 );
+			result.prefix = 128;
+			return result;
+		}
+		else {	/* We are on any other rank */
+			assert(node_rank < tree->Rmax);
+
+			uint128_t_to_ipv6(
+			                  uint128_t_and(
+			                                get_top_interface_ipv6_addr(tree, child_node),	/* get_child_func_t being either get_left_child_node_id() or get_right_child_node_id() */
+			                                ipv6_prefix_to_uint128_t_mask(tree->Rmax - node_rank)
+			                               ),
+			                  &(result.in_addr.__ipv6_in6_addr)
+			                 );
+			result.prefix = get_hosts_prefix_len(tree) - (tree->Rmax - node_rank);
+			return result;
+		}
+	}
+	else
+#endif
+#ifdef IPV4_SUPPORT
+#warning IPv4 support is not implemented
+	if (tree->ip_type == IPV4) {
+		assert(0);	/* Not implemented yet */
+		//TODO: support IPv4 trees for routes
+	}
+#endif
+
+	assert(0);	/* We should not reach here */
+}
+
+ip_route_t get_left_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node) {
+
+	rank_t node_rank;
 
 	assert(tree);
 	assert(tree->ip_type);
@@ -276,39 +356,27 @@ ip_route_t get_left_interface_route(const self_ip_routing_tree_t* tree, const no
 
 	node_rank = node_id_to_rank(tree, node);
 
-	result.ip_type = tree->ip_type;
 #ifdef IPV6_SUPPORT
 	if (tree->ip_type == IPV6) {
 		if (node_rank == tree->Rmax) {	/* In IPv6 leaves have no route to left of right */
-			result.ip_type = NONE;
-			uint128_t_to_ipv6(uint128_t_zero(), &(result.in_addr_range.__ipv6_in6_addr));
-			uint128_t_to_ipv6(uint128_t_zero(), &(result.in_addr_next_hop.__ipv6_in6_addr));
-			result.range_prefix = 128;
+			return no_interface_route();
 		}
-		else if (node_rank+1 == tree->Rmax) {	/* We are on the penultimate rank */
-			uint128_t_to_ipv6(get_top_interface_ipv6_addr(tree, get_left_child_node_id(tree, node)), &(result.in_addr_range.__ipv6_in6_addr));
-			//TODO: which IPv6 address should we use? The link-local one together with interface scope? Store it in in_addr_next_hop or let the caller do it...
-			result.range_prefix = 128;
-		}
-		else {	/* We are on any other rank */
-			uint128_t_to_ipv6(get_top_interface_ipv6_addr(tree, get_left_child_node_id(tree, node)), &(result.in_addr_range.__ipv6_in6_addr));
-			assert(0);	/* TODO: this needs to be continued */
+		else {
+			return get_bottom_interface_route(tree, node, node_rank, get_left_child_node_id(tree, node));
 		}
 	}
-	else
 #endif
 #ifdef IPV4_SUPPORT
-		if (tree->ip_type == IPV4) {
-			assert(0);	/* Not implemented yet */
-			//TODO: support IPv4 trees for routes
-		}
-		else
+#warning IPv4 support is not implemented
+	if (tree->ip_type == IPV4) {
+		assert(0);	/* Not implemented yet */
+		return no_interface_route();
+		//TODO: support IPv4 trees for routes
+	}
 #endif
-			assert(0);	/* Force fail */
-
-	return result;
 }
 
 ip_route_t get_right_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node) {
-	assert(0);
+	assert(0);	/* Not yet implemented */
+	return no_interface_route();
 }
