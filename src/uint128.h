@@ -54,6 +54,26 @@ typedef struct {
 	} while(0)
 
 /**
+ * \def U128_SET_MAX(n)
+ *
+ * \brief Assign the value -1 to an uint128_t variable \p n
+ *
+ * \param n The uint128_t variable to set
+ */
+#define U128_SET_MAX(n) \
+	do { \
+		/*assert(typeof(n) == uint128_t);*/ \
+		n.uint128_a16[0] = 0xffff; \
+		n.uint128_a16[1] = 0xffff; \
+		n.uint128_a16[2] = 0xffff; \
+		n.uint128_a16[3] = 0xffff; \
+		n.uint128_a16[4] = 0xffff; \
+		n.uint128_a16[5] = 0xffff; \
+		n.uint128_a16[6] = 0xffff; \
+		n.uint128_a16[7] = 0xffff; \
+	} while(0)
+
+/**
  * \def U128_IS_ZERO(n)
  *
  * \brief Check if an uint128_t variable \p n equals 0
@@ -71,11 +91,35 @@ typedef struct {
 		n.uint128_a16[7] == 0 )
 
 /**
+ * \def U128_IS_MAX(n)
+ *
+ * \brief Check if an uint128_t variable \p n equals -1
+ *
+ * \param n The uint128_t variable to check
+ */
+#define U128_IS_MAX(n) \
+	(	n.uint128_a16[0] == 0xffff && \
+		n.uint128_a16[1] == 0xffff && \
+		n.uint128_a16[2] == 0xffff && \
+		n.uint128_a16[3] == 0xffff && \
+		n.uint128_a16[4] == 0xffff && \
+		n.uint128_a16[5] == 0xffff && \
+		n.uint128_a16[6] == 0xffff && \
+		n.uint128_a16[7] == 0xffff )
+
+/**
  * \brief Return 0 as an uint128_t
  *
  * \return (uint128_t)0
  */
 inline uint128_t uint128_t_zero();
+
+/**
+ * \brief Return -1 as an uint128_t
+ *
+ * \return (uint128_t)-1
+ */
+inline uint128_t uint128_t_max();
 
 /**
  * \brief Calculate 2 ^ power for a 128-bit wide unsigned int

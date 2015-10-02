@@ -11,7 +11,7 @@
 #include "node.h"
 
 int main(void) {
-	test_zero_uint18_t();
+	test_zero_max_uint18_t();
 	test_uint128_t_to_binstr();
 	test_uint128_t_to_hexstr();
 	test_power2_to_uint128_t();

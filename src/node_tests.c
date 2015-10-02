@@ -37,22 +37,8 @@ void test_Rmax_to_max_node_id() {
 		exit(1);
 	}
 
+	U128_SET_MAX(test_node);
 	test_node.uint128_a8[0] = 0x7f;
-	test_node.uint128_a8[1] = 0xff;
-	test_node.uint128_a8[2] = 0xff;
-	test_node.uint128_a8[3] = 0xff;
-	test_node.uint128_a8[4] = 0xff;
-	test_node.uint128_a8[5] = 0xff;
-	test_node.uint128_a8[6] = 0xff;
-	test_node.uint128_a8[7] = 0xff;
-	test_node.uint128_a8[8] = 0xff;
-	test_node.uint128_a8[9] = 0xff;
-	test_node.uint128_a8[10] = 0xff;
-	test_node.uint128_a8[11] = 0xff;
-	test_node.uint128_a8[12] = 0xff;
-	test_node.uint128_a8[13] = 0xff;
-	test_node.uint128_a8[14] = 0xff;
-	test_node.uint128_a8[15] = 0xff;
 	if (uint128_t_cmp(Rmax_to_max_node_id(127), test_node) != 0) {
 		fprintf(stderr, "%d: Rmax_to_max_node_id() failed\n", __LINE__);
 		//FAIL();

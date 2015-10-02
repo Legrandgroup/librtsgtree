@@ -6,11 +6,18 @@
 #include <assert.h>	// For assert()
 #include <stdlib.h>	// For abort()
 
-uint128_t uint128_t_zero() {
+inline uint128_t uint128_t_zero() {
 	uint128_t result_zero;
 
 	U128_SET_ZERO(result_zero);
 	return result_zero;
+}
+
+inline uint128_t uint128_t_max() {
+	uint128_t result_max;
+
+	U128_SET_MAX(result_max);
+	return result_max;
 }
 
 uint128_t power2_to_uint128_t(uint8_t power) {

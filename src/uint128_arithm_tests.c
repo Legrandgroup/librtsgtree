@@ -9,17 +9,10 @@
 
 /* Unit test for U128_SET_ZERO()
  */
-void test_zero_uint18_t() {
+void test_zero_max_uint18_t() {
 	uint128_t test_u128;
 
-	test_u128.uint128_a16[0] = 0xffff;
-	test_u128.uint128_a16[1] = 0xffff;
-	test_u128.uint128_a16[2] = 0xffff;
-	test_u128.uint128_a16[3] = 0xffff;
-	test_u128.uint128_a16[4] = 0xffff;
-	test_u128.uint128_a16[5] = 0xffff;
-	test_u128.uint128_a16[6] = 0xffff;
-	test_u128.uint128_a16[7] = 0xffff;
+	U128_SET_MAX(test_u128);
 	U128_SET_ZERO(test_u128);
 	if (test_u128.uint128_a16[0] == 0 &&
 	    test_u128.uint128_a16[1] == 0 &&
@@ -35,19 +28,41 @@ void test_zero_uint18_t() {
 		//FAIL();
 		exit(1);
 	}
-
-	test_u128 = uint128_t_zero();
-	if (test_u128.uint128_a16[0] == 0 &&
-	    test_u128.uint128_a16[1] == 0 &&
-	    test_u128.uint128_a16[2] == 0 &&
-	    test_u128.uint128_a16[3] == 0 &&
-	    test_u128.uint128_a16[4] == 0 &&
-	    test_u128.uint128_a16[5] == 0 &&
-	    test_u128.uint128_a16[6] == 0 &&
-	    test_u128.uint128_a16[7] == 0) {
+	if (!U128_IS_ZERO(test_u128)) {
+		fprintf(stderr, "U128_IS_ZERO() Failed\n");
+		//FAIL();
+		exit(1);
+	}
+	U128_SET_MAX(test_u128);
+	if (test_u128.uint128_a16[0] == 0xffff &&
+	    test_u128.uint128_a16[1] == 0xffff &&
+	    test_u128.uint128_a16[2] == 0xffff &&
+	    test_u128.uint128_a16[3] == 0xffff &&
+	    test_u128.uint128_a16[4] == 0xffff &&
+	    test_u128.uint128_a16[5] == 0xffff &&
+	    test_u128.uint128_a16[6] == 0xffff &&
+	    test_u128.uint128_a16[7] == 0xffff) {
 	}
 	else {
+		fprintf(stderr, "U128_SET_MAX() Failed\n");
+		//FAIL();
+		exit(1);
+	}
+	if (!U128_IS_MAX(test_u128)) {
+		fprintf(stderr, "U128_IS_MAX() Failed\n");
+		//FAIL();
+		exit(1);
+	}
+
+	test_u128 = uint128_t_zero();
+	if (!U128_IS_ZERO(test_u128)) {
 		fprintf(stderr, "uint128_t_zero() Failed\n");
+		//FAIL();
+		exit(1);
+	}
+	test_u128 = uint128_t_max();
+	if (!U128_IS_MAX(test_u128)) {
+		fprintf(stderr, "uint128_t_max() Failed\n");
 		//FAIL();
 		exit(1);
 	}
@@ -443,7 +458,7 @@ void test_uint128_t_right_shift_n() {
 		//FAIL();
 		exit(1);
 	}
-	test_u128 = uint128_t_dec(uint128_t_zero());	/* Get -1... all bits set to 1 */
+	U128_SET_MAX(test_u128);	/* All bits set to 1 */
 	test_u128 = uint128_t_right_shift_n(test_u128, 127);
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "00000000000000000000000000000001";
@@ -453,7 +468,7 @@ void test_uint128_t_right_shift_n() {
 		exit(1);
 	}
 
-	test_u128 = uint128_t_dec(uint128_t_zero());	/* Get -1... all bits set to 1 */
+	U128_SET_MAX(test_u128);	/* All bits set to 1 */
 	test_u128 = uint128_t_right_shift_n(test_u128, 128);
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "00000000000000000000000000000000";
@@ -617,7 +632,7 @@ void test_uint128_t_left_shift_n() {
 		//FAIL();
 		exit(1);
 	}
-	test_u128 = uint128_t_dec(uint128_t_zero());	/* Get -1... all bits set to 1 */
+	U128_SET_MAX(test_u128);	/* All bits set to 1 */
 	test_u128 = uint128_t_left_shift_n(test_u128, 127);
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "80000000000000000000000000000000";
@@ -627,7 +642,7 @@ void test_uint128_t_left_shift_n() {
 		exit(1);
 	}
 
-	test_u128 = uint128_t_dec(uint128_t_zero());	/* Get -1... all bits set to 1 */
+	U128_SET_MAX(test_u128);	/* All bits set to 1 */
 	test_u128 = uint128_t_left_shift_n(test_u128, 128);
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "00000000000000000000000000000000";
@@ -755,22 +770,7 @@ void test_uint128_t_inc() {
 		exit(1);
 	}
 
-	test_u128.uint128_a8[0] = 0xff;
-	test_u128.uint128_a8[1] = 0xff;
-	test_u128.uint128_a8[2] = 0xff;
-	test_u128.uint128_a8[3] = 0xff;
-	test_u128.uint128_a8[4] = 0xff;
-	test_u128.uint128_a8[5] = 0xff;
-	test_u128.uint128_a8[6] = 0xff;
-	test_u128.uint128_a8[7] = 0xff;
-	test_u128.uint128_a8[8] = 0xff;
-	test_u128.uint128_a8[9] = 0xff;
-	test_u128.uint128_a8[10] = 0xff;
-	test_u128.uint128_a8[11] = 0xff;
-	test_u128.uint128_a8[12] = 0xff;
-	test_u128.uint128_a8[13] = 0xff;
-	test_u128.uint128_a8[14] = 0xff;
-	test_u128.uint128_a8[15] = 0xff;
+	U128_SET_MAX(test_u128);
 
 	expected_result = "00000000000000000000000000000000";
 	test_u128 = uint128_t_inc(test_u128);
@@ -796,22 +796,7 @@ void test_uint128_t_dec() {
 	uint16_t dec_count;
 	uint16_t last_word16;
 
-	test_u128.uint128_a8[0] = 0xff;
-	test_u128.uint128_a8[1] = 0xff;
-	test_u128.uint128_a8[2] = 0xff;
-	test_u128.uint128_a8[3] = 0xff;
-	test_u128.uint128_a8[4] = 0xff;
-	test_u128.uint128_a8[5] = 0xff;
-	test_u128.uint128_a8[6] = 0xff;
-	test_u128.uint128_a8[7] = 0xff;
-	test_u128.uint128_a8[8] = 0xff;
-	test_u128.uint128_a8[9] = 0xff;
-	test_u128.uint128_a8[10] = 0xff;
-	test_u128.uint128_a8[11] = 0xff;
-	test_u128.uint128_a8[12] = 0xff;
-	test_u128.uint128_a8[13] = 0xff;
-	test_u128.uint128_a8[14] = 0xff;
-	test_u128.uint128_a8[15] = 0xff;
+	U128_SET_MAX(test_u128);
 	for (dec_count = 0; dec_count != 65535; dec_count++) {
 		test_u128 = uint128_t_dec(test_u128);
 		//uint128_t_to_hexstr(test_u128, 16, result);
@@ -979,22 +964,7 @@ void test_uint128_t_sub() {
 	uint16_t last_word16;
 
 	for (dec_count = 0; dec_count != 65535; dec_count++) {
-		test1_u128.uint128_a8[0] = 0xff;
-		test1_u128.uint128_a8[1] = 0xff;
-		test1_u128.uint128_a8[2] = 0xff;
-		test1_u128.uint128_a8[3] = 0xff;
-		test1_u128.uint128_a8[4] = 0xff;
-		test1_u128.uint128_a8[5] = 0xff;
-		test1_u128.uint128_a8[6] = 0xff;
-		test1_u128.uint128_a8[7] = 0xff;
-		test1_u128.uint128_a8[8] = 0xff;
-		test1_u128.uint128_a8[9] = 0xff;
-		test1_u128.uint128_a8[10] = 0xff;
-		test1_u128.uint128_a8[11] = 0xff;
-		test1_u128.uint128_a8[12] = 0xff;
-		test1_u128.uint128_a8[13] = 0xff;
-		test1_u128.uint128_a8[14] = 0xff;
-		test1_u128.uint128_a8[15] = 0xff;
+		U128_SET_MAX(test1_u128);
 		result_u128 = uint128_t_sub(test1_u128, uint16_t_to_uint128_t(dec_count));
 		//uint128_t_to_hexstr(result_u128, 16, result);
 		//printf("Value: %s\n", result);
@@ -1401,8 +1371,8 @@ void test_uint128_t_or() {
 		//FAIL();
 		exit(1);
 	}
-	result_u128 = uint128_t_or(test1_u128, uint128_t_dec(uint128_t_zero()));	/* A or (-1) = (-1) */
-	if (!(uint128_t_cmp(result_u128, uint128_t_dec(uint128_t_zero())) == 0)) {
+	result_u128 = uint128_t_or(test1_u128, uint128_t_max());	/* A or (-1) = (-1) */
+	if (!(uint128_t_cmp(result_u128, uint128_t_max()) == 0)) {
 		fprintf(stderr, "%d: uint128_t_or() failed\n", __LINE__);
 		//FAIL();
 		exit(1);
@@ -1427,7 +1397,7 @@ void test_uint128_t_or() {
 
 	result_u128 = uint128_t_or(test1_u128, test2_u128);	/* A or !A = (uint128_t)(-1) */
 
-	if (!(uint128_t_cmp(result_u128, uint128_t_dec(uint128_t_zero())) == 0)) {
+	if (!(uint128_t_cmp(result_u128, uint128_t_max()) == 0)) {
 		fprintf(stderr, "%d: uint128_t_or() failed\n", __LINE__);
 		//FAIL();
 		exit(1);
@@ -1485,7 +1455,7 @@ void test_uint128_t_and() {
 		//FAIL();
 		exit(1);
 	}
-	result_u128 = uint128_t_and(test1_u128, uint128_t_dec(uint128_t_zero()));	/* A and (-1) = A */
+	result_u128 = uint128_t_and(test1_u128, uint128_t_max());	/* A and (-1) = A */
 	if (!(uint128_t_cmp(result_u128, test1_u128) == 0)) {
 		fprintf(stderr, "%d: uint128_t_and() failed\n", __LINE__);
 		//FAIL();
