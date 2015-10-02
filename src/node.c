@@ -302,6 +302,8 @@ inline ip_route_t no_interface_route() {
  */
 ip_route_t get_bottom_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node, const rank_t node_rank, const node_id_t child_node) {
 	ip_route_t result;
+	//uint128_t result_u128; // Temporary for debug
+	//char result_txt[33];	// Temporary for debug
 
 	assert(tree);
 	assert(tree->ip_type);
@@ -322,14 +324,25 @@ ip_route_t get_bottom_interface_route(const self_ip_routing_tree_t* tree, const 
 		else {	/* We are on any other rank */
 			assert(node_rank < tree->Rmax);
 
+			//printf("Will compute AND mask between:\n");
+			//uint128_t_to_hexstr(get_top_interface_ipv6_addr(tree, child_node), 16, result_txt);
+			//printf("%s (child IPv6)\nand\n", result_txt);
+			//uint128_t_to_hexstr(ipv6_prefix_to_uint128_t_mask(get_tree_prefix_len(tree) + node_rank), 16, result_txt);
+			//printf("%s (mask for %d+%d prefix)\n=\n", result_txt, get_tree_prefix_len(tree), node_rank);
+			//uint128_t_to_hexstr(uint128_t_and(
+			//                                  get_top_interface_ipv6_addr(tree, child_node),	/* get_child_func_t being either get_left_child_node_id() or get_right_child_node_id() */
+			//                                  ipv6_prefix_to_uint128_t_mask(get_tree_prefix_len(tree) + node_rank)
+			//                                 ), 16, result_txt);
+			//printf("%s (resulting route with prefix %d)\n", result_txt, get_tree_prefix_len(tree) + node_rank);
+
 			uint128_t_to_ipv6(
 			                  uint128_t_and(
 			                                get_top_interface_ipv6_addr(tree, child_node),	/* get_child_func_t being either get_left_child_node_id() or get_right_child_node_id() */
-			                                ipv6_prefix_to_uint128_t_mask(tree->Rmax - node_rank)
+			                                ipv6_prefix_to_uint128_t_mask(get_tree_prefix_len(tree) + node_rank)
 			                               ),
 			                  &(result.in_addr.__ipv6_in6_addr)
 			                 );
-			result.prefix = get_hosts_prefix_len(tree) - (tree->Rmax - node_rank);
+			result.prefix = get_tree_prefix_len(tree) + node_rank;
 			return result;
 		}
 	}
@@ -377,6 +390,31 @@ ip_route_t get_left_interface_route(const self_ip_routing_tree_t* tree, const no
 }
 
 ip_route_t get_right_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node) {
-	assert(0);	/* Not yet implemented */
-	return no_interface_route();
+
+	rank_t node_rank;
+
+	assert(tree);
+	assert(tree->ip_type);
+	assert_valid_node_id_for_tree(node, *tree);	/* Make sure node contains a valid value for this tree */
+
+	node_rank = node_id_to_rank(tree, node);
+
+#ifdef IPV6_SUPPORT
+	if (tree->ip_type == IPV6) {
+		if (node_rank == tree->Rmax) {	/* In IPv6 leaves have no route to left of right */
+			return no_interface_route();
+		}
+		else {
+			return get_bottom_interface_route(tree, node, node_rank, get_right_child_node_id(tree, node));
+		}
+	}
+#endif
+#ifdef IPV4_SUPPORT
+#warning IPv4 support is not implemented
+	if (tree->ip_type == IPV4) {
+		assert(0);	/* Not implemented yet */
+		return no_interface_route();
+		//TODO: support IPv4 trees for routes
+	}
+#endif
 }

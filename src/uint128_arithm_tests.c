@@ -1,7 +1,7 @@
 #include "uint128.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <arpa/inet.h>	// For inet_ntop() and htons()
+#include <arpa/inet.h>	// For htons()
 #include <stdint.h>
 #include <string.h>	// For memcpy()
 

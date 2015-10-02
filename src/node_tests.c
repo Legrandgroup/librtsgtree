@@ -1135,3 +1135,91 @@ void test_get_right_interface_config() {
 
 	printf("%s: tests passed\n", __func__);
 }
+
+/**
+ * \brief Private function that converts an ip_route_t variable to its string representation (using the / prefix notation)
+ *
+ * \param[in] input The route to output
+ * \param[out] output The buffer where the resulting string will be stored, which should be of INET6_ADDRSTRLEN+1+4 bytes for IPv6 and INET_ADDRSTRLEN+1+3 for IPv4
+ */
+void ip_route_to_str(const ip_route_t input, char* output) {
+	size_t pos;
+#ifdef IPV6_SUPPORT
+	if (input.ip_type == IPV6) {
+		/* First dump the IPv6 address */
+		if (inet_ntop(AF_INET6, &(input.in_addr.__ipv6_in6_addr), output, INET6_ADDRSTRLEN) == NULL) {
+			output[0] = '\0';	/* Failure */
+			return;
+		}
+		pos=strlen(output);
+		output[pos++]='/';	/* Add the prefix separator '/' */
+		snprintf(&(output[pos]), 4, "%u", input.prefix);	/* Prepend with 3 digits max of prefix (+ terminating '\0') */
+		return;
+	}
+#endif
+
+#ifdef IPV4_SUPPORT
+	if (input.ip_type == IPV4) {
+		assert(0);	/* Not yet supported */
+		return;
+	}
+#endif
+
+	output[0] = '\0';	/* Empty string if ip_type == NONE */
+}
+
+/* Unit test for get_left_interface_route() and get_right_interface_route()
+ */
+void test_get_left_right_interface_route() {
+	node_id_t test_node;
+	self_ip_routing_tree_t tree;
+	ip_route_t ip_route_result;
+	char ipv6_route_str[INET6_ADDRSTRLEN+1+4];	/* +4 to accomodate for /aaa prefixes */
+
+#ifdef IPV6_SUPPORT
+	tree.ip_type = IPV6;
+	tree.Rmax = 4;
+	tree.hostA = 0;
+	U128_SET_ZERO(tree.prefix);
+	tree.prefix.uint128_a8[0] = 0xfd;	/* Prefix is fd00::/124 */
+
+	test_node = get_root_node_id(&tree);	/* Will get 8 */
+	ip_route_to_str(get_left_interface_route(&tree, test_node), ipv6_route_str);
+	/* Expect a route of fd00::0/125 */
+	if (strcmp(ipv6_route_str, "fd00::/125") != 0) {
+		fprintf(stderr, "%d: get_left_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		//FAIL();
+		exit(1);
+	}
+
+	ip_route_to_str(get_left_interface_route(&tree, uint8_t_to_uint128_t(4)), ipv6_route_str);
+	if (strcmp(ipv6_route_str, "fd00::0/0") != 0) {
+		fprintf(stderr, "%d: get_left_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		//FAIL();
+		exit(1);
+	}
+#endif	// IPV6_SUPPORT
+
+#ifdef IPV4_SUPPORT
+	tree.ip_type = IPV4;
+	tree.Rmax = 6;
+	tree.hostA = 2;
+	U128_SET_ZERO(tree.prefix);
+	tree.prefix.uint128_a8[12] = 192;
+	tree.prefix.uint128_a8[13] = 168;
+	tree.prefix.uint128_a8[14] = 0;
+	tree.prefix.uint128_a8[15] = 0;	/* Prefix is 192.168.0.0/24 */
+
+#warning Test for IPv4 is not implemented yet
+	//ip_route_result = get_right_interface_config(&tree, test_node);
+	//FIXME: Add unit test for get_left_interface_route() on IPv4 trees
+
+	//if (ip_route_result.ip_type != IPV4) {	/* ip_type should have been propagated as is to result */
+	//	fprintf(stderr, "%d: get_left_interface_route() modified ip_type field\n", __LINE__);
+	//	//FAIL();
+	//	exit(1);
+	//}
+#endif	// IPV4_SUPPORT
+
+	printf("%s: tests passed\n", __func__);
+}

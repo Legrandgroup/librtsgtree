@@ -48,6 +48,8 @@ int main(void) {
 	test_get_top_interface_config();
 	test_get_left_interface_config();
 	test_get_right_interface_config();
+	//test_get_top_interface_route();
+	test_get_left_right_interface_route();
 
 	printf("\n*** All unit tests passed successfully ***\n");
 
