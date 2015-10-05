@@ -100,6 +100,50 @@ rank_t node_id_to_rank(const self_ip_routing_tree_t* tree, node_id_t node) {
 	return tree->Rmax - b;
 }
 
+node_id_t get_parent_node_id(const self_ip_routing_tree_t* tree, const node_id_t child_node) {
+	rank_t Rmax_Rp;
+	rank_t child_rank;
+	node_id_t result;
+	prefix_t mask_prefix;
+	
+	uint128_t parent_node_mask;
+
+	//Formula: to get our parent ID
+	//Take our ID, set the last (Rmax-Rp+1) bits to 0, and set the previous bit to 1
+	
+	assert(tree);
+	assert(tree->Rmax > 0);
+	child_rank = node_id_to_rank(tree, child_node);
+	
+	if (tree->Rmax < child_rank)
+		return (node_id_t)uint128_t_zero();
+	Rmax_Rp = tree->Rmax - child_rank;	/* Calculate the distance between our rank and the last ranks (leaves) */
+#ifdef IPV6_SUPPORT
+	if (tree->ip_type == IPV6) {
+		mask_prefix = get_hosts_prefix_len(tree);
+		Rmax_Rp++;	/* Go up to parent, one more LSB bits to zero */
+		assert(mask_prefix >= Rmax_Rp);
+		mask_prefix -= Rmax_Rp;
+		//if (mask_prefix <= tree->prefix)
+		//	return (node_id_t)uint128_t_zero();	/* We are working at the root level of the tree... there is no parent */
+		result = (node_id_t)uint128_t_and((uint128_t)child_node,
+		                                  ipv6_prefix_to_uint128_t_mask(mask_prefix));
+		result = (node_id_t)uint128_t_or((uint128_t)result,
+		                                 power2_to_uint128_t(Rmax_Rp));
+		return result;
+	}
+	else
+#endif
+#ifdef IPV4_SUPPORT
+		if (tree->ip_type == IPV4) {
+			assert(0);
+		}
+		else
+#endif
+			assert(0);
+	return (node_id_t)uint128_t_zero();
+}
+
 node_id_t get_left_child_node_id(const self_ip_routing_tree_t* tree, const node_id_t parent_node) {
 	rank_t Rmax_1, R;
 	rank_t parent_rank;

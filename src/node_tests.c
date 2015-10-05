@@ -1160,8 +1160,9 @@ void ip_route_to_str(const ip_route_t input, char* output) {
 
 #ifdef IPV4_SUPPORT
 	if (input.ip_type == IPV4) {
-		assert(0);	/* Not yet supported */
-		return;
+		fprintf(stderr, "%d: tests on IPV4 not supported yet\n", __LINE__);
+		//FAIL();
+		exit(1);
 	}
 #endif
 
