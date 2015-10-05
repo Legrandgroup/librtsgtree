@@ -116,7 +116,9 @@ node_id_t get_parent_node_id(const self_ip_routing_tree_t* tree, const node_id_t
 	child_rank = node_id_to_rank(tree, child_node);
 	
 	if (tree->Rmax < child_rank)
-		return (node_id_t)uint128_t_zero();
+		return (node_id_t)uint128_t_zero();	/* Child rank is higher than tree depth... return error */
+	if (child_rank <= 1)
+		return (node_id_t)uint128_t_zero();	/* Child is the root or is above root... return error */
 	Rmax_Rp = tree->Rmax - child_rank;	/* Calculate the distance between our rank and the last ranks (leaves) */
 #ifdef IPV6_SUPPORT
 	if (tree->ip_type == IPV6) {

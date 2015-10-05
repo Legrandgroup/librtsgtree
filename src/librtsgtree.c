@@ -43,6 +43,7 @@ int main(void) {
 #endif
 	test_node_id_to_rank();
 	test_get_root_node_id();
+	test_get_parent_node_id();
 	test_get_left_child_node_id();
 	test_get_right_child_node_id();
 	test_get_top_interface_config();
