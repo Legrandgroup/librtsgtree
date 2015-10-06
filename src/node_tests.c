@@ -1309,9 +1309,9 @@ void ip_route_to_str(const ip_route_t input, char* output) {
 	output[0] = '\0';	/* Empty string if ip_type == NONE */
 }
 
-/* Unit test for get_left_interface_route() and get_right_interface_route()
+/* Unit test for get_left_right_top_interface_route(), get_right_interface_route() and get_top_interface_route()
  */
-void test_get_left_right_interface_route() {
+void test_get_left_right_top_interface_route() {
 	node_id_t test_node;
 	self_ip_routing_tree_t tree;
 	ip_route_t ip_route_result;
@@ -1327,7 +1327,7 @@ void test_get_left_right_interface_route() {
 	test_node = get_root_node_id(&tree);	/* Will get 8 */
 	ip_route_to_str(ip_route_result = get_left_interface_route(&tree, test_node), ipv6_route_str);
 	if (ip_route_result.ip_type != IPV6) {	/* ip_type should have been propagated as is to ip_route_result */
-		fprintf(stderr, "%d: get_top_interface_config() modified ip_type field\n", __LINE__);
+		fprintf(stderr, "%d: get_left_interface_route() modified ip_type field\n", __LINE__);
 		//FAIL();
 		exit(1);
 	}
@@ -1339,13 +1339,19 @@ void test_get_left_right_interface_route() {
 	}
 	ip_route_to_str(ip_route_result = get_right_interface_route(&tree, test_node), ipv6_route_str);
 	if (ip_route_result.ip_type != IPV6) {	/* ip_type should have been propagated as is to ip_route_result */
-		fprintf(stderr, "%d: get_top_interface_config() modified ip_type field\n", __LINE__);
+		fprintf(stderr, "%d: get_right_interface_route() modified ip_type field\n", __LINE__);
 		//FAIL();
 		exit(1);
 	}
 	/* Expect a route of fd00::0/125 */
 	if (strcmp(ipv6_route_str, "fd00::8/125") != 0) {
-		fprintf(stderr, "%d: get_left_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		fprintf(stderr, "%d: get_right_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		//FAIL();
+		exit(1);
+	}
+	ip_route_result = get_top_interface_route(&tree, test_node);
+	if (ip_route_result.ip_type != NONE) {	/* root node has no top route */
+		fprintf(stderr, "%d: get_top_interface_route() modified ip_type field\n", __LINE__);
 		//FAIL();
 		exit(1);
 	}
