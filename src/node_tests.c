@@ -6,6 +6,19 @@
 #include <string.h>	// For memcpy()
 
 
+void check_result_is_uint128(uint128_t value, uint128_t expected, unsigned int func_line) {
+	char value_str[33];
+	char expected_str[33];
+	
+	if (uint128_t_cmp(value, expected) != 0) {
+		uint128_t_to_hexstr((uint128_t)value, 16, value_str);
+		uint128_t_to_hexstr((uint128_t)expected, 16, expected_str);
+		fprintf(stderr, "%d: uint128 comparison failed, got:\n\"%s\", expected:\n\"%s\"\n", func_line, value_str, expected_str);
+		//FAIL();
+		exit(1);
+	}	
+}
+
 /* Unit test for Rmax_to_max_node_id()
  */
 void test_Rmax_to_max_node_id() {
@@ -509,66 +522,111 @@ void test_get_parent_node_id() {
 		//FAIL();
 		exit(1);
 	}
-	test_node = get_left_child_node_id(&tree, get_root_node_id(&tree));
-	test_node = get_parent_node_id(&tree, test_node);	/* Get the root's left child's parent */
-	if (uint128_t_cmp(test_node, get_root_node_id(&tree)) != 0) {	/* Should get root node ID again */
-		fprintf(stderr, "%d: get_parent_node_id() failed, should get root node ID\n", __LINE__);
-		//FAIL();
-		exit(1);
-	}
-	test_node = get_right_child_node_id(&tree, get_root_node_id(&tree));
-	test_node = get_parent_node_id(&tree, test_node);	/* Get the root's left child's parent */
-	if (uint128_t_cmp(test_node, get_root_node_id(&tree)) != 0) {	/* Should get root node ID again */
-		fprintf(stderr, "%d: get_parent_node_id() failed, should get root node ID\n", __LINE__);
-		//FAIL();
-		exit(1);
-	}
 	
-	test_node = get_parent_node_id(&tree, uint16_t_to_uint128_t(2));
+	/* Get the root's left child's parent, should get root node ID again */
+	test_node = get_left_child_node_id(&tree, get_root_node_id(&tree));
+	check_result_is_uint128(get_parent_node_id(&tree, test_node), get_root_node_id(&tree), __LINE__);
+	/* Get the root's right child's parent, should get root node ID again */
+	test_node = get_right_child_node_id(&tree, get_root_node_id(&tree));
+	check_result_is_uint128(get_parent_node_id(&tree, test_node), get_root_node_id(&tree), __LINE__);
+	
+	/* Parent for node 2 should have ID 4 */
+	check_result_is_uint128(get_parent_node_id(&tree, uint16_t_to_uint128_t(2)), uint16_t_to_uint128_t(4), __LINE__);
+	/* Parent for node 6 should have ID 4 */
+	check_result_is_uint128(get_parent_node_id(&tree, uint16_t_to_uint128_t(6)), uint16_t_to_uint128_t(4), __LINE__);
+
+	/* Parent for node 10 should have ID 12 */
+	check_result_is_uint128(get_parent_node_id(&tree, uint16_t_to_uint128_t(10)), uint16_t_to_uint128_t(12), __LINE__);
+	/* Parent for node 14 should have ID 12 */
+	check_result_is_uint128(get_parent_node_id(&tree, uint16_t_to_uint128_t(14)), uint16_t_to_uint128_t(12), __LINE__);
+	
+	/* Parent for node 1 should have ID 2 */
+	check_result_is_uint128(get_parent_node_id(&tree, uint16_t_to_uint128_t(1)), uint16_t_to_uint128_t(2), __LINE__);
+	/* Parent for node 3 should have ID 2 */
+	check_result_is_uint128(get_parent_node_id(&tree, uint16_t_to_uint128_t(3)), uint16_t_to_uint128_t(2), __LINE__);
+	
+	/* Parent for node 5 should have ID 6 */
+	check_result_is_uint128(get_parent_node_id(&tree, uint16_t_to_uint128_t(5)), uint16_t_to_uint128_t(6), __LINE__);
+	/* Parent for node 7 should have ID 6 */
+	check_result_is_uint128(get_parent_node_id(&tree, uint16_t_to_uint128_t(7)), uint16_t_to_uint128_t(6), __LINE__);
+	
+	/* Parent for node 9 should have ID 10 */
+	check_result_is_uint128(get_parent_node_id(&tree, uint16_t_to_uint128_t(9)), uint16_t_to_uint128_t(10), __LINE__);
+	/* Parent for node 11 should have ID 10 */
+	check_result_is_uint128(get_parent_node_id(&tree, uint16_t_to_uint128_t(11)), uint16_t_to_uint128_t(10), __LINE__);
+	
+	/* Parent for node 13 should have ID 14 */
+	check_result_is_uint128(get_parent_node_id(&tree, uint16_t_to_uint128_t(13)), uint16_t_to_uint128_t(14), __LINE__);
+	/* Parent for node 15 should have ID 14 */
+	check_result_is_uint128(get_parent_node_id(&tree, uint16_t_to_uint128_t(15)), uint16_t_to_uint128_t(14), __LINE__);
+
+#endif	// IPV6_SUPPORT
+
+#ifdef IPV4_SUPPORT
+	tree.Rmax = 6;
+	tree.ip_type = IPV4;
+	tree.hostA = 2;
+
+	/* Start from root's children */
+	test_node = get_root_node_id(&tree);
+	test_node = get_parent_node_id(&tree, test_node);	/* No parent for root */
+	if (!U128_IS_ZERO(test_node)) {
+		fprintf(stderr, "%d: get_parent_node_id() failed, no parent should be provided for root node\n", __LINE__);
+		//FAIL();
+		exit(1);
+	}
+	/* Get the root's left child's parent, should get root node ID again */
+	test_node = get_left_child_node_id(&tree, get_root_node_id(&tree));
+	check_result_is_uint128(get_parent_node_id(&tree, test_node), get_root_node_id(&tree), __LINE__);
+	/* Get the root's right child's parent, should get root node ID again */
+	test_node = get_right_child_node_id(&tree, get_root_node_id(&tree));
+	check_result_is_uint128(get_parent_node_id(&tree, test_node), get_root_node_id(&tree), __LINE__);
+	
+	test_node = get_parent_node_id(&tree, uint16_t_to_uint128_t(16));
 	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
-	expected_result = "0000000000000000" "0000000000000004";	/* Parent for node 2 should have ID 4 */
+	expected_result = "0000000000000000" "0000000000000020";	/* Parent for node 16 should have ID 32 */
 	if (strcmp(result, expected_result) != 0) {
 		fprintf(stderr, "%d: get_parent_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
 		//FAIL();
 		exit(1);
 	}
-	test_node = get_parent_node_id(&tree, uint16_t_to_uint128_t(6));
+	test_node = get_parent_node_id(&tree, uint16_t_to_uint128_t(48));
 	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
-	expected_result = "0000000000000000" "0000000000000004";	/* Parent for node 6 should have ID 4 */
+	expected_result = "0000000000000000" "0000000000000020";	/* Parent for node 48 should have ID 32 */
 	if (strcmp(result, expected_result) != 0) {
 		fprintf(stderr, "%d: get_parent_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
 		//FAIL();
 		exit(1);
 	}
 
-	test_node = get_parent_node_id(&tree, uint16_t_to_uint128_t(10));
+	test_node = get_parent_node_id(&tree, uint16_t_to_uint128_t(8));
 	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
-	expected_result = "0000000000000000" "000000000000000c";	/* Parent for node 10 should have ID 12 */
+	expected_result = "0000000000000000" "0000000000000010";	/* Parent for node 8 should have ID 16 */
 	if (strcmp(result, expected_result) != 0) {
 		fprintf(stderr, "%d: get_parent_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
 		//FAIL();
 		exit(1);
 	}
-	test_node = get_parent_node_id(&tree, uint16_t_to_uint128_t(14));
+	test_node = get_parent_node_id(&tree, uint16_t_to_uint128_t(24));
 	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
-	expected_result = "0000000000000000" "000000000000000c";	/* Parent for node 14 should have ID 12 */
+	expected_result = "0000000000000000" "0000000000000010";	/* Parent for node 24 should have ID 16 */
 	if (strcmp(result, expected_result) != 0) {
 		fprintf(stderr, "%d: get_parent_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
 		//FAIL();
 		exit(1);
 	}
 
-	test_node = get_parent_node_id(&tree, uint16_t_to_uint128_t(1));
+	test_node = get_parent_node_id(&tree, uint16_t_to_uint128_t(40));
 	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
-	expected_result = "0000000000000000" "0000000000000002";	/* Parent for node 1 should have ID 2 */
+	expected_result = "0000000000000000" "0000000000000030";	/* Parent for node 40 should have ID 48 */
 	if (strcmp(result, expected_result) != 0) {
 		fprintf(stderr, "%d: get_parent_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
 		//FAIL();
 		exit(1);
 	}
-	test_node = get_parent_node_id(&tree, uint16_t_to_uint128_t(3));
+	test_node = get_parent_node_id(&tree, uint16_t_to_uint128_t(56));
 	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
-	expected_result = "0000000000000000" "0000000000000002";	/* Parent for node 3 should have ID 2 */
+	expected_result = "0000000000000000" "0000000000000030";	/* Parent for node 56 should have ID 48 */
 	if (strcmp(result, expected_result) != 0) {
 		fprintf(stderr, "%d: get_parent_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
 		//FAIL();
@@ -625,37 +683,6 @@ void test_get_parent_node_id() {
 		//FAIL();
 		exit(1);
 	}
-
-#endif	// IPV6_SUPPORT
-
-#ifdef IPV4_SUPPORT
-	tree.Rmax = 6;
-	tree.ip_type = IPV4;
-	tree.hostA = 2;
-
-	/* Start from root's children */
-	test_node = get_root_node_id(&tree);
-	test_node = get_parent_node_id(&tree, test_node);	/* No parent for root */
-	if (!U128_IS_ZERO(test_node)) {
-		fprintf(stderr, "%d: get_parent_node_id() failed, no parent should be provided for root node\n", __LINE__);
-		//FAIL();
-		exit(1);
-	}
-	test_node = get_left_child_node_id(&tree, get_root_node_id(&tree));
-	test_node = get_parent_node_id(&tree, test_node);	/* Get the root's left child's parent */
-	if (uint128_t_cmp(test_node, get_root_node_id(&tree)) != 0) {	/* Should get root node ID again */
-		fprintf(stderr, "%d: get_parent_node_id() failed, should get root node ID\n", __LINE__);
-		//FAIL();
-		exit(1);
-	}
-	test_node = get_right_child_node_id(&tree, get_root_node_id(&tree));
-	test_node = get_parent_node_id(&tree, test_node);	/* Get the root's left child's parent */
-	if (uint128_t_cmp(test_node, get_root_node_id(&tree)) != 0) {	/* Should get root node ID again */
-		fprintf(stderr, "%d: get_parent_node_id() failed, should get root node ID\n", __LINE__);
-		//FAIL();
-		exit(1);
-	}
-	
 #endif // IPV4_SUPPORT
 
 	printf("%s: tests passed\n", __func__);
