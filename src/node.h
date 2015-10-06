@@ -96,6 +96,17 @@ inline void uint32_t_to_ipv4(const uint32_t input, struct in_addr* output);
 #endif	// IPV4_SUPPORT
 
 /**
+ * \brief Get the number of bits that form an IP address for the specified tree
+ *
+ * This function will return 32 or 128 IPv4 or IPv6 trees respectively, or will raise an assertion error if the tree type is not supported
+ *
+ * \param tree The tree to work on
+ *
+ * \result The IP address size in bits (between 32 or 128)
+ */
+inline prefix_t get_tree_ip_addr_bit_sz(const self_ip_routing_tree_t* tree);
+
+/**
  * \brief Get the number of most significant bits that form the network part of a tree (common prefix bitmask between all hosts of the tree)
  *
  * This function works on IPv4 and IPv6 trees
