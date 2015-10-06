@@ -1364,7 +1364,7 @@ void test_get_left_right_top_interface_route() {
 	}
 	ip_route_to_str(get_right_interface_route(&tree, uint8_t_to_uint128_t(4)), ipv6_route_str);
 	if (strcmp(ipv6_route_str, "fd00::4/126") != 0) {
-		fprintf(stderr, "%d: get_left_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		fprintf(stderr, "%d: get_right_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
 		//FAIL();
 		exit(1);
 	}
@@ -1377,7 +1377,7 @@ void test_get_left_right_top_interface_route() {
 	}
 	ip_route_to_str(get_right_interface_route(&tree, uint8_t_to_uint128_t(12)), ipv6_route_str);
 	if (strcmp(ipv6_route_str, "fd00::c/126") != 0) {
-		fprintf(stderr, "%d: get_left_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		fprintf(stderr, "%d: get_right_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
 		//FAIL();
 		exit(1);
 	}
@@ -1390,7 +1390,7 @@ void test_get_left_right_top_interface_route() {
 	}
 	ip_route_to_str(get_right_interface_route(&tree, uint8_t_to_uint128_t(2)), ipv6_route_str);
 	if (strcmp(ipv6_route_str, "fd00::3/128") != 0) {
-		fprintf(stderr, "%d: get_left_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		fprintf(stderr, "%d: get_right_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
 		//FAIL();
 		exit(1);
 	}
@@ -1403,7 +1403,7 @@ void test_get_left_right_top_interface_route() {
 	}
 	ip_route_to_str(get_right_interface_route(&tree, uint8_t_to_uint128_t(6)), ipv6_route_str);
 	if (strcmp(ipv6_route_str, "fd00::7/128") != 0) {
-		fprintf(stderr, "%d: get_left_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		fprintf(stderr, "%d: get_right_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
 		//FAIL();
 		exit(1);
 	}
@@ -1416,7 +1416,7 @@ void test_get_left_right_top_interface_route() {
 	}
 	ip_route_to_str(get_right_interface_route(&tree, uint8_t_to_uint128_t(10)), ipv6_route_str);
 	if (strcmp(ipv6_route_str, "fd00::b/128") != 0) {
-		fprintf(stderr, "%d: get_left_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		fprintf(stderr, "%d: get_right_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
 		//FAIL();
 		exit(1);
 	}
@@ -1429,7 +1429,7 @@ void test_get_left_right_top_interface_route() {
 	}
 	ip_route_to_str(get_right_interface_route(&tree, uint8_t_to_uint128_t(14)), ipv6_route_str);
 	if (strcmp(ipv6_route_str, "fd00::f/128") != 0) {
-		fprintf(stderr, "%d: get_left_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		fprintf(stderr, "%d: get_right_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
 		//FAIL();
 		exit(1);
 	}
@@ -1442,7 +1442,7 @@ void test_get_left_right_top_interface_route() {
 	}
 	ip_route_result = get_right_interface_route(&tree, uint8_t_to_uint128_t(1));
 	if (ip_route_result.ip_type != NONE) {
-		fprintf(stderr, "%d: get_left_interface_route() should return no route\n", __LINE__);
+		fprintf(stderr, "%d: get_right_interface_route() should return no route\n", __LINE__);
 		//FAIL();
 		exit(1);
 	}
@@ -1454,7 +1454,7 @@ void test_get_left_right_top_interface_route() {
 	}
 	ip_route_result = get_right_interface_route(&tree, uint8_t_to_uint128_t(15));
 	if (ip_route_result.ip_type != NONE) {
-		fprintf(stderr, "%d: get_left_interface_route() should return no route\n", __LINE__);
+		fprintf(stderr, "%d: get_right_interface_route() should return no route\n", __LINE__);
 		//FAIL();
 		exit(1);
 	}
