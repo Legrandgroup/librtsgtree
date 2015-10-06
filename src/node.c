@@ -281,10 +281,16 @@ ip_route_t get_top_interface_route(const self_ip_routing_tree_t* tree, const nod
 
 	result.ip_type = tree->ip_type;
 #ifdef IPV6_SUPPORT
-#warning IPv6 support is not implemented
 	if (tree->ip_type == IPV6) {
-		assert(0);	/* Not implemented yet */
-		//TODO: support IPv6 trees for routes
+		if (node_rank == 1) {	/* Root of tree has no specific route for top interface (only default) */
+			uint128_t_to_ipv6(uint128_t_zero(), &(result.in_addr.__ipv6_in6_addr));
+			result.prefix = 128;
+			result.ip_type = NONE;
+		}
+		else {
+			result = get_top_interface_config(tree, get_parent_node_id(tree, node));	/* In IPv6, we grab the parent node's top (reference) interface */
+			result.prefix = 128;	/* But we only create a route for this host */
+		}
 	}
 	else
 #endif
