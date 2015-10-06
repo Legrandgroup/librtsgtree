@@ -123,12 +123,9 @@ node_id_t get_parent_node_id(const self_ip_routing_tree_t* tree, const node_id_t
 	if (child_rank <= 1)
 		return (node_id_t)uint128_t_zero();	/* Child is the root or is above root... return error */
 	Rmax_Rp = tree->Rmax - child_rank;	/* Calculate the distance between our rank and the last ranks (leaves) */
-	mask_prefix = get_tree_ip_addr_bit_sz(tree);
 	Rmax_Rp++;	/* Go up to parent, one more LSB bits to zero */
-	assert(mask_prefix >= Rmax_Rp);
-	mask_prefix -= Rmax_Rp;
-	//if (mask_prefix <= tree->prefix)
-	//	return (node_id_t)uint128_t_zero();	/* We are working at the root level of the tree... there is no parent */
+	assert(Rmax_Rp <= 128);
+	mask_prefix = 128 - Rmax_Rp;
 	result = (node_id_t)uint128_t_and((uint128_t)child_node,
 									  ipv6_prefix_to_uint128_t_mask(mask_prefix));
 	result = (node_id_t)uint128_t_or((uint128_t)result,
