@@ -11,11 +11,35 @@ inline node_id_t Rmax_to_max_node_id(const rank_t Rmax) {
 	return uint128_t_dec(power2_to_uint128_t(Rmax));	/* FIXME: Why not use a dedicated right bit-filling function like ipv6_prefix_to_uint128_t_mask() to be more efficient? */
 }
 
+#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 inline void uint128_t_to_ipv6(const uint128_t input, struct in6_addr* output) {
 	assert(sizeof(output->s6_addr) == sizeof(input.uint128_a8));
 
 	memcpy((void *)(output->s6_addr), (void *)(input.uint128_a8), sizeof(input.uint128_a8));
 }
+#else // HAS_INT128
+inline void uint128_t_to_ipv6(const uint128_t input, struct in6_addr* output) {
+#ifdef IS_BIG_ENDIAN
+	*(uint128_t *)(output->s6_addr) = input;
+#else // IS_BIG_ENDIAN
+	((uint8_t *)output->s6_addr)[0] = ((uint8_t *)&input)[15];
+	((uint8_t *)output->s6_addr)[1] = ((uint8_t *)&input)[14];
+	((uint8_t *)output->s6_addr)[2] = ((uint8_t *)&input)[13];
+	((uint8_t *)output->s6_addr)[3] = ((uint8_t *)&input)[12];
+	((uint8_t *)output->s6_addr)[4] = ((uint8_t *)&input)[11];
+	((uint8_t *)output->s6_addr)[5] = ((uint8_t *)&input)[10];
+	((uint8_t *)output->s6_addr)[6] = ((uint8_t *)&input)[9];
+	((uint8_t *)output->s6_addr)[7] = ((uint8_t *)&input)[8];
+	((uint8_t *)output->s6_addr)[8] = ((uint8_t *)&input)[7];
+	((uint8_t *)output->s6_addr)[9] = ((uint8_t *)&input)[6];
+	((uint8_t *)output->s6_addr)[10] = ((uint8_t *)&input)[5];
+	((uint8_t *)output->s6_addr)[11] = ((uint8_t *)&input)[4];
+	((uint8_t *)output->s6_addr)[12] = ((uint8_t *)&input)[3];
+	((uint8_t *)output->s6_addr)[13] = ((uint8_t *)&input)[2];
+	((uint8_t *)output->s6_addr)[14] = ((uint8_t *)&input)[1];
+	((uint8_t *)output->s6_addr)[15] = ((uint8_t *)&input)[0];
+#endif
+#endif
 
 inline void uint32_t_to_ipv4(const uint32_t input, struct in_addr* output) {
 	assert(sizeof(output->s_addr) == sizeof(input));

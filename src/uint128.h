@@ -8,11 +8,11 @@
 #include <stdint.h>	// For uint*_t
 #include <netinet/in.h>	// For struct in6_addr
 
-/* Note: gcc or clang, on 64 bit platforms they have a builtin 128 bit types that come for free, __uint128_t and __int128_t */
-#ifdef UINT128_MAX
-#error uint128_t is already handled by your architecture, you should use built-in compiler support instead of this library
-#endif
-
+#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
+#define HAS_UINT8
+// #define HAS_UINT16
+// #define HAS_UINT16BE
+// #define HAS_UINT32BE
 typedef struct {
 	union {
 		uint16_t __split_16bits[8];
@@ -106,6 +106,47 @@ typedef struct {
 		n.uint128_a16[5] == 0xffff && \
 		n.uint128_a16[6] == 0xffff && \
 		n.uint128_a16[7] == 0xffff )
+
+#else	// HAS_INT128
+/* Note: gcc or clang, on 64 bit platforms they have a builtin 128 bit types that come for free, __uint128_t and __int128_t */
+typedef unsigned __int128 uint128_t;
+
+/**
+ * \def U128_SET_ZERO(n)
+ *
+ * \brief Assign the value zero to an uint128_t variable \p n
+ *
+ * \param n The uint128_t variable to set
+ */
+#define U128_SET_ZERO(n) do { n=0; } while(0)
+
+/**
+ * \def U128_SET_MAX(n)
+ *
+ * \brief Assign the value -1 to an uint128_t variable \p n
+ *
+ * \param n The uint128_t variable to set
+ */
+#define U128_SET_MAX(n) do { n=(uint128_t)-1; } while(0)
+
+/**
+ * \def U128_IS_ZERO(n)
+ *
+ * \brief Check if an uint128_t variable \p n equals 0
+ *
+ * \param n The uint128_t variable to check
+ */
+#define U128_IS_ZERO(n) (n == 0)
+
+/**
+ * \def U128_IS_MAX(n)
+ *
+ * \brief Check if an uint128_t variable \p n equals -1
+ *
+ * \param n The uint128_t variable to check
+ */
+#define U128_IS_MAX(n) (n == (uint128_t)-1)
+#endif
 
 /**
  * \brief Return 0 as an uint128_t

@@ -13,6 +13,21 @@
 
 #include "uint128.h"	// For uint128_t
 
+#ifdef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
+
+#ifndef IS_BIG_ENDIAN
+#ifndef IS_LITTLE_ENDIAN
+#error IS_BIG_ENDIAN or IS_LITTLE_ENDIAN compiler directives must be set in order to use this library with native 128-bit integers
+#endif
+#endif
+#ifdef IS_BIG_ENDIAN
+#ifdef IS_LITTLE_ENDIAN
+#error IS_BIG_ENDIAN and IS_LITTLE_ENDIAN compiler directives cannot be simultaneously
+#endif
+#endif
+
+#endif // HAS_INT128
+
 #include <string.h>	// For memcpy()
 
 typedef uint8_t rank_t;

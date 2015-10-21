@@ -20,6 +20,7 @@ inline uint128_t uint128_t_max() {
 	return result_max;
 }
 
+#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 uint128_t power2_to_uint128_t(uint8_t power) {
 	uint128_t result;
 	uint8_t byte_index;
@@ -31,7 +32,13 @@ uint128_t power2_to_uint128_t(uint8_t power) {
 	result.uint128_a8[byte_index] = 1<<(power % 8);	/* Set to 1 the appropriate bit of the matching byte */
 	return result;
 }
+#else	// HAS_INT128
+inline uint128_t power2_to_uint128_t(uint8_t power) {
+	return ((uint128_t)1)<<power;
+}
+#endif
 
+#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 uint128_t uint128_t_right_shift(const uint128_t input) {
 
 	  uint128_t output = input;
@@ -50,7 +57,13 @@ uint128_t uint128_t_right_shift(const uint128_t input) {
 
 	  return output;
 }
+#else	// HAS_INT128
+inline uint128_t uint128_t_right_shift(const uint128_t input) {
+	return input>>1;
+}
+#endif
 
+#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 uint128_t uint128_t_right_shift_n(const uint128_t input, uint8_t n) {
 
 	uint128_t result = input;
@@ -58,7 +71,13 @@ uint128_t uint128_t_right_shift_n(const uint128_t input, uint8_t n) {
 		result = uint128_t_right_shift(result);
 	return result;
 }
+#else	// HAS_INT128
+inline uint128_t uint128_t_right_shift_n(const uint128_t input, uint8_t n) {
+	return input>>n;
+}
+#endif
 
+#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 uint128_t uint128_t_left_shift(const uint128_t input) {
 
 	  uint128_t output = input;
@@ -77,7 +96,13 @@ uint128_t uint128_t_left_shift(const uint128_t input) {
 
 	  return output;
 }
+#else	// HAS_INT128
+inline uint128_t uint128_t_left_shift(const uint128_t input) {
+	return input<<1;
+}
+#endif
 
+#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 uint128_t uint128_t_left_shift_n(const uint128_t input, uint8_t n) {
 
 	uint128_t result = input;
@@ -85,7 +110,13 @@ uint128_t uint128_t_left_shift_n(const uint128_t input, uint8_t n) {
 		result = uint128_t_left_shift(result);
 	return result;
 }
+#else	// HAS_INT128
+inline uint128_t uint128_t_left_shift_n(const uint128_t input, uint8_t n) {
+	return input<<n;
+}
+#endif
 
+#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 uint128_t uint128_t_inc(const uint128_t input) {
 
 	  uint128_t output = input;
@@ -105,7 +136,13 @@ uint128_t uint128_t_inc(const uint128_t input) {
 	  }
 	  return output;
 }
+#else	// HAS_INT128
+inline uint128_t uint128_t_inc(const uint128_t input) {
+	return input+1;
+}
+#endif
 
+#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 uint128_t uint128_t_dec(const uint128_t input) {
 
 	  uint128_t output = input;
@@ -124,7 +161,13 @@ uint128_t uint128_t_dec(const uint128_t input) {
 	  }
 	  return output;
 }
+#else	// HAS_INT128
+inline uint128_t uint128_t_dec(const uint128_t input) {
+	return input-1;
+}
+#endif
 
+#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 uint128_t uint128_t_sub(const uint128_t from, uint128_t subtraction) {
 	  uint128_t output;
 	  register int8_t byte_index;
@@ -147,7 +190,13 @@ uint128_t uint128_t_sub(const uint128_t from, uint128_t subtraction) {
 	  }
 	  return output;
 }
+#else	// HAS_INT128
+inline uint128_t uint128_t_sub(const uint128_t from, uint128_t subtraction) {
+	return from-subtraction;
+}
+#endif
 
+#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 uint128_t uint128_t_add(const uint128_t first, uint128_t second) {
 	  uint128_t output;
 	  register int8_t byte_index;
@@ -170,7 +219,13 @@ uint128_t uint128_t_add(const uint128_t first, uint128_t second) {
 	  }
 	  return output;
 }
+#else	// HAS_INT128
+uint128_t uint128_t_add(const uint128_t first, uint128_t second) {
+	return first+second;
+}
+#endif
 
+#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 uint128_t uint128_t_or(const uint128_t first, uint128_t second) {
 	  register int8_t byte_index;
 	  uint8_t index_of_last_byte = sizeof(first.uint128_a8) - 1;
@@ -179,7 +234,13 @@ uint128_t uint128_t_or(const uint128_t first, uint128_t second) {
 		  second.uint128_a8[byte_index] |= first.uint128_a8[byte_index];
 	  return second;
 }
+#else	// HAS_INT128
+inline uint128_t uint128_t_or(const uint128_t first, uint128_t second) {
+	return first|second;
+}
+#endif
 
+#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 uint128_t uint128_t_and(const uint128_t first, uint128_t second) {
 	  register int8_t byte_index;
 	  uint8_t index_of_last_byte = sizeof(first.uint128_a8) - 1;
@@ -188,7 +249,13 @@ uint128_t uint128_t_and(const uint128_t first, uint128_t second) {
 		  second.uint128_a8[byte_index] &= first.uint128_a8[byte_index];
 	  return second;
 }
+#else	// HAS_INT128
+uint128_t uint128_t_and(const uint128_t first, uint128_t second) {
+	return first&second;
+}
+#endif
 
+#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 uint128_t uint8_t_to_uint128_t(uint8_t from) {
 
 	uint128_t result;
@@ -197,7 +264,13 @@ uint128_t uint8_t_to_uint128_t(uint8_t from) {
 	result.uint128_a8[sizeof(result.uint128_a8)-1] = from;
 	return result;
 }
+#else	// HAS_INT128
+uint128_t uint8_t_to_uint128_t(uint8_t from) {
+	return (uint128_t)from;
+}
+#endif
 
+#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 uint128_t uint16_t_to_uint128_t(uint16_t from) {
 
 	uint128_t result;
@@ -207,6 +280,11 @@ uint128_t uint16_t_to_uint128_t(uint16_t from) {
 	result.uint128_a8[sizeof(result.uint128_a16)-2] = (uint8_t)(from >> 8);
 	return result;
 }
+#else	// HAS_INT128
+uint128_t uint16_t_to_uint128_t(uint16_t from) {
+	return (uint128_t)from;
+}
+#endif
 
 void uint8_t_to_binstr(uint8_t input, const uint8_t bits_no, char output[9]) {
 
@@ -227,6 +305,7 @@ void uint8_t_to_binstr(uint8_t input, const uint8_t bits_no, char output[9]) {
 	output[pos] = '\0';	/* Terminate string */
 }
 
+#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 void uint128_t_to_binstr(const uint128_t input, const uint8_t nb_bits, char* output) {
 
 	register uint8_t already_parsed_full_bytes;
@@ -257,7 +336,13 @@ void uint128_t_to_binstr(const uint128_t input, const uint8_t nb_bits, char* out
 	}
 	output[nb_bits_in_additional_MSB + already_parsed_full_bytes*8] = '\0';	/* Terminate C-string */
 }
+#else	// HAS_INT128
+void uint128_t_to_binstr(const uint128_t input, const uint8_t nb_bits, char* output) {
+	*output = '\0'; // TODO
+}
+#endif
 
+#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 void uint128_t_to_hexstr(const uint128_t input, const uint8_t nb_bytes, char* output) {
 
 	uint8_t current_index;
@@ -286,7 +371,13 @@ void uint128_t_to_hexstr(const uint128_t input, const uint8_t nb_bytes, char* ou
 	}
 	*output = '\0';	/* Terminate C-string */
 }
+#else	// HAS_INT128
+void uint128_t_to_hexstr(const uint128_t input, const uint8_t nb_bytes, char* output) {
+	*output = '\0'; // TODO
+}
+#endif
 
+#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 uint8_t uint128_t_right_0bit_count(const uint128_t input) {
 
 	uint8_t result = 0;
@@ -317,7 +408,13 @@ uint8_t uint128_t_right_0bit_count(const uint128_t input) {
 
 	return result;
 }
+#else	// HAS_INT128
+uint8_t uint128_t_right_0bit_count(const uint128_t input) {
+	return 0; // TODO
+}
+#endif
 
+#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 int uint128_t_cmp(const uint128_t first, uint128_t second) {
 	  register int8_t byte_index;
 	  uint8_t index_of_last_byte = sizeof(first.uint128_a8) - 1;
@@ -330,3 +427,11 @@ int uint128_t_cmp(const uint128_t first, uint128_t second) {
 	  }
 	  return 0;
 }
+#else	// HAS_INT128
+int uint128_t_cmp(const uint128_t first, uint128_t second) {
+	if (first==second) return 0;
+	if (first>second) return 1;
+	return -1;
+}
+#endif
+
