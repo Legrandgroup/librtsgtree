@@ -206,6 +206,21 @@ node_id_t get_right_child_node_id(const self_ip_routing_tree_t* tree, const node
 **/
 if_ip_addr_t get_top_interface_config(const self_ip_routing_tree_t* tree, const node_id_t node);
 
+#ifdef IPV6_SUPPORT
+/**
+ * \brief Get the IP configuration for the bottom network interface of a node
+ *
+ * Note: tree.ip_type, tree.Rmax, tree.hostA and tree.prefix must be provisioned correctly in argument \p tree to get a correct result
+ * Warning: this function will fail if the tree is not IPv6 and if tree->hostA == 0
+ *
+ * \param tree The tree inside which we perform the calculation
+ * \param node The node ID of which we want to calculate the network interface characteristics
+ *
+ * \return The IP addressing of the bottom network interface for \p node (it might be ::/128 (unspecified address) if no bottom interface addressing is expected on the node
+**/
+if_ip_addr_t get_bottom_interface_config(const self_ip_routing_tree_t* tree, const node_id_t node);
+#endif
+
 /**
  * \brief Get the IP configuration for the bottom left network interface of a node
  *
@@ -235,7 +250,19 @@ if_ip_addr_t get_left_interface_config(const self_ip_routing_tree_t* tree, const
 if_ip_addr_t get_right_interface_config(const self_ip_routing_tree_t* tree, const node_id_t node);
 
 /**
- * \brief Get the route going via the top network interface of a node
+ * \brief Get the reference IP address and netmask for a specific \p node (it is the IP address and prefix used to reach this node in the tree)
+ *
+ * Note: tree.ip_type, tree.Rmax, tree.hostA and tree.prefix must be provisioned correctly in argument \p tree to get a correct result
+ *
+ * \param tree The tree inside which we perform the calculation
+ * \param node The node ID of which we want to calculate the network interface characteristics
+ *
+ * \return The IP addressing of the reference network interface for \p node
+**/
+if_ip_addr_t get_reference_interface_config(const self_ip_routing_tree_t* tree, const node_id_t node);
+
+/**
+ * \brief Get the route going to the parent (via via the top network interface) of a \p node
  *
  * Note: tree.ip_type, tree.Rmax, tree.hostA and tree.prefix must be provisioned correctly in argument \p tree to get a correct result
  * Warning: You have to check that the returned ip_type is not NONE.
@@ -251,7 +278,7 @@ if_ip_addr_t get_right_interface_config(const self_ip_routing_tree_t* tree, cons
 ip_route_t get_top_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node);
 
 /**
- * \brief Get the route going via the bottom left network interface of a node
+ * \brief Get the route going to the left child (via the left network interface) of a \p node
  *
  * Note: tree.ip_type, tree.Rmax, tree.hostA and tree.prefix must be provisioned correctly in argument \p tree to get a correct result
  * Warning: You have to check that the returned ip_type is not NONE.
@@ -267,7 +294,7 @@ ip_route_t get_top_interface_route(const self_ip_routing_tree_t* tree, const nod
 ip_route_t get_left_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node);
 
 /**
- * \brief Get the route going via the bottom left network interface of a node
+ * \brief Get the route going to the right child (via the right network interface) of a \p node
  *
  * Note: tree.ip_type, tree.Rmax, tree.hostA and tree.prefix must be provisioned correctly in argument \p tree to get a correct result
  * Warning: You have to check that the returned ip_type is not NONE.
@@ -278,9 +305,28 @@ ip_route_t get_left_interface_route(const self_ip_routing_tree_t* tree, const no
  * \param tree The tree inside which we perform the calculation
  * \param node The node ID of which we want to calculate the route
  *
- * \return The route for the left network interface of \p node (the IP type (IPv4/IPv6) of the route will match IP type of \p tree)
+ * \return The route for the right network interface of \p node (the IP type (IPv4/IPv6) of the route will match IP type of \p tree)
 **/
 ip_route_t get_right_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node);
+
+#ifdef IPV6_SUPPORT
+/**
+ * \brief Get the route going to the local LAN (via the bottom network interface) of a \p node
+ *
+ * Note: tree.ip_type, tree.Rmax, tree.hostA and tree.prefix must be provisioned correctly in argument \p tree to get a correct result
+ * Warning: You have to check that the returned ip_type is not NONE.
+ * Warning: this function will fail if the tree is not IPv6 and if tree->hostA == 0
+ * If it is NONE, it means there is no expected route for this interface
+ * If is is not NONE, it will match \p tree .ip_type, the returned ip_route_t will contain the range and prefix for the route via this interface.
+ * It is up to the caller to determine which next hop should be used on this interface to reach the resulting subnet
+ *
+ * \param tree The tree inside which we perform the calculation
+ * \param node The node ID of which we want to calculate the route
+ *
+ * \return The route for the bottom network interface of \p node (the IP type (IPv4/IPv6) of the route will match IP type of \p tree)
+**/
+ip_route_t get_bottom_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node);
+#endif
 
 /**
  * \def assert_valid_node_id_for_tree(n, t)

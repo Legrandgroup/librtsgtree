@@ -209,6 +209,32 @@ if_ip_addr_t get_top_interface_config(const self_ip_routing_tree_t* tree, const 
 	return result;
 }
 
+#ifdef IPV6_SUPPORT
+if_ip_addr_t get_bottom_interface_config(const self_ip_routing_tree_t* tree, const node_id_t node) {
+	if_ip_addr_t result;
+
+	assert(tree);
+	assert(tree->ip_type);
+	assert_valid_node_id_for_tree(node, *tree);	/* Make sure node contains a valid value for this tree */
+	assert(tree->ip_type == IPV6);	/* Bottom interfaces only exist for IPv6 trees */
+	//assert(tree->hostA != 0); // We do not assert this in case calling code does not make sure that hostA != 0, instead, we will return a ::/0 (unspecified address)
+
+	if (tree->hostA != 0) {
+		result.ip_type = tree->ip_type;
+		uint128_t_to_ipv6(get_reference_interface_ipv6_addr(tree, (uint128_t)node), &(result.in_addr.__ipv6_in6_addr));
+		result.prefix = get_hosts_prefix_len(tree);
+	}
+	else {	/* hostA == 0, there should be no bottom interface */
+		result.ip_type = tree->ip_type;
+		/* Set IPv6 address to ::/128 (unspecified) */
+		memset(&(result.in_addr.__ipv6_in6_addr), sizeof(result.in_addr.__ipv6_in6_addr), 0);
+		result.prefix = 128;
+	}
+
+	return result;
+}
+#endif
+
 if_ip_addr_t get_left_interface_config(const self_ip_routing_tree_t* tree, const node_id_t node) {
 	if_ip_addr_t result;
 
@@ -269,6 +295,27 @@ if_ip_addr_t get_right_interface_config(const self_ip_routing_tree_t* tree, cons
 	return result;
 }
 
+if_ip_addr_t get_reference_interface_config(const self_ip_routing_tree_t* tree, const node_id_t node) {
+	assert(tree);
+	assert(tree->ip_type);
+#ifdef IPV6_SUPPORT
+	if (tree->ip_type == IPV6) {
+		if (tree->hostA == 0)
+			return get_top_interface_config(tree, node); /* For IPv6 trees without subnets attached to hosts (hostA == 0), reference interface is the top interface */
+		else
+			return get_bottom_interface_config(tree, node); /* For IPv6 trees with subnets attached to hosts (hostA != 0), reference interface is the bottom interface (local LAN) */
+	}
+	else
+#endif
+#ifdef IPV4_SUPPORT
+		if (tree->ip_type == IPV4) {
+			return get_top_interface_config(tree, node); /* For IPv4 trees, reference interface is the top interface */
+		}
+		else
+#endif
+			assert(0);	/* Force fail */
+}
+
 ip_route_t get_top_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node) {
 	ip_route_t result;
 	rank_t     node_rank;
@@ -288,8 +335,8 @@ ip_route_t get_top_interface_route(const self_ip_routing_tree_t* tree, const nod
 			result.ip_type = NONE;
 		}
 		else {
-			result = get_top_interface_config(tree, get_parent_node_id(tree, node));	/* In IPv6, we grab the parent node's top (reference) interface */
-			result.prefix = 128;	/* But we only create a route for this host */
+			result = get_reference_interface_config(tree, get_parent_node_id(tree, node));	/* We add a route to the parent node's reference interface */
+			result.prefix = 128 - tree->hostA;	/* But we only create a route for this host */
 		}
 	}
 	else
@@ -457,6 +504,27 @@ ip_route_t get_right_interface_route(const self_ip_routing_tree_t* tree, const n
 		assert(0);	/* Not implemented yet */
 		return no_interface_route();
 		//TODO: support IPv4 trees for routes
+	}
+#endif
+}
+
+#ifdef IPV6_SUPPORT
+ip_route_t get_bottom_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node) {
+	ip_route_t result;
+	rank_t     node_rank;
+
+	assert(tree);
+	assert(tree->ip_type);
+	assert_valid_node_id_for_tree(node, *tree);	/* Make sure node contains a valid value for this tree */
+
+	result.ip_type = tree->ip_type;
+	if (tree->ip_type == IPV6) {
+		result = get_reference_interface_config(tree, node);	/* We add a route to the parent node's reference interface */
+		result.prefix = 128 - tree->hostA;	/* But we only create a route for this host */
+		return result;
+	}
+	else {
+		return no_interface_route();	/* IPv4 nodes do not have a bottom interface (no local LAN attached) */
 	}
 #endif
 }
