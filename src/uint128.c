@@ -415,6 +415,33 @@ uint8_t uint128_t_right_0bit_count(const uint128_t input) {
 #endif
 
 #ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
+uint128_t msb_1bits_to_uint128_t(uint8_t n) {
+	uint8_t byte_pos;
+	uint128_t result;
+
+	assert(n<=128);
+
+	for (byte_pos = 0; n >= 8; byte_pos++, n-=8) {
+		result.uint128_a8[byte_pos] = 0xff;	/* Fill all full bytes */
+	}
+	if (n!=0) {	/* If there are remaining bits */
+		assert(n<=8);
+		assert(byte_pos<sizeof(result.uint128_a8));	/* Make sure we don't overflow... should never occur */
+		result.uint128_a8[byte_pos] = 0xff << (8-n);
+		byte_pos++;
+	}
+	for (; byte_pos<sizeof(result.uint128_a8); byte_pos++) {
+		result.uint128_a8[byte_pos] = 0;	/* Fill the remaining bytes with 0 */
+	}
+	return result;
+}
+#else	// HAS_INT128
+uint128_t msb_1bits_to_uint128_t(uint8_t n) {
+	return ((uint128_t)1<<n)-1;
+}
+#endif
+
+#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 int uint128_t_cmp(const uint128_t first, uint128_t second) {
 	  register int8_t byte_index;
 	  uint8_t index_of_last_byte = sizeof(first.uint128_a8) - 1;

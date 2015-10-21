@@ -342,6 +342,15 @@ void uint128_t_to_hexstr(const uint128_t input, const uint8_t nb_bytes, char* ou
 uint8_t uint128_t_right_0bit_count(const uint128_t input);
 
 /**
+ * \brief Create a uint128_t value with the \n high significant bits to 1 and all other to 0
+ *
+ * \param n The number of bits to set to 1
+ *
+ * \return The resulting uint128_t
+**/
+uint128_t msb_1bits_to_uint128_t(uint8_t n);
+
+/**
  * \brief Compare \p first uint128_t and \p second uint128_t
  *
  * Note: We work on unsigned integers only, so be careful: possible "negative" results passed as \p first or \p second will not lead to expected result

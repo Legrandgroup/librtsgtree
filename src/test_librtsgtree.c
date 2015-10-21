@@ -31,7 +31,9 @@ int main(void) {
 	test_uint128_t_or();
 	test_uint128_t_and();
 	test_uint128_t_right_0bit_count();
+	test_msb_1bits_to_uint128_t();
 	test_uint128_t_cmp();
+	test_uint128_t_hton();
 
 	printf("*** Testing node ***\n");
 #ifdef IPV6_SUPPORT

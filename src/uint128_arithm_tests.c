@@ -1496,6 +1496,8 @@ void test_uint128_t_and() {
 	printf("%s: tests passed\n", __func__);
 }
 
+/* Unit test for uint128_t_right_0bit_count()
+ */
 void test_uint128_t_right_0bit_count() {
 	uint128_t test_u128;
 	uint8_t bit_count;
@@ -1525,6 +1527,14 @@ void test_uint128_t_right_0bit_count() {
 	printf("%s: tests passed\n", __func__);
 }
 
+/* Unit test for msb_1bits_to_uint128_t()
+ */
+void test_msb_1bits_to_uint128_t() {
+	printf("!!! %s: warning: not implemeted\n", __func__);
+}
+
+/* Unit test for uint128_t_cmp()
+ */
 void test_uint128_t_cmp() {
 	uint128_t test1_u128;
 	uint128_t test2_u128;
@@ -1581,4 +1591,10 @@ void test_uint128_t_cmp() {
 	}
 
 	printf("%s: tests passed\n", __func__);
+}
+
+/* Unit test for uint128_t_cmp()
+ */
+void test_uint128_t_hton() {
+	printf("!!! %s: warning: not implemeted\n", __func__);
 }

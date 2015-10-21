@@ -70,25 +70,8 @@ prefix_t get_hosts_prefix_len(const self_ip_routing_tree_t* tree) {
 }
 
 #ifdef IPV6_SUPPORT
-uint128_t ipv6_prefix_to_uint128_t_mask(prefix_t prefix) {
-	uint8_t byte_pos;
-	uint128_t result;
-
-	assert(prefix<=128);
-
-	for (byte_pos = 0; prefix >= 8; byte_pos++, prefix-=8) {
-		result.uint128_a8[byte_pos] = 0xff;	/* Fill all full bytes */
-	}
-	if (prefix!=0) {	/* If there are remaining bits */
-		assert(prefix<=8);
-		assert(byte_pos<sizeof(result.uint128_a8));	/* Make sure we don't overflow... should never occur */
-		result.uint128_a8[byte_pos] = 0xff << (8-prefix);
-		byte_pos++;
-	}
-	for (; byte_pos<sizeof(result.uint128_a8); byte_pos++) {
-		result.uint128_a8[byte_pos] = 0;	/* Fill the remaining bytes with 0 */
-	}
-	return result;
+inline uint128_t ipv6_prefix_to_uint128_t_mask(prefix_t prefix) {
+	return msb_1bits_to_uint128_t(prefix);
 }
 #endif	// IPV6_SUPPORT
 
