@@ -50,8 +50,12 @@ void test_Rmax_to_max_node_id() {
 		exit(1);
 	}
 
+#ifndef HAS_INT128
 	U128_SET_MAX(test_node);
 	test_node.uint128_a8[0] = 0x7f;
+#else
+	test_node &= (uint128_t)(-1) >> 1;
+#endif
 	if (uint128_t_cmp(Rmax_to_max_node_id(127), test_node) != 0) {
 		fprintf(stderr, "%d: Rmax_to_max_node_id() failed\n", __LINE__);
 		//FAIL();
@@ -78,6 +82,7 @@ void test_uint128_t_to_ipv6() {
 	char result[INET6_ADDRSTRLEN+1];
 	struct in6_addr dst_in_addr;
 
+#ifndef HAS_INT128
 	test_node.uint128_a8[0] = 0xa5;
 	test_node.uint128_a8[1] = 0xa2;
 	test_node.uint128_a8[2] = 0x15;
@@ -94,6 +99,9 @@ void test_uint128_t_to_ipv6() {
 	test_node.uint128_a8[13] = 0x9c;
 	test_node.uint128_a8[14] = 0x47;
 	test_node.uint128_a8[15] = 0x0f;
+#else
+	test_node = (uint128_t)0xa5a2150245a887c4 << 64 | (uint128_t)0xe5041afe899c470f;
+#endif
 
 	uint128_t_to_ipv6(test_node, &dst_in_addr);
 	inet_ntop(AF_INET6, &dst_in_addr, result, INET6_ADDRSTRLEN);
@@ -104,6 +112,7 @@ void test_uint128_t_to_ipv6() {
 		exit(1);
 	}
 
+#ifndef HAS_INT128
 	test_node.uint128_a8[0] = 0x20;
 	test_node.uint128_a8[1] = 0x01;
 	test_node.uint128_a8[2] = 0x41;
@@ -120,6 +129,9 @@ void test_uint128_t_to_ipv6() {
 	test_node.uint128_a8[13] = 0x21;
 	test_node.uint128_a8[14] = 0x00;
 	test_node.uint128_a8[15] = 0x04;
+#else
+	test_node = (uint128_t)0x200141c810000021 << 64 | (uint128_t)0x0000000000210004;
+#endif
 
 	uint128_t_to_ipv6(test_node, &dst_in_addr);
 	inet_ntop(AF_INET6, &dst_in_addr, result, INET6_ADDRSTRLEN);
@@ -817,8 +829,12 @@ void test_get_top_interface_config() {
 	tree.ip_type = IPV6;
 	tree.Rmax = 4;
 	tree.hostA = 0;
+#ifndef HAS_INT128
 	U128_SET_ZERO(tree.prefix);
 	tree.prefix.uint128_a8[0] = 0xfd;	/* Prefix is fd00::/124 */
+#else
+	tree.prefix = (uint128_t)0xfd << 120;	/* Prefix is fd00::/124 */
+#endif
 
 	test_node = get_root_node_id(&tree);	/* Will get 8 */
 	ip_addr_result = get_top_interface_config(&tree, test_node);
@@ -935,11 +951,15 @@ void test_get_top_interface_config() {
 	tree.ip_type = IPV4;
 	tree.Rmax = 6;
 	tree.hostA = 2;
+#ifndef HAS_INT128
 	U128_SET_ZERO(tree.prefix);
 	tree.prefix.uint128_a8[12] = 192;
 	tree.prefix.uint128_a8[13] = 168;
 	tree.prefix.uint128_a8[14] = 0;
 	tree.prefix.uint128_a8[15] = 0;	/* Prefix is 192.168.0.0/24 */
+#else
+	tree.prefix = (uint128_t)192<<24 | (uint128_t)168<<16 | (uint128_t)0<<8 | (uint128_t)0;
+#endif
 
 #warning Test for IPv4 is not implemented yet
 	//ip_addr_result = get_top_interface_config(&tree, test_node);
@@ -967,8 +987,13 @@ void test_get_left_interface_config() {
 	tree.ip_type = IPV6;
 	tree.Rmax = 4;
 	tree.hostA = 0;
+#ifndef HAS_INT128
 	U128_SET_ZERO(tree.prefix);
 	tree.prefix.uint128_a8[0] = 0xfd;	/* Prefix is fd00::/124 */
+#else
+	tree.prefix = (uint128_t)0xfd << 120;   /* Prefix is fd00::/124 */
+#endif
+
 
 	test_node = get_root_node_id(&tree);	/* Will get 8 */
 	ip_addr_result = get_left_interface_config(&tree, test_node);
@@ -987,11 +1012,15 @@ void test_get_left_interface_config() {
 	tree.ip_type = IPV4;
 	tree.Rmax = 6;
 	tree.hostA = 2;
+#ifndef HAS_INT128
 	U128_SET_ZERO(tree.prefix);
 	tree.prefix.uint128_a8[12] = 192;
 	tree.prefix.uint128_a8[13] = 168;
 	tree.prefix.uint128_a8[14] = 0;
 	tree.prefix.uint128_a8[15] = 0;	/* Prefix is 192.168.0.0/24 */
+#else
+	tree.prefix = (uint128_t)192<<24 | (uint128_t)168<<16 | (uint128_t)0<<8 | (uint128_t)0;
+#endif
 
 #warning Test for IPv4 is not implemented yet
 	//ip_addr_result = get_left_interface_config(&tree, test_node);
@@ -1019,8 +1048,12 @@ void test_get_right_interface_config() {
 	tree.ip_type = IPV6;
 	tree.Rmax = 4;
 	tree.hostA = 0;
+#ifndef HAS_INT128
 	U128_SET_ZERO(tree.prefix);
 	tree.prefix.uint128_a8[0] = 0xfd;	/* Prefix is fd00::/124 */
+#else
+	tree.prefix = (uint128_t)0xfd << 120;   /* Prefix is fd00::/124 */
+#endif
 
 	test_node = get_root_node_id(&tree);	/* Will get 8 */
 	ip_addr_result = get_left_interface_config(&tree, test_node);
@@ -1039,11 +1072,15 @@ void test_get_right_interface_config() {
 	tree.ip_type = IPV4;
 	tree.Rmax = 6;
 	tree.hostA = 2;
+#ifndef HAS_INT128
 	U128_SET_ZERO(tree.prefix);
 	tree.prefix.uint128_a8[12] = 192;
 	tree.prefix.uint128_a8[13] = 168;
 	tree.prefix.uint128_a8[14] = 0;
 	tree.prefix.uint128_a8[15] = 0;	/* Prefix is 192.168.0.0/24 */
+#else
+	tree.prefix = (uint128_t)192<<24 | (uint128_t)168<<16 | (uint128_t)0<<8 | (uint128_t)0;
+#endif
 
 #warning Test for IPv4 is not implemented yet
 	//ip_addr_result = get_right_interface_config(&tree, test_node);
@@ -1104,8 +1141,12 @@ void test_get_left_right_top_interface_route() {
 	tree.ip_type = IPV6;
 	tree.Rmax = 4;
 	tree.hostA = 0;
+#ifndef HAS_INT128
 	U128_SET_ZERO(tree.prefix);
 	tree.prefix.uint128_a8[0] = 0xfd;	/* Prefix is fd00::/124 */
+#else
+	tree.prefix = (uint128_t)0xfd << 120;   /* Prefix is fd00::/124 */
+#endif
 
 	test_node = get_root_node_id(&tree);	/* Will get 8 */
 	ip_route_to_str(ip_route_result = get_left_interface_route(&tree, test_node), ipv6_route_str);
@@ -1247,11 +1288,15 @@ void test_get_left_right_top_interface_route() {
 	tree.ip_type = IPV4;
 	tree.Rmax = 6;
 	tree.hostA = 2;
+#ifndef HAS_INT128
 	U128_SET_ZERO(tree.prefix);
 	tree.prefix.uint128_a8[12] = 192;
 	tree.prefix.uint128_a8[13] = 168;
 	tree.prefix.uint128_a8[14] = 0;
 	tree.prefix.uint128_a8[15] = 0;	/* Prefix is 192.168.0.0/24 */
+#else
+	tree.prefix = (uint128_t)192<<24 | (uint128_t)168<<16 | (uint128_t)0<<8 | (uint128_t)0;
+#endif
 
 #warning Test for IPv4 is not implemented yet
 	//ip_route_result = get_right_interface_config(&tree, test_node);
