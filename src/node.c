@@ -339,7 +339,7 @@ inline ip_route_t no_interface_route() {
  * \param node_rank The rank for \p node in \p tree
  * \param child_node The node ID of the child (left or right) for which we cant to calculate the route
  */
-ip_route_t get_bottom_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node, const rank_t node_rank, const node_id_t child_node) {
+ip_route_t get_child_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node, const rank_t node_rank, const node_id_t child_node) {
 	ip_route_t result;
 	//uint128_t result_u128; // Temporary for debug
 	//char result_txt[33];	// Temporary for debug
@@ -414,7 +414,7 @@ ip_route_t get_left_interface_route(const self_ip_routing_tree_t* tree, const no
 			return no_interface_route();
 		}
 		else {
-			return get_bottom_interface_route(tree, node, node_rank, get_left_child_node_id(tree, node));
+			return get_child_interface_route(tree, node, node_rank, get_left_child_node_id(tree, node));
 		}
 	}
 #endif
@@ -444,7 +444,7 @@ ip_route_t get_right_interface_route(const self_ip_routing_tree_t* tree, const n
 			return no_interface_route();
 		}
 		else {
-			return get_bottom_interface_route(tree, node, node_rank, get_right_child_node_id(tree, node));
+			return get_child_interface_route(tree, node, node_rank, get_right_child_node_id(tree, node));
 		}
 	}
 #endif
