@@ -11,7 +11,8 @@
 #include "node.h"
 
 int main(void) {
-	test_zero_max_uint18_t();
+	printf("*** Testing uint128 ***\n");
+	test_zero_max_uint128_t();
 	test_uint128_t_to_binstr();
 	test_uint128_t_to_hexstr();
 	test_power2_to_uint128_t();
@@ -32,6 +33,7 @@ int main(void) {
 	test_uint128_t_right_0bit_count();
 	test_uint128_t_cmp();
 
+	printf("*** Testing node ***\n");
 #ifdef IPV6_SUPPORT
 	test_uint128_t_to_ipv6();
 #endif

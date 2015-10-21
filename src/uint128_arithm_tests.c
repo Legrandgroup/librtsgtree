@@ -9,7 +9,7 @@
 
 /* Unit test for U128_SET_ZERO()
  */
-void test_zero_max_uint18_t() {
+void test_zero_max_uint128_t() {
 	uint128_t test_u128;
 
 	U128_SET_MAX(test_u128);
