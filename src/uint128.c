@@ -435,3 +435,52 @@ int uint128_t_cmp(const uint128_t first, uint128_t second) {
 }
 #endif
 
+#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
+inline uint128_t uint128_t_hton(const uint128_t input) {
+	return input;	/* Built-in uint128_t struct (not native) stores the 128 bits in network order */
+}
+#else // HAS_INT128
+inline uint128_t uint128_t_hton(const uint128_t input) {
+#ifdef IS_BIG_ENDIAN
+	return input;
+#elif IS_LITTLE_ENDIAN
+	uint128_t output;
+	((uint8_t *)output)[0] = ((uint8_t *)&input)[15];
+	((uint8_t *)output)[1] = ((uint8_t *)&input)[14];
+	((uint8_t *)output)[2] = ((uint8_t *)&input)[13];
+	((uint8_t *)output)[3] = ((uint8_t *)&input)[12];
+	((uint8_t *)output)[4] = ((uint8_t *)&input)[11];
+	((uint8_t *)output)[5] = ((uint8_t *)&input)[10];
+	((uint8_t *)output)[6] = ((uint8_t *)&input)[9];
+	((uint8_t *)output)[7] = ((uint8_t *)&input)[8];
+	((uint8_t *)output)[8] = ((uint8_t *)&input)[7];
+	((uint8_t *)output)[9] = ((uint8_t *)&input)[6];
+	((uint8_t *)output)[10] = ((uint8_t *)&input)[5];
+	((uint8_t *)output)[11] = ((uint8_t *)&input)[4];
+	((uint8_t *)output)[12] = ((uint8_t *)&input)[3];
+	((uint8_t *)output)[13] = ((uint8_t *)&input)[2];
+	((uint8_t *)output)[14] = ((uint8_t *)&input)[1];
+	((uint8_t *)output)[15] = ((uint8_t *)&input)[0];
+	return output;
+#else // unspecified endianness... use an endianness-agnostic version
+	uint128_t output;
+	((uint8_t *)output)[0] = input & 0xff;
+	((uint8_t *)output)[1] = (input>>8) & 0xff;
+	((uint8_t *)output)[2] = (input>>16) & 0xff;
+	((uint8_t *)output)[3] = (input>>24) & 0xff;
+	((uint8_t *)output)[4] = (input>>32) & 0xff;
+	((uint8_t *)output)[5] = (input>>40) & 0xff;
+	((uint8_t *)output)[6] = (input>>48) & 0xff;
+	((uint8_t *)output)[7] = (input>>56) & 0xff;
+	((uint8_t *)output)[8] = (input>>64) & 0xff;
+	((uint8_t *)output)[9] = (input>>72) & 0xff;
+	((uint8_t *)output)[10] = (input>>80) & 0xff;
+	((uint8_t *)output)[11] = (input>>88) & 0xff;
+	((uint8_t *)output)[12] = (input>>96) & 0xff;
+	((uint8_t *)output)[13] = (input>>104) & 0xff;
+	((uint8_t *)output)[14] = (input>>112) & 0xff;
+	((uint8_t *)output)[15] = (input>>120) & 0xff;
+	return output;
+#endif
+}
+#endif // HAS_INT128

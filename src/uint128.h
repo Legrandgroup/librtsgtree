@@ -8,6 +8,21 @@
 #include <stdint.h>	// For uint*_t
 #include <netinet/in.h>	// For struct in6_addr
 
+#ifdef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
+
+#ifndef IS_BIG_ENDIAN
+#ifndef IS_LITTLE_ENDIAN
+#warning IS_BIG_ENDIAN or IS_LITTLE_ENDIAN compiler directives should be set in order to optimise this library with native 128-bit integers
+#endif
+#endif
+#ifdef IS_BIG_ENDIAN
+#ifdef IS_LITTLE_ENDIAN
+#error IS_BIG_ENDIAN and IS_LITTLE_ENDIAN compiler directives cannot be simultaneously
+#endif
+#endif
+
+#endif // HAS_INT128
+
 #ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 #define HAS_UINT8
 // #define HAS_UINT16
@@ -337,5 +352,23 @@ uint8_t uint128_t_right_0bit_count(const uint128_t input);
  * \return -1 if \p first is strictly lower than \p second, 0 is they are equal, and 1 if \p first is strictly higher than \p second
 **/
 int uint128_t_cmp(const uint128_t first, uint128_t second);
+
+/**
+ * \brief Convert a uint128_t from host order (with associated host-specific endianness) to network order (big endian)
+ *
+ * \param input The uint128_t to convert to network order
+ *
+ * \result The corresponding network order
+ */
+uint128_t uint128_t_hton(const uint128_t input);
+
+/**
+ * \brief Convert a uint128_t from network order (big endian) to host order (with associated host-specific endianness)
+ *
+ * \param input The uint128_t to convert to host order
+ *
+ * \result The corresponding host order
+ */
+//uint128_t uint128_t_ntoh(const uint128_t input);
 
 #endif	// __UINT128_H__
