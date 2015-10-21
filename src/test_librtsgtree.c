@@ -1,5 +1,5 @@
 /*
- * \file librtsgtree.c
+ * \file test_librtsgtree.c
  *
  * TODO: Use cpputest for unit testing
  */

@@ -35,7 +35,7 @@ ifndef SILENCE
 endif
 
 # Project name
-PROJECT_NAME = librtsgt
+PROJECT_NAME = librtsgtree
 
 # Directories definition
 HOME_DIR = .
@@ -65,7 +65,7 @@ SRCS +=     $(SRC_PATH)/node.c \
 
 TEST_SRCS +=$(SRC_PATH)/node_tests.c \
             $(SRC_PATH)/uint128_arithm_tests.c \
-            $(SRC_PATH)/librtsgtree.c \
+            $(SRC_PATH)/test_librtsgtree.c \
 
 all: $(PROJECT_NAME) test Makefile
 
