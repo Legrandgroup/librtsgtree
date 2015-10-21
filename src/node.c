@@ -170,7 +170,7 @@ node_id_t get_right_child_node_id(const self_ip_routing_tree_t* tree, const node
 }
 
 #ifdef IPV6_SUPPORT
-uint128_t get_top_interface_ipv6_addr(const self_ip_routing_tree_t* tree, const node_id_t node) {
+uint128_t get_reference_interface_ipv6_addr(const self_ip_routing_tree_t* tree, const node_id_t node) {
 	uint128_t result;
 
 	assert(tree);
@@ -190,7 +190,7 @@ if_ip_addr_t get_top_interface_config(const self_ip_routing_tree_t* tree, const 
 	result.ip_type = tree->ip_type;
 #ifdef IPV6_SUPPORT
 	if (tree->ip_type == IPV6) {
-		uint128_t_to_ipv6(get_top_interface_ipv6_addr(tree, (uint128_t)node), &(result.in_addr.__ipv6_in6_addr));
+		uint128_t_to_ipv6(get_reference_interface_ipv6_addr(tree, (uint128_t)node), &(result.in_addr.__ipv6_in6_addr));
 		result.prefix = get_hosts_prefix_len(tree);
 	}
 	else
@@ -199,7 +199,7 @@ if_ip_addr_t get_top_interface_config(const self_ip_routing_tree_t* tree, const 
 		if (tree->ip_type == IPV4) {
 			assert(0);	/* Not implemented yet */
 			//TODO: implement function get_top_interface_ipv4_addr() to support IPv4 trees
-			//uint32_t_to_ipv4(get_top_interface_ipv4_addr(tree, (uint128_t)node), &(result.__in_addr.__ipv4_in_addr));
+			//uint32_t_to_ipv4(get_reference_interface_ipv4_addr(tree, (uint128_t)node), &(result.__in_addr.__ipv4_in_addr));
 			result.prefix = get_hosts_prefix_len(tree);
 		}
 		else
@@ -354,34 +354,37 @@ ip_route_t get_child_interface_route(const self_ip_routing_tree_t* tree, const n
 		assert(node_rank != tree->Rmax);	/* node_rank == tree->Rmax case must be handled by caller */
 		if (node_rank+1 == tree->Rmax) {	/* We are on the penultimate rank */
 			uint128_t_to_ipv6(
-			                  get_top_interface_ipv6_addr(tree, child_node),	/* get_child_func_t being either get_left_child_node_id() or get_right_child_node_id() */
+			                  get_reference_interface_ipv6_addr(tree, child_node),	/* get_child_func_t being either get_left_child_node_id() or get_right_child_node_id() */
 			                  &(result.in_addr.__ipv6_in6_addr)
 			                 );
-			result.prefix = 128;
+			assert(tree->hostA < 128);
+			result.prefix = 128 - tree->hostA;
 			return result;
 		}
 		else {	/* We are on any other rank */
 			assert(node_rank < tree->Rmax);
 
 			//printf("Will compute AND mask between:\n");
-			//uint128_t_to_hexstr(get_top_interface_ipv6_addr(tree, child_node), 16, result_txt);
+			//uint128_t_to_hexstr(get_reference_interface_ipv6_addr(tree, child_node), 16, result_txt);
 			//printf("%s (child IPv6)\nand\n", result_txt);
 			//uint128_t_to_hexstr(ipv6_prefix_to_uint128_t_mask(get_tree_prefix_len(tree) + node_rank), 16, result_txt);
 			//printf("%s (mask for %d+%d prefix)\n=\n", result_txt, get_tree_prefix_len(tree), node_rank);
 			//uint128_t_to_hexstr(uint128_t_and(
-			//                                  get_top_interface_ipv6_addr(tree, child_node),	/* get_child_func_t being either get_left_child_node_id() or get_right_child_node_id() */
+			//                                  get_reference_interface_ipv6_addr(tree, child_node),	/* get_child_func_t being either get_left_child_node_id() or get_right_child_node_id() */
 			//                                  ipv6_prefix_to_uint128_t_mask(get_tree_prefix_len(tree) + node_rank)
 			//                                 ), 16, result_txt);
 			//printf("%s (resulting route with prefix %d)\n", result_txt, get_tree_prefix_len(tree) + node_rank);
 
 			uint128_t_to_ipv6(
 			                  uint128_t_and(
-			                                get_top_interface_ipv6_addr(tree, child_node),	/* get_child_func_t being either get_left_child_node_id() or get_right_child_node_id() */
+			                                get_reference_interface_ipv6_addr(tree, child_node),	/* get_child_func_t being either get_left_child_node_id() or get_right_child_node_id() */
 			                                ipv6_prefix_to_uint128_t_mask(get_tree_prefix_len(tree) + node_rank)
 			                               ),
 			                  &(result.in_addr.__ipv6_in6_addr)
 			                 );
-			result.prefix = get_tree_prefix_len(tree) + node_rank;
+			assert(get_tree_prefix_len(tree) > tree->hostA);
+			assert(get_tree_prefix_len(tree) - tree->hostA + node_rank <= 128);
+			result.prefix = get_tree_prefix_len(tree) - tree->hostA + node_rank;
 			return result;
 		}
 	}
