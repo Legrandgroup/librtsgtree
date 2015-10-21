@@ -20,8 +20,8 @@ inline void uint128_t_to_ipv6(const uint128_t input, struct in6_addr* output) {
 #else // HAS_INT128
 inline void uint128_t_to_ipv6(const uint128_t input, struct in6_addr* output) {
 #ifdef IS_BIG_ENDIAN
-	*(uint128_t *)(output->s6_addr) = input;
-#else // IS_BIG_ENDIAN
+	*((uint128_t *)(output->s6_addr)) = input;
+#elif IS_LITTLE_ENDIAN
 	((uint8_t *)output->s6_addr)[0] = ((uint8_t *)&input)[15];
 	((uint8_t *)output->s6_addr)[1] = ((uint8_t *)&input)[14];
 	((uint8_t *)output->s6_addr)[2] = ((uint8_t *)&input)[13];
@@ -38,8 +38,26 @@ inline void uint128_t_to_ipv6(const uint128_t input, struct in6_addr* output) {
 	((uint8_t *)output->s6_addr)[13] = ((uint8_t *)&input)[2];
 	((uint8_t *)output->s6_addr)[14] = ((uint8_t *)&input)[1];
 	((uint8_t *)output->s6_addr)[15] = ((uint8_t *)&input)[0];
+#else // unspecified endianness... use an endianness-agnostic version
+	((uint8_t *)output->s6_addr)[0] = input & 0xff;
+	((uint8_t *)output->s6_addr)[1] = (input>>8) & 0xff;
+	((uint8_t *)output->s6_addr)[2] = (input>>16) & 0xff;
+	((uint8_t *)output->s6_addr)[3] = (input>>24) & 0xff;
+	((uint8_t *)output->s6_addr)[4] = (input>>32) & 0xff;
+	((uint8_t *)output->s6_addr)[5] = (input>>40) & 0xff;
+	((uint8_t *)output->s6_addr)[6] = (input>>48) & 0xff;
+	((uint8_t *)output->s6_addr)[7] = (input>>56) & 0xff;
+	((uint8_t *)output->s6_addr)[8] = (input>>64) & 0xff;
+	((uint8_t *)output->s6_addr)[9] = (input>>72) & 0xff;
+	((uint8_t *)output->s6_addr)[10] = (input>>80) & 0xff;
+	((uint8_t *)output->s6_addr)[11] = (input>>88) & 0xff;
+	((uint8_t *)output->s6_addr)[12] = (input>>96) & 0xff;
+	((uint8_t *)output->s6_addr)[13] = (input>>104) & 0xff;
+	((uint8_t *)output->s6_addr)[14] = (input>>112) & 0xff;
+	((uint8_t *)output->s6_addr)[15] = (input>>120) & 0xff;
 #endif
-#endif
+}
+#endif // HAS_INT128
 
 inline void uint32_t_to_ipv4(const uint32_t input, struct in_addr* output) {
 	assert(sizeof(output->s_addr) == sizeof(input));

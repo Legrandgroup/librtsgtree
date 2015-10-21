@@ -17,7 +17,7 @@
 
 #ifndef IS_BIG_ENDIAN
 #ifndef IS_LITTLE_ENDIAN
-#error IS_BIG_ENDIAN or IS_LITTLE_ENDIAN compiler directives must be set in order to use this library with native 128-bit integers
+#warning IS_BIG_ENDIAN or IS_LITTLE_ENDIAN compiler directives should be set in order to optimise this library with native 128-bit integers
 #endif
 #endif
 #ifdef IS_BIG_ENDIAN
