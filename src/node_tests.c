@@ -25,51 +25,30 @@ void check_result_is_uint128(uint128_t value, uint128_t expected, unsigned int f
 void test_Rmax_to_max_node_id() {
 	node_id_t test_node;
 
-	if (!U128_IS_ZERO(Rmax_to_max_node_id(0))) {
-		fprintf(stderr, "%d: Rmax_to_max_node_id() failed\n", __LINE__);
-		//FAIL();
-		exit(1);
-	}
-	if (uint128_t_cmp(Rmax_to_max_node_id(1), uint8_t_to_uint128_t(1)) != 0) {
-		fprintf(stderr, "%d: Rmax_to_max_node_id() failed\n", __LINE__);
-		//FAIL();
-		exit(1);
-	}
-	if (uint128_t_cmp(Rmax_to_max_node_id(2), uint8_t_to_uint128_t(3)) != 0) {
-		fprintf(stderr, "%d: Rmax_to_max_node_id() failed\n", __LINE__);
-		//FAIL();
-		exit(1);
-	}
-	if (uint128_t_cmp(Rmax_to_max_node_id(8), uint8_t_to_uint128_t(0xff)) != 0) {
-		fprintf(stderr, "%d: Rmax_to_max_node_id() failed\n", __LINE__);
-		//FAIL();
-		exit(1);
-	}
-	if (uint128_t_cmp(Rmax_to_max_node_id(16), uint16_t_to_uint128_t(0xffff)) != 0) {
-		fprintf(stderr, "%d: Rmax_to_max_node_id() failed\n", __LINE__);
-		//FAIL();
-		exit(1);
-	}
+	if (!U128_IS_ZERO(Rmax_to_max_node_id(0)))
+		FAIL("Rmax_to_max_node_id() failed\n");
+	if (uint128_t_cmp(Rmax_to_max_node_id(1), uint8_t_to_uint128_t(1)) != 0)
+		FAIL("Rmax_to_max_node_id() failed\n");
+	if (uint128_t_cmp(Rmax_to_max_node_id(2), uint8_t_to_uint128_t(3)) != 0)
+		FAIL("Rmax_to_max_node_id() failed\n");
+	if (uint128_t_cmp(Rmax_to_max_node_id(8), uint8_t_to_uint128_t(0xff)) != 0)
+		FAIL("Rmax_to_max_node_id() failed\n");
+	if (uint128_t_cmp(Rmax_to_max_node_id(16), uint16_t_to_uint128_t(0xffff)) != 0)
+		FAIL("Rmax_to_max_node_id() failed\n");
 
 #ifndef HAS_INT128
 	U128_SET_MAX(test_node);
 	test_node.uint128_a8[0] = 0x7f;
 #else
-	test_node &= (uint128_t)(-1) >> 1;
+	test_node = uint128_t_max() >> 1;
 #endif
-	if (uint128_t_cmp(Rmax_to_max_node_id(127), test_node) != 0) {
-		fprintf(stderr, "%d: Rmax_to_max_node_id() failed\n", __LINE__);
-		//FAIL();
-		exit(1);
-	}
+	if (uint128_t_cmp(Rmax_to_max_node_id(127), test_node) != 0)
+		FAIL("Rmax_to_max_node_id() failed\n");
 
 	//Lionel: FIXME: commented-out as we get an assertion error for 128 bits (non-supported value)
 //	test_node.uint128_a8[0] = 0xff;	/* uint128_t(-1) */
-//	if (uint128_t_cmp(Rmax_to_max_node_id(128), test_node) != 0) {
-//		fprintf(stderr, "%d: Rmax_to_max_node_id() failed\n", __LINE__);
-//		//FAIL();
-//		exit(1);
-//	}
+//	if (uint128_t_cmp(Rmax_to_max_node_id(128), test_node) != 0)
+//		FAIL("Rmax_to_max_node_id() failed\n");
 	printf("%s: tests passed\n", __func__);
 }
 
