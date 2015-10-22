@@ -107,7 +107,7 @@ void test_uint128_t_to_binstr() {
 	test_u128.uint128_a16[6] = htons(0x8000);
 	test_u128.uint128_a16[7] = htons(0xa5a5);
 #else
-	test_u128 = ((uint_128t)0xfe80)<<102 | (uint_128t)0x8000a5a5;
+	test_u128 = ((uint128_t)0xfe80)<<102 | (uint128_t)0x8000a5a5;
 #endif
 	uint128_t_to_binstr(test_u128, 128, result);
 	expected_result = "1111111010000000"    /* Word 0 */ \
@@ -133,7 +133,7 @@ void test_uint128_t_to_binstr() {
 	test_u128.uint128_a16[3] = htons(0x080e);
 	test_u128.uint128_a16[7] = htons(0x200e);
 #else
-	test_u128 = ((uint_128t)0x2a0014504007080e)<<64 | (uint_128t)0x200e;
+	test_u128 = ((uint128_t)0x2a0014504007080e)<<64 | (uint128_t)0x200e;
 #endif
 	uint128_t_to_binstr(test_u128, 128, result);
 	expected_result = "0010101000000000" /* Word 0 */ \
@@ -189,7 +189,7 @@ void test_uint128_t_to_binstr() {
 	test_u128.uint128_a8[14] = 0x47;
 	test_u128.uint128_a8[15] = 0x0f;
 #else
-	test_u128 = ((uint_128t)0xa5a2150245a887c4)<<64 | (uint_128t)0xe5041afe899c470f;
+	test_u128 = ((uint128_t)0xa5a2150245a887c4)<<64 | (uint128_t)0xe5041afe899c470f;
 #endif
 	uint128_t_to_binstr(test_u128, 128, result);
 	expected_result = "1010" "0101" /* Byte 0 */ \
@@ -252,7 +252,7 @@ void test_uint128_t_to_hexstr() {
 	test_u128.uint128_a8[14] = 0x47;
 	test_u128.uint128_a8[15] = 0x0f;
 #else
-	test_u128 = ((uint_128t)0xa5a2150245a887c4)<<64 | (uint_128t)0xe5041afe899c470f;
+	test_u128 = ((uint128_t)0xa5a2150245a887c4)<<64 | (uint128_t)0xe5041afe899c470f;
 #endif
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "a5a2" "1502" "45a8" "87c4" "e504" "1afe" "899c" "470f";
@@ -279,7 +279,7 @@ void test_uint128_t_to_hexstr() {
 	test_u128.uint128_a8[14] = 0xe1;
 	test_u128.uint128_a8[15] = 0xf0;
 #else
-	test_u128 = ((uint_128t)0x0f1e2d3c4b5a6978)<<64 | (uint_128t)0x8796a5b4c3d2e1f0;
+	test_u128 = ((uint128_t)0x0f1e2d3c4b5a6978)<<64 | (uint128_t)0x8796a5b4c3d2e1f0;
 #endif
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "0f1e2d3c4b5a69788796a5b4c3d2e1f0";
@@ -389,7 +389,7 @@ void test_uint128_t_right_shift() {
 	test_u128.uint128_a8[14] = 0xe1;
 	test_u128.uint128_a8[15] = 0x0f;
 #else
-	test_u128 = ((uint_128t)0xf01e2d3c4b5a6978)<<64 | (uint_128t)0x8796a5b4c3d2e10f;
+	test_u128 = ((uint128_t)0xf01e2d3c4b5a6978)<<64 | (uint128_t)0x8796a5b4c3d2e10f;
 #endif
 
 
@@ -451,7 +451,7 @@ void test_uint128_t_right_shift_n() {
 	test_u128.uint128_a8[14] = 0xe1;
 	test_u128.uint128_a8[15] = 0x0f;
 #else
-	test_u128 = ((uint_128t)0xf01e2d3c4b5a6978)<<64 | (uint_128t)0x8796a5b4c3d2e10f;
+	test_u128 = ((uint128_t)0xf01e2d3c4b5a6978)<<64 | (uint128_t)0x8796a5b4c3d2e10f;
 #endif
 
 
@@ -571,7 +571,7 @@ void test_uint128_t_left_shift() {
 	test_u128.uint128_a8[14] = 0xe1;
 	test_u128.uint128_a8[15] = 0x0f;
 #else
-	test_u128 = ((uint_128t)0xf01e2d3c4b5a6978)<<64 | (uint_128t)0x8796a5b4c3d2e10f;
+	test_u128 = ((uint128_t)0xf01e2d3c4b5a6978)<<64 | (uint128_t)0x8796a5b4c3d2e10f;
 #endif
 
 
@@ -633,7 +633,7 @@ void test_uint128_t_left_shift_n() {
 	test_u128.uint128_a8[14] = 0xe1;
 	test_u128.uint128_a8[15] = 0x0f;
 #else
-	test_u128 = ((uint_128t)0xf01e2d3c4b5a6978)<<64 | (uint_128t)0x8796a5b4c3d2e10f;
+	test_u128 = ((uint128_t)0xf01e2d3c4b5a6978)<<64 | (uint128_t)0x8796a5b4c3d2e10f;
 #endif
 
 
@@ -732,7 +732,7 @@ void test_uint128_t_mix_shift() {
 	test1_u128.uint128_a8[14] = 0xe1;
 	test1_u128.uint128_a8[15] = 0x0f;
 #else
-	test_u128 = ((uint_128t)0xf01e2d3c4b5a6978)<<64 | (uint_128t)0x8796a5b4c3d2e10f;
+	test1_u128 = ((uint128_t)0xf01e2d3c4b5a6978)<<64 | (uint128_t)0x8796a5b4c3d2e10f;
 #endif
 
 	test2_u128 = test1_u128;	/* Copy test1 into test2 */
@@ -803,7 +803,12 @@ void test_uint128_t_inc() {
 		test_u128 = uint128_t_inc(test_u128);
 		//uint128_t_to_hexstr(test_u128, 16, result);
 		//printf("Value: %s\n", result);
+#ifndef HAS_INT128
 		last_word16 = ntohs(test_u128.uint128_a16[7]);
+#else
+		last_word16 = test_u128 & 0xffff;
+#endif
+
 		if (last_word16-1 != inc_count) {
 			fprintf(stderr, "%d: uint128_t_inc() failed at value %u: got %u\n", __LINE__, inc_count, last_word16);
 			//FAIL();
@@ -850,7 +855,11 @@ void test_uint128_t_dec() {
 		test_u128 = uint128_t_dec(test_u128);
 		//uint128_t_to_hexstr(test_u128, 16, result);
 		//printf("Value: %s\n", result);
+#ifndef HAS_INT128
 		last_word16 = ntohs(test_u128.uint128_a16[7]);
+#else
+		last_word16 = test_u128 & 0xffff;
+#endif
 		if (last_word16+1 != 65535-dec_count) {
 			fprintf(stderr, "%d: uint128_t_dec() failed at value %u: got %u\n", __LINE__, dec_count, last_word16);
 			//FAIL();
@@ -893,12 +902,17 @@ void test_uint16_t_to_uint128_t() {
 		result_u128 = uint16_t_to_uint128_t(source);
 		//uint128_t_to_hexstr(result_u128, 16, result);
 		//printf("Value: %s\n", result);
+#ifndef HAS_INT128
 		last_word16 = ntohs(result_u128.uint128_a16[7]);
+#else
+		last_word16 = result_u128 & 0xffff;
+#endif
 		if (last_word16 != source) {
 			fprintf(stderr, "%d: uint16_t_to_uint128_t() failed on source value %u\n", __LINE__, source);
 			//FAIL();
 			//exit(1);
 		}
+#ifndef HAS_INT128
 		if (result_u128.uint128_a16[0] != 0 ||	/* All other words (0 to 6) should remain 0 */
 			result_u128.uint128_a16[1] != 0 ||
 			result_u128.uint128_a16[2] != 0 ||
@@ -906,6 +920,9 @@ void test_uint16_t_to_uint128_t() {
 			result_u128.uint128_a16[4] != 0 ||
 			result_u128.uint128_a16[5] != 0 ||
 			result_u128.uint128_a16[6] != 0) {
+#else
+		if ((result_u128 & ((uint128_t)0xffffffffffffff << 64)) != 0) {
+#endif
 			fprintf(stderr, "%d: uint16_t_to_uint128_t() failed on source value %u: MSW have been altered\n", __LINE__, source);
 			//FAIL();
 			//exit(1);
@@ -914,12 +931,17 @@ void test_uint16_t_to_uint128_t() {
 	result_u128 = uint16_t_to_uint128_t(source);	/* Do the test again on maximum uint16_t (0xffff) */
 	//uint128_t_to_hexstr(result_u128, 16, result);
 	//printf("Value: %s\n", result);
+#ifndef HAS_INT128
 	last_word16 = ntohs(result_u128.uint128_a16[7]);
+#else
+	last_word16 = result_u128 & 0xffff;
+#endif
 	if (last_word16 != source) {
 		fprintf(stderr, "%d: uint16_t_to_uint128_t() failed on source value %u\n", __LINE__, source);
 		//FAIL();
 		//exit(1);
 	}
+#ifndef HAS_INT128
 	if (result_u128.uint128_a16[0] != 0 ||	/* All other words (0 to 6) should remain 0 */
 		result_u128.uint128_a16[1] != 0 ||
 		result_u128.uint128_a16[2] != 0 ||
@@ -927,6 +949,9 @@ void test_uint16_t_to_uint128_t() {
 		result_u128.uint128_a16[4] != 0 ||
 		result_u128.uint128_a16[5] != 0 ||
 		result_u128.uint128_a16[6] != 0) {
+#else
+	if ((result_u128 & ((uint128_t)0xffffffffffffff << 64)) != 0) {
+#endif
 		fprintf(stderr, "%d: uint16_t_to_uint128_t() failed on source value %u: MSW have been altered\n", __LINE__, source);
 		//FAIL();
 		//exit(1);
@@ -944,12 +969,17 @@ void test_uint8_t_to_uint128_t() {
 		result_u128 = uint8_t_to_uint128_t(source);
 		//uint128_t_to_hexstr(result_u128, 16, result);
 		//printf("Value: %s\n", result);
+#ifndef HAS_INT128
 		last_byte8 = result_u128.uint128_a8[15];
+#else
+		last_byte8 = result_u128 & 0xff;
+#endif
 		if (last_byte8 != source) {
 			fprintf(stderr, "%d: uint8_t_to_uint128_t() failed on source value %u\n", __LINE__, source);
 			//FAIL();
 			//exit(1);
 		}
+#ifndef HAS_INT128
 		if (result_u128.uint128_a8[0] != 0 ||	/* All other bytes (0 to 14) should remain 0 */
 			result_u128.uint128_a8[1] != 0 ||
 			result_u128.uint128_a8[2] != 0 ||
@@ -965,6 +995,10 @@ void test_uint8_t_to_uint128_t() {
 			result_u128.uint128_a8[12] != 0 ||
 			result_u128.uint128_a8[13] != 0 ||
 			result_u128.uint128_a8[14]) {
+#else
+		if ( (result_u128 & ((uint128_t)0xffffffffffffff << 64)) != 0 ||	/* High 64 bits should be 0 */
+		     (result_u128 & (uint128_t)0xffffffffffff00) != 0) {	/* Next 56 bits should be 0, (ignore low 8 bits) */
+#endif
 			fprintf(stderr, "%d: uint8_t_to_uint128_t() failed on source value %u: MSW have been altered\n", __LINE__, source);
 			//FAIL();
 			//exit(1);
@@ -973,12 +1007,17 @@ void test_uint8_t_to_uint128_t() {
 	result_u128 = uint8_t_to_uint128_t(source);	/* Do the test again on maximum uint8_t (0xff) */
 	//uint128_t_to_hexstr(result_u128, 16, result);
 	//printf("Value: %s\n", result);
+#ifndef HAS_INT128
 	last_byte8 = result_u128.uint128_a8[15];
+#else
+	last_byte8 = result_u128 & 0xff;
+#endif
 	if (last_byte8 != source) {
 		fprintf(stderr, "%d: uint8_t_to_uint128_t() failed on source value %u\n", __LINE__, source);
 		//FAIL();
 		//exit(1);
 	}
+#ifndef HAS_INT128
 	if (result_u128.uint128_a8[0] != 0 ||	/* All other bytes (0 to 14) should remain 0 */
 		result_u128.uint128_a8[1] != 0 ||
 		result_u128.uint128_a8[2] != 0 ||
@@ -994,6 +1033,10 @@ void test_uint8_t_to_uint128_t() {
 		result_u128.uint128_a8[12] != 0 ||
 		result_u128.uint128_a8[13] != 0 ||
 		result_u128.uint128_a8[14]) {
+#else
+		if ( (result_u128 & ((uint128_t)0xffffffffffffff << 64)) != 0 ||	/* High 64 bits should be 0 */
+		     (result_u128 & (uint128_t)0xffffffffffff00) != 0) {	/* Next 56 bits should be 0, (ignore low 8 bits) */
+#endif
 		fprintf(stderr, "%d: uint8_t_to_uint128_t() failed on source value %u: MSW have been altered\n", __LINE__, source);
 		//FAIL();
 		//exit(1);
@@ -1017,12 +1060,17 @@ void test_uint128_t_sub() {
 		result_u128 = uint128_t_sub(test1_u128, uint16_t_to_uint128_t(dec_count));
 		//uint128_t_to_hexstr(result_u128, 16, result);
 		//printf("Value: %s\n", result);
+#ifndef HAS_INT128
 		last_word16 = ntohs(result_u128.uint128_a16[7]);
+#else
+		last_word16 = result_u128 & 0xffff;
+#endif
 		if (last_word16 != 65535-dec_count) {
 			fprintf(stderr, "%d: uint128_t_sub() failed at iteration %u: got %u, expected %u\n", __LINE__, dec_count, last_word16, 65535-dec_count);
 			//FAIL();
 			//exit(1);
 		}
+#ifndef HAS_INT128
 		if (result_u128.uint128_a16[0] != test1_u128.uint128_a16[0] ||	/* All other words (0 to 6) should remain unchanged */
 			result_u128.uint128_a16[1] != test1_u128.uint128_a16[1] ||
 			result_u128.uint128_a16[2] != test1_u128.uint128_a16[2] ||
@@ -1030,6 +1078,9 @@ void test_uint128_t_sub() {
 			result_u128.uint128_a16[4] != test1_u128.uint128_a16[4] ||
 			result_u128.uint128_a16[5] != test1_u128.uint128_a16[5] ||
 			result_u128.uint128_a16[6] != test1_u128.uint128_a16[6]) {
+#else
+		if (result_u128 >> 64 != test1_u128 >> 64) {
+#endif
 			fprintf(stderr, "%d: uint128_t_sub() failed at iteration %u: MSW have been altered\n", __LINE__, dec_count);
 			//FAIL();
 			//exit(1);
@@ -1125,8 +1176,8 @@ void test_uint128_t_sub() {
 	test2_u128.uint128_a8[14] = 0xe1;
 	test2_u128.uint128_a8[15] = 0x0f;
 #else
-	test1_u128 = ((uint_128t)0x123456789abcdef0)<<64 | (uint_128t)0x123456789abcdef0;
-	test2_u128 = ((uint_128t)0xf01e2d3c4b5a6978)<<64 | (uint_128t)0x8796a5b4c3d2e10f;
+	test1_u128 = ((uint128_t)0x123456789abcdef0)<<64 | (uint128_t)0x123456789abcdef0;
+	test2_u128 = ((uint128_t)0xf01e2d3c4b5a6978)<<64 | (uint128_t)0x8796a5b4c3d2e10f;
 #endif
 
 	expected_result = "2216293c4f6275778a9db0c3d6e9fde1";	/* echo 'print "%x" % (0xff123456789abcdef0123456789abcdef0 - 0xf01e2d3c4b5a69788796a5b4c3d2e10f)' | python */
@@ -1170,12 +1221,17 @@ void test_uint128_t_add() {
 		result_u128 = uint128_t_add(test1_u128, uint16_t_to_uint128_t(inc_count));
 		//uint128_t_to_hexstr(result_u128, 16, result);
 		//printf("Value: %s\n", result);
+#ifndef HAS_INT128
 		last_word16 = ntohs(result_u128.uint128_a16[7]);
+#else
+		last_word16 = result_u128 & 0xffff;
+#endif
 		if (last_word16 != inc_count) {
 			fprintf(stderr, "%d: uint128_t_add() failed at iteration %u: got %u, expected %u\n", __LINE__, inc_count, last_word16, inc_count);
 			//FAIL();
 			//exit(1);
 		}
+#ifndef HAS_INT128
 		if (result_u128.uint128_a16[0] != test1_u128.uint128_a16[0] ||	/* All other words (0 to 6) should remain unchanged */
 			result_u128.uint128_a16[1] != test1_u128.uint128_a16[1] ||
 			result_u128.uint128_a16[2] != test1_u128.uint128_a16[2] ||
@@ -1183,6 +1239,9 @@ void test_uint128_t_add() {
 			result_u128.uint128_a16[4] != test1_u128.uint128_a16[4] ||
 			result_u128.uint128_a16[5] != test1_u128.uint128_a16[5] ||
 			result_u128.uint128_a16[6] != test1_u128.uint128_a16[6]) {
+#else
+	   if (result_u128 >> 64 != test1_u128 >> 64) {
+#endif
 			fprintf(stderr, "%d: uint128_t_add() failed at iteration %u: MSW have been altered\n", __LINE__, inc_count);
 			//FAIL();
 			//exit(1);
@@ -1278,8 +1337,8 @@ void test_uint128_t_add() {
 	test2_u128.uint128_a8[14] = 0xe1;
 	test2_u128.uint128_a8[15] = 0x0f;
 #else
-	test1_u128 = ((uint_128t)0x123456789abcdef0)<<64 | (uint_128t)0x123456789abcdef0;
-	test2_u128 = ((uint_128t)0xf01e2d3c4b5a6978)<<64 | (uint_128t)0x8796a5b4c3d2e10f;
+	test1_u128 = ((uint128_t)0x123456789abcdef0)<<64 | (uint128_t)0x123456789abcdef0;
+	test2_u128 = ((uint128_t)0xf01e2d3c4b5a6978)<<64 | (uint128_t)0x8796a5b4c3d2e10f;
 #endif
 
 	expected_result = "025283b4e617486899cafc2d5e8fbfff";	/* echo 'print "%x" % (0x123456789abcdef0123456789abcdef0 + 0xf01e2d3c4b5a69788796a5b4c3d2e10f)' | python */
@@ -1355,9 +1414,9 @@ void test_uint128_t_mixed_add_sub_inc_dec() {
 		test1_u128.uint128_a8[14] = rand() & 0xff;
 		test1_u128.uint128_a8[15] = rand() & 0xff;
 #else
-		test1_u128 =  (rand() & 0xffff) << 48 | (rand() & 0xffff) << 32 | (rand() & 0xffff) << 16 | (rand() & 0xffff);	/* Build 64 random bits */
+		test1_u128 =  ((uint128_t)(rand() & 0xffff)) << 48 | ((uint128_t)(rand() & 0xffff)) << 32 | ((uint128_t)(rand() & 0xffff)) << 16 | (uint128_t)(rand() & 0xffff);	/* Build 64 random bits */
 		test1_u128 <<= 64;	/* Move to 64 most significant bits */
-		test1_u128 |= (rand() & 0xffff) << 48 | (rand() & 0xffff) << 32 | (rand() & 0xffff) << 16 | (rand() & 0xffff);	/* Build 64 random bits */
+		test1_u128 |= ((uint128_t)(rand() & 0xffff)) << 48 | ((uint128_t)(rand() & 0xffff)) << 32 | ((uint128_t)(rand() & 0xffff)) << 16 | (uint128_t)(rand() & 0xffff);	/* Build 64 random bits */
 #endif
 		test2_u128 = test1_u128;
 
@@ -1424,7 +1483,7 @@ void test_uint128_t_or() {
 	test1_u128.uint128_a8[14] = 0xa5;
 	test1_u128.uint128_a8[15] = 0x5a;
 #else
-	test1_u128 = ((uint_128t)0xa55aa55aa55aa55a)<<64 | (uint_128t)0xa55aa55aa55aa55a;
+	test1_u128 = ((uint128_t)0xa55aa55aa55aa55a)<<64 | (uint128_t)0xa55aa55aa55aa55a;
 #endif
 	test2_u128 = test1_u128;
 	result_u128 = uint128_t_or(test1_u128, test2_u128);	/* A or A = A */
@@ -1464,7 +1523,7 @@ void test_uint128_t_or() {
 	test2_u128.uint128_a8[14] = 0x5a;
 	test2_u128.uint128_a8[15] = 0xa5;
 #else
-	test2_u128 = ((uint_128t)0x5aa55aa55aa55aa5)<<64 | (uint_128t)0x5aa55aa55aa55aa5;
+	test2_u128 = ((uint128_t)0x5aa55aa55aa55aa5)<<64 | (uint128_t)0x5aa55aa55aa55aa5;
 #endif
 
 	result_u128 = uint128_t_or(test1_u128, test2_u128);	/* A or !A = (uint128_t)(-1) */
@@ -1522,7 +1581,7 @@ void test_uint128_t_and() {
 	test1_u128.uint128_a8[14] = 0xa5;
 	test1_u128.uint128_a8[15] = 0x5a;
 #else
-	test1_u128 = ((uint_128t)0xa55aa55aa55aa55a)<<64 | (uint_128t)0xa55aa55aa55aa55a;
+	test1_u128 = ((uint128_t)0xa55aa55aa55aa55a)<<64 | (uint128_t)0xa55aa55aa55aa55a;
 #endif
 	test2_u128 = test1_u128;
 	result_u128 = uint128_t_and(test1_u128, test2_u128);	/* A and A = A */
@@ -1562,7 +1621,7 @@ void test_uint128_t_and() {
 	test2_u128.uint128_a8[14] = 0x5a;
 	test2_u128.uint128_a8[15] = 0xa5;
 #else
-	test2_u128 = ((uint_128t)0x5aa55aa55aa55aa5)<<64 | (uint_128t)0x5aa55aa55aa55aa5;
+	test2_u128 = ((uint128_t)0x5aa55aa55aa55aa5)<<64 | (uint128_t)0x5aa55aa55aa55aa5;
 #endif
 
 	result_u128 = uint128_t_and(test1_u128, test2_u128);	/* A and !A = 0 */
