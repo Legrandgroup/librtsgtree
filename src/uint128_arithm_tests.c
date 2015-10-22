@@ -107,7 +107,7 @@ void test_uint128_t_to_binstr() {
 	test_u128.uint128_a16[6] = htons(0x8000);
 	test_u128.uint128_a16[7] = htons(0xa5a5);
 #else
-	test_u128 = ((uint128_t)0xfe80)<<102 | (uint128_t)0x8000a5a5;
+	test_u128 = ((uint128_t)0x0000fe80)<<112 | (uint128_t)0x8000a5a5;
 #endif
 	uint128_t_to_binstr(test_u128, 128, result);
 	expected_result = "1111111010000000"    /* Word 0 */ \
