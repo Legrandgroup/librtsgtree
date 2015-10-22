@@ -460,7 +460,10 @@ uint128_t msb_1bits_to_uint128_t(uint8_t n) {
 }
 #else	// HAS_INT128
 uint128_t msb_1bits_to_uint128_t(uint8_t n) {
-	return ((uint128_t)1<<n)-1;
+	assert(n<=128);
+
+
+	return ~( uint128_t_left_shift_n(1, 128-n) - 1 );
 }
 #endif
 
