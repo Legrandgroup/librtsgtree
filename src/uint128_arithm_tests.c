@@ -29,9 +29,7 @@ void test_zero_max_uint128_t() {
 #endif
 	}
 	else {
-		fprintf(stderr, "U128_SET_ZERO() Failed\n");
-		//FAIL();
-		exit(1);
+		FAIL("U128_SET_ZERO() Failed\n");
 	}
 	if (!U128_IS_ZERO(test_u128)) {
 		fprintf(stderr, "U128_IS_ZERO() Failed\n");
