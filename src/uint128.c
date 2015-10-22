@@ -82,7 +82,10 @@ uint128_t uint128_t_right_shift_n(const uint128_t input, uint8_t n) {
 }
 #else	// HAS_INT128
 inline uint128_t uint128_t_right_shift_n(const uint128_t input, uint8_t n) {
-	return input>>n;
+	if (n==128)
+		return 0;	/* native shifting 128 bits is broken on some platforms */
+	else
+		return input>>n;
 }
 #endif
 
@@ -121,7 +124,10 @@ uint128_t uint128_t_left_shift_n(const uint128_t input, uint8_t n) {
 }
 #else	// HAS_INT128
 inline uint128_t uint128_t_left_shift_n(const uint128_t input, uint8_t n) {
-	return input<<n;
+	if (n==128)
+		return 0;	/* native shifting 128 bits is broken on some platforms */
+	else
+		return input<<n;
 }
 #endif
 
