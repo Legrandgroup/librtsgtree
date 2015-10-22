@@ -1799,10 +1799,63 @@ void test_uint128_t_cmp() {
 	printf("%s: tests passed\n", __func__);
 }
 
-/* Unit test for uint128_t_cmp()
+/* Unit test for uint128_t_hton()
  */
 void test_uint128_t_hton() {
-	printf("!!! %s: warning: not implemented\n", __func__);
+
+	uint128_t test_u128;
+	uint8_t *uint128_repr_ptr;
+	int result = 0;
+
+#ifndef HAS_INT128
+	test_u128.uint128_a8[0] = 0xf0;
+	test_u128.uint128_a8[1] = 0x1e;
+	test_u128.uint128_a8[2] = 0x2d;
+	test_u128.uint128_a8[3] = 0x3c;
+	test_u128.uint128_a8[4] = 0x4b;
+	test_u128.uint128_a8[5] = 0x5a;
+	test_u128.uint128_a8[6] = 0x69;
+	test_u128.uint128_a8[7] = 0x78;
+	test_u128.uint128_a8[8] = 0x87;
+	test_u128.uint128_a8[9] = 0x96;
+	test_u128.uint128_a8[10] = 0xa5;
+	test_u128.uint128_a8[11] = 0xb4;
+	test_u128.uint128_a8[12] = 0xc3;
+	test_u128.uint128_a8[13] = 0xd2;
+	test_u128.uint128_a8[14] = 0xe1;
+	test_u128.uint128_a8[15] = 0x0f;
+#else
+	test_u128 = ((uint128_t)0xf01e2d3c4b5a6978)<<64 | (uint128_t)0x8796a5b4c3d2e10f;
+#endif
+
+	test_u128 = uint128_t_hton(test_u128);
+
+#ifndef HAS_INT128
+	uint128_repr_ptr = test_u128.uint128_a8;
+#else
+	uint128_repr_ptr = &test_u128;
+#endif
+	if ((uint128_repr_ptr[0] == 0xf0) &&
+	    (uint128_repr_ptr[1] = 0x1e) &&
+	    (uint128_repr_ptr[2] = 0x2d) &&
+	    (uint128_repr_ptr[3] = 0x3c) &&
+	    (uint128_repr_ptr[4] = 0x4b) &&
+	    (uint128_repr_ptr[5] = 0x5a) &&
+	    (uint128_repr_ptr[6] = 0x69) &&
+	    (uint128_repr_ptr[7] = 0x78) &&
+	    (uint128_repr_ptr[8] = 0x87) &&
+	    (uint128_repr_ptr[9] = 0x96) &&
+	    (uint128_repr_ptr[10] = 0xa5) &&
+	    (uint128_repr_ptr[11] = 0xb4) &&
+	    (uint128_repr_ptr[12] = 0xc3) &&
+	    (uint128_repr_ptr[13] = 0xd2) &&
+	    (uint128_repr_ptr[14] = 0xe1) &&
+	    (uint128_repr_ptr[15] = 0x0f)) {
+	}
+	else
+		FAIL("uint128_t_hton() failed\n");
+
+	printf("%s: tests passed\n", __func__);
 }
 
 void unit_tests_uint128() {
