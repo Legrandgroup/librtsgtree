@@ -1,4 +1,5 @@
 #include "node.h"
+#include "test_harness.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <arpa/inet.h>	// For inet_ntop() and htons()
