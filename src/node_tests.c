@@ -1016,6 +1016,10 @@ void test_get_left_right_top_bottom_interface_route() {
 	if (strcmp(ipv6_route_str, "fd00::4/126") != 0)
 		FAIL("get_right_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 
+	ip_route_to_str(get_top_interface_route(&tree, uint8_t_to_uint128_t(4)), ipv6_route_str);
+	if (strcmp(ipv6_route_str, "fd00::8/128") != 0)
+		FAIL("get_top_interface_route() got wrong IP address: %s\n", ipv6_route_str);
+
 	ip_route_result = get_bottom_interface_route(&tree, uint8_t_to_uint128_t(4));
 	if (ip_route_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
 		FAIL("get_bottom_interface_route() should return no route\n");
@@ -1027,6 +1031,10 @@ void test_get_left_right_top_bottom_interface_route() {
 	ip_route_to_str(get_right_interface_route(&tree, uint8_t_to_uint128_t(12)), ipv6_route_str);
 	if (strcmp(ipv6_route_str, "fd00::c/126") != 0)
 		FAIL("get_right_interface_route() got wrong IP address: %s\n", ipv6_route_str);
+
+	ip_route_to_str(get_top_interface_route(&tree, uint8_t_to_uint128_t(12)), ipv6_route_str);
+	if (strcmp(ipv6_route_str, "fd00::8/128") != 0)
+		FAIL("get_top_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 
 	ip_route_result = get_bottom_interface_route(&tree, uint8_t_to_uint128_t(12));
 	if (ip_route_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
@@ -1040,6 +1048,10 @@ void test_get_left_right_top_bottom_interface_route() {
 	if (strcmp(ipv6_route_str, "fd00::3/128") != 0)
 		FAIL("get_right_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 
+	ip_route_to_str(get_top_interface_route(&tree, uint8_t_to_uint128_t(2)), ipv6_route_str);
+	if (strcmp(ipv6_route_str, "fd00::4/128") != 0)
+		FAIL("get_top_interface_route() got wrong IP address: %s\n", ipv6_route_str);
+
 	ip_route_result = get_bottom_interface_route(&tree, uint8_t_to_uint128_t(2));
 	if (ip_route_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
 		FAIL("get_bottom_interface_route() should return no route\n");
@@ -1051,6 +1063,10 @@ void test_get_left_right_top_bottom_interface_route() {
 	ip_route_to_str(get_right_interface_route(&tree, uint8_t_to_uint128_t(6)), ipv6_route_str);
 	if (strcmp(ipv6_route_str, "fd00::7/128") != 0)
 		FAIL("get_right_interface_route() got wrong IP address: %s\n", ipv6_route_str);
+
+	ip_route_to_str(get_top_interface_route(&tree, uint8_t_to_uint128_t(6)), ipv6_route_str);
+	if (strcmp(ipv6_route_str, "fd00::4/128") != 0)
+		FAIL("get_top_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 
 	ip_route_result = get_bottom_interface_route(&tree, uint8_t_to_uint128_t(6));
 	if (ip_route_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
@@ -1064,6 +1080,10 @@ void test_get_left_right_top_bottom_interface_route() {
 	if (strcmp(ipv6_route_str, "fd00::b/128") != 0)
 		FAIL("get_right_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 
+	ip_route_to_str(get_top_interface_route(&tree, uint8_t_to_uint128_t(10)), ipv6_route_str);
+	if (strcmp(ipv6_route_str, "fd00::c/128") != 0)
+		FAIL("get_top_interface_route() got wrong IP address: %s\n", ipv6_route_str);
+
 	ip_route_result = get_bottom_interface_route(&tree, uint8_t_to_uint128_t(10));
 	if (ip_route_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
 		FAIL("get_bottom_interface_route() should return no route\n");
@@ -1075,6 +1095,10 @@ void test_get_left_right_top_bottom_interface_route() {
 	ip_route_to_str(get_right_interface_route(&tree, uint8_t_to_uint128_t(14)), ipv6_route_str);
 	if (strcmp(ipv6_route_str, "fd00::f/128") != 0)
 		FAIL("get_right_interface_route() got wrong IP address: %s\n", ipv6_route_str);
+
+	ip_route_to_str(get_top_interface_route(&tree, uint8_t_to_uint128_t(14)), ipv6_route_str);
+	if (strcmp(ipv6_route_str, "fd00::c/128") != 0)
+		FAIL("get_top_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 
 	ip_route_result = get_bottom_interface_route(&tree, uint8_t_to_uint128_t(14));
 	if (ip_route_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
@@ -1088,6 +1112,10 @@ void test_get_left_right_top_bottom_interface_route() {
 	if (ip_route_result.ip_type != NONE)
 		FAIL("get_right_interface_route() should return no route\n");
 
+	ip_route_to_str(get_top_interface_route(&tree, uint8_t_to_uint128_t(1)), ipv6_route_str);
+	if (strcmp(ipv6_route_str, "fd00::2/128") != 0)
+		FAIL("get_top_interface_route() got wrong IP address: %s\n", ipv6_route_str);
+
 	ip_route_result = get_bottom_interface_route(&tree, uint8_t_to_uint128_t(1));
 	if (ip_route_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
 		FAIL("get_bottom_interface_route() should return no route\n");
@@ -1099,6 +1127,10 @@ void test_get_left_right_top_bottom_interface_route() {
 	ip_route_result = get_right_interface_route(&tree, uint8_t_to_uint128_t(15));
 	if (ip_route_result.ip_type != NONE)
 		FAIL("get_right_interface_route() should return no route\n");
+
+	ip_route_to_str(get_top_interface_route(&tree, uint8_t_to_uint128_t(15)), ipv6_route_str);
+	if (strcmp(ipv6_route_str, "fd00::e/128") != 0)
+		FAIL("get_top_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 
 	ip_route_result = get_bottom_interface_route(&tree, uint8_t_to_uint128_t(15));
 	if (ip_route_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
