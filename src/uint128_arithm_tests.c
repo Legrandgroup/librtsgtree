@@ -1712,7 +1712,31 @@ void test_uint128_t_right_0bit_count() {
 /* Unit test for msb_1bits_to_uint128_t()
  */
 void test_msb_1bits_to_uint128_t() {
-	printf("!!! %s: warning: not implemented\n", __func__);
+
+	uint8_t counted_msb_bits;
+	uint128_t result;
+	uint8_t requested_msb_bits;
+
+	for (requested_msb_bits = 0; requested_msb_bits<129; requested_msb_bits++) {	/* Perform all combinations */
+		result = msb_1bits_to_uint128_t(requested_msb_bits);
+		counted_msb_bits = 0;
+
+#ifndef HAS_INT128
+		while (uint128_t_get_byte_no(result, 15) & 0x80) {	/* Grab bit 127 of uint128_t */
+#else
+		while (result & ((uint128_t)1)<<127) {	/* Grab bit 127 of uint128_t */
+#endif
+			counted_msb_bits++;
+			result = uint128_t_left_shift(result);
+		}
+		if (counted_msb_bits != requested_msb_bits)
+			FAIL("msb_1bits_to_uint128_t() failed. Got %u MSB bits set, expected %u\n", counted_msb_bits, requested_msb_bits);
+
+		if (!U128_IS_ZERO(result))
+			FAIL("msb_1bits_to_uint128_t() failed. Expected only zero bits under the last bit set for %u MSB\n", requested_msb_bits);
+	}
+
+	printf("%s: tests passed\n", __func__);
 }
 
 /* Unit test for uint128_t_cmp()
