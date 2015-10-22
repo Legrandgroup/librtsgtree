@@ -512,13 +512,13 @@ ip_route_t get_bottom_interface_route(const self_ip_routing_tree_t* tree, const 
 	assert_valid_node_id_for_tree(node, *tree);	/* Make sure node contains a valid value for this tree */
 
 	result.ip_type = tree->ip_type;
-	if (tree->ip_type == IPV6) {
+	if (tree->ip_type == IPV6 && tree->hostA != 0) {
 		result = get_reference_interface_config(tree, node);	/* We add a route to the parent node's reference interface */
 		result.prefix = 128 - tree->hostA;	/* But we only create a route for this host */
 		return result;
 	}
 	else {
-		return no_interface_route();	/* IPv4 nodes do not have a bottom interface (no local LAN attached) */
+		return no_interface_route();	/* IPv4 nodes or IPv6 nodes on trees with hostA==0 do not have a bottom interface (no local LAN attached) */
 	}
 #endif
 }
