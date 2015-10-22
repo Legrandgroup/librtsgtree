@@ -345,7 +345,6 @@ void uint128_t_to_binstr(const uint128_t input, const uint8_t nb_bits, char* out
 	output[nb_bits_in_additional_MSB + already_parsed_full_bytes*8] = '\0';	/* Terminate C-string */
 }
 
-#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 void uint128_t_to_hexstr(const uint128_t input, const uint8_t nb_bytes, char* output) {
 
 	uint8_t current_index;
@@ -357,8 +356,8 @@ void uint128_t_to_hexstr(const uint128_t input, const uint8_t nb_bytes, char* ou
 	//assert(nb_bytes>=0); // Not required, we are working with an unsigned int
 	assert(nb_bytes<=16);
 
-	for (current_index = sizeof(input.uint128_a8)-nb_bytes; current_index<sizeof(input.uint128_a8); current_index++) {
-		current_byte = input.uint128_a8[current_index];
+	for (current_index = 16-nb_bytes; current_index<16; current_index++) {
+		current_byte = uint128_t_get_byte_no(input, 15-current_index);
 
 		hi_nibble = current_byte >> 4;
 		lo_nibble = current_byte & 0x0f;
@@ -374,11 +373,6 @@ void uint128_t_to_hexstr(const uint128_t input, const uint8_t nb_bytes, char* ou
 	}
 	*output = '\0';	/* Terminate C-string */
 }
-#else	// HAS_INT128
-void uint128_t_to_hexstr(const uint128_t input, const uint8_t nb_bytes, char* output) {
-	*output = '\0'; // TODO
-}
-#endif
 
 #ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 uint8_t uint128_t_right_0bit_count(const uint128_t input) {
