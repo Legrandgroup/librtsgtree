@@ -413,7 +413,27 @@ uint8_t uint128_t_right_0bit_count(const uint128_t input) {
 }
 #else	// HAS_INT128
 uint8_t uint128_t_right_0bit_count(const uint128_t input) {
-	return 0; // TODO
+
+	uint128_t input_copy = input;
+	uint8_t result = 0;
+
+	if (input == 0)
+		return 128;
+
+	/* If we get here, we know there is at least one bit set */
+	while ((input_copy & 0xffffffff) == 0) {
+		result+=32;
+		input_copy>>=32;
+	}
+	while ((input_copy & 0xff) == 0) {
+		result+=8;
+		input_copy>>=8;
+	}
+	while ((input_copy & 0x1) == 0) {
+		result++;
+		input_copy>>=1;
+	}
+	return result;
 }
 #endif
 

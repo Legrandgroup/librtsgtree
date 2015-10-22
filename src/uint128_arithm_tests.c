@@ -1696,20 +1696,14 @@ void test_uint128_t_right_0bit_count() {
 	test_u128 = uint128_t_inc(test_u128);	/* test_u128 = (uint128_t)1 */
 
 	result = uint128_t_right_0bit_count(test_u128);
-	if (result != 0) {	/* LSB bit is 1... so we should count 0 */
-		fprintf(stderr, "%d: uint128_t_right_0bit_count() failed, got: %u, expected: %u\n", __LINE__, result, 0);
-		//FAIL();
-		exit(1);
-	}
+	if (result != 0)	/* LSB bit is 1... so we should count 0 */
+		FAIL("uint128_t_right_0bit_count() failed, got: %u, expected: %u\n", result, 0);
 
 	for (bit_count = 1; bit_count<=128; bit_count++) {
 		test_u128 = uint128_t_left_shift(test_u128);
 		result = uint128_t_right_0bit_count(test_u128);
-		if (result != bit_count) {	/* LSB bit is 1... so we should count 0 */
-			fprintf(stderr, "%d: uint128_t_right_0bit_count() failed, got: %u, expected: %u\n", __LINE__, result, bit_count);
-			//FAIL();
-			exit(1);
-		}
+		if (result != bit_count)	/* LSB bit is 1... so we should count 0 */
+			FAIL("uint128_t_right_0bit_count() failed, got: %u, expected: %u\n", result, bit_count);
 	}
 
 	printf("%s: tests passed\n", __func__);
