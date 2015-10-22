@@ -28,14 +28,12 @@ void test_zero_max_uint128_t() {
 	if (test_u128 == 0) {
 #endif
 	}
-	else {
+	else
 		FAIL("U128_SET_ZERO() Failed\n");
-	}
-	if (!U128_IS_ZERO(test_u128)) {
-		fprintf(stderr, "U128_IS_ZERO() Failed\n");
-		//FAIL();
-		exit(1);
-	}
+
+	if (!U128_IS_ZERO(test_u128))
+		FAIL("U128_IS_ZERO() Failed\n");
+
 	U128_SET_MAX(test_u128);
 #ifndef HAS_INT128
 	if (test_u128.uint128_a16[0] == 0xffff &&
@@ -50,29 +48,19 @@ void test_zero_max_uint128_t() {
 	if (test_u128 == (uint128_t)(-1)) {
 #endif
 	}
-	else {
-		fprintf(stderr, "U128_SET_MAX() Failed\n");
-		//FAIL();
-		exit(1);
-	}
-	if (!U128_IS_MAX(test_u128)) {
-		fprintf(stderr, "U128_IS_MAX() Failed\n");
-		//FAIL();
-		exit(1);
-	}
+	else
+		FAIL("U128_SET_MAX() Failed\n");
+
+	if (!U128_IS_MAX(test_u128))
+		FAIL("U128_IS_MAX() Failed\n");
 
 	test_u128 = uint128_t_zero();
-	if (!U128_IS_ZERO(test_u128)) {
-		fprintf(stderr, "uint128_t_zero() Failed\n");
-		//FAIL();
-		exit(1);
-	}
+	if (!U128_IS_ZERO(test_u128))
+		FAIL("uint128_t_zero() Failed\n");
+
 	test_u128 = uint128_t_max();
-	if (!U128_IS_MAX(test_u128)) {
-		fprintf(stderr, "uint128_t_max() Failed\n");
-		//FAIL();
-		exit(1);
-	}
+	if (!U128_IS_MAX(test_u128))
+		FAIL("uint128_t_max() Failed\n");
 
 	printf("%s: tests passed\n", __func__);
 }
@@ -159,7 +147,7 @@ void test_uint128_t_to_binstr() {
 	                  zero_word_16bits /* Word 6 */ \
 	                  zero_word_16bits;/* Word 7 */
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_to_binstr() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_to_binstr() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -182,7 +170,7 @@ void test_uint128_t_to_binstr() {
                       "10000000" "00000000" /* Word 6 */ \
                       "10100101" "10100101";/* Word 7 */
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_to_binstr() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_to_binstr() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -208,7 +196,7 @@ void test_uint128_t_to_binstr() {
 	                  zero_word_16bits   /* Word 6 */ \
 	                  "0010000000001110";/* Word 7 */
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_to_binstr() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_to_binstr() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -227,7 +215,7 @@ void test_uint128_t_to_binstr() {
 	test_u128.uint128_a8[15] = 0x0e;
 	uint128_t_to_binstr(test_u128, 128, result);
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_to_binstr() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_to_binstr() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -272,7 +260,7 @@ void test_uint128_t_to_binstr() {
 	                  "0100" "0111" /* Byte 14 */ \
 	                  "0000" "1111";/* Byte 15 */
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_to_binstr() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_to_binstr() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -280,7 +268,7 @@ void test_uint128_t_to_binstr() {
 	for (nb_bits_missing=1; nb_bits_missing<=128; nb_bits_missing++) {
 		uint128_t_to_binstr(test_u128, 128-nb_bits_missing, result);
 		if (strcmp(result, expected_result+nb_bits_missing) != 0) {
-			fprintf(stderr, "%d: uint128_t_to_binstr() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result+nb_bits_missing);
+			FAIL("uint128_t_to_binstr() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result+nb_bits_missing);
 			//FAIL();
 			exit(1);
 		}
@@ -320,7 +308,7 @@ void test_uint128_t_to_hexstr() {
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "a5a2" "1502" "45a8" "87c4" "e504" "1afe" "899c" "470f";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_to_hexstr() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_to_hexstr() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -347,7 +335,7 @@ void test_uint128_t_to_hexstr() {
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "0f1e2d3c4b5a69788796a5b4c3d2e1f0";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_to_hexstr() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_to_hexstr() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -356,7 +344,7 @@ void test_uint128_t_to_hexstr() {
 	for (nb_bytes_missing=1; nb_bytes_missing<=16; nb_bytes_missing++) {
 		uint128_t_to_hexstr(test_u128, 16-nb_bytes_missing, result);
 		if (strcmp(result, expected_result+nb_bytes_missing*2) != 0) {	// nb_bytes_missing*2 because there are two hex digits output per byte
-			fprintf(stderr, "%d: uint128_t_to_hexstr() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result+nb_bytes_missing*2);
+			FAIL("uint128_t_to_hexstr() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result+nb_bytes_missing*2);
 			//FAIL();
 			exit(1);
 		}
@@ -385,14 +373,14 @@ void test_power2_to_uint128_t() {
 				expected = '0';
 			}
 			if (result[string_pos] != expected) {
-				fprintf(stderr, "%d: power2_to_uint128_t() failed at pos %d, got:\n\"%c\", expected:\n\"%c\"\n", __LINE__, string_pos, result[string_pos], expected);
+				FAIL("power2_to_uint128_t() failed at pos %d, got:\n\"%c\", expected:\n\"%c\"\n", string_pos, result[string_pos], expected);
 				//FAIL();
 				exit(1);
 			}
 		}
 	}
 	if (result[128] != '\0') {
-		fprintf(stderr, "%d: power2_to_uint128_t() did not get a NULL termination at pos 128\n", __LINE__);
+		FAIL("power2_to_uint128_t() did not get a NULL termination at pos 128\n");
 		//FAIL();
 		exit(1);
 	}
@@ -423,14 +411,14 @@ void test_uint128_t_right_shift() {
 				expected = '0';
 			}
 			if (result[string_pos] != expected) {
-				fprintf(stderr, "%d: uint128_t_right_shift() failed at pos %d, got:\n\"%c\", expected:\n\"%c\"\n", __LINE__, string_pos, result[string_pos], expected);
+				FAIL("uint128_t_right_shift() failed at pos %d, got:\n\"%c\", expected:\n\"%c\"\n", string_pos, result[string_pos], expected);
 				//FAIL();
 				exit(1);
 			}
 		}
 	}
 	if (result[128] != '\0') {
-		fprintf(stderr, "%d: uint128_t_right_shift() did not get a NULL termination at pos 128\n", __LINE__);
+		FAIL("uint128_t_right_shift() did not get a NULL termination at pos 128\n");
 		//FAIL();
 		exit(1);
 	}
@@ -479,7 +467,7 @@ void test_uint128_t_right_shift() {
 				//fprintf(stderr, "string_pos=%d, expected_result[%d]=='%c'\n", string_pos, string_pos-shift/4, expected);
 			}
 			if (result[string_pos] != expected) {
-				fprintf(stderr, "%d: uint128_t_right_shift() failed at pos %d, got:\n\"%c\", expected:\n\"%c\"\n", __LINE__, string_pos, result[string_pos], expected);
+				FAIL("uint128_t_right_shift() failed at pos %d, got:\n\"%c\", expected:\n\"%c\"\n", string_pos, result[string_pos], expected);
 				//FAIL();
 				exit(1);
 			}
@@ -591,14 +579,14 @@ void test_uint128_t_left_shift() {
 				expected = '0';
 			}
 			if (result[string_pos] != expected) {
-				fprintf(stderr, "%d: uint128_t_left_shift() failed at pos %d, got:\n\"%c\", expected:\n\"%c\"\n", __LINE__, string_pos, result[string_pos], expected);
+				FAIL("uint128_t_left_shift() failed at pos %d, got:\n\"%c\", expected:\n\"%c\"\n", string_pos, result[string_pos], expected);
 				//FAIL();
 				exit(1);
 			}
 		}
 	}
 	if (result[128] != '\0') {
-		fprintf(stderr, "%d: uint128_t_left_shift() did not get a NULL termination at pos 128\n", __LINE__);
+		FAIL("uint128_t_left_shift() did not get a NULL termination at pos 128\n");
 		//FAIL();
 		exit(1);
 	}
@@ -647,7 +635,7 @@ void test_uint128_t_left_shift() {
 				//fprintf(stderr, "string_pos=%d, expected_result[%d]=='%c'\n", string_pos, string_pos+shift/4, expected);
 			}
 			if (result[string_pos] != expected) {
-				fprintf(stderr, "%d: uint128_t_right_shift() failed at pos %d, got:\n\"%c\", expected:\n\"%c\"\n", __LINE__, string_pos, result[string_pos], expected);
+				FAIL("uint128_t_right_shift() failed at pos %d, got:\n\"%c\", expected:\n\"%c\"\n", string_pos, result[string_pos], expected);
 				//FAIL();
 				exit(1);
 			}
@@ -690,7 +678,7 @@ void test_uint128_t_left_shift_n() {
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "f01e2d3c4b5a69788796a5b4c3d2e10f";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_left_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_left_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -698,7 +686,7 @@ void test_uint128_t_left_shift_n() {
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "01e2d3c4b5a69788796a5b4c3d2e10f0";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_left_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_left_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -706,7 +694,7 @@ void test_uint128_t_left_shift_n() {
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "e2d3c4b5a69788796a5b4c3d2e10f000";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_left_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_left_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -714,7 +702,7 @@ void test_uint128_t_left_shift_n() {
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "c4b5a69788796a5b4c3d2e10f0000000";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_left_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_left_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -722,7 +710,7 @@ void test_uint128_t_left_shift_n() {
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "88796a5b4c3d2e10f000000000000000";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_left_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_left_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -731,7 +719,7 @@ void test_uint128_t_left_shift_n() {
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "80000000000000000000000000000000";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_left_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_left_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -741,7 +729,7 @@ void test_uint128_t_left_shift_n() {
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "00000000000000000000000000000000";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_left_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_left_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -815,7 +803,7 @@ void test_uint128_t_mix_shift() {
 				//fprintf(stderr, "expecting result1[%d]='%c'\n", string_pos, expected);
 			}
 			if (result1[string_pos] != expected) {
-				fprintf(stderr, "%d: uint128_t_right_shift() failed on result1 at pos %d, got:\n\"%c\", expected:\n\"%c\"\n", __LINE__, string_pos, result1[string_pos], expected);
+				FAIL("uint128_t_right_shift() failed on result1 at pos %d, got:\n\"%c\", expected:\n\"%c\"\n", string_pos, result1[string_pos], expected);
 				//FAIL();
 				exit(1);
 			}
@@ -828,7 +816,7 @@ void test_uint128_t_mix_shift() {
 				//fprintf(stderr, "expecting result2[%d]='%c'\n", string_pos, expected);
 			}
 			if (result2[string_pos] != expected) {
-				fprintf(stderr, "%d: uint128_t_right_shift() failed on result2 at pos %d, got:\n\"%c\", expected:\n\"%c\"\n", __LINE__, string_pos, result1[string_pos], expected);
+				FAIL("uint128_t_right_shift() failed on result2 at pos %d, got:\n\"%c\", expected:\n\"%c\"\n", string_pos, result1[string_pos], expected);
 				//FAIL();
 				exit(1);
 			}
@@ -859,7 +847,7 @@ void test_uint128_t_inc() {
 #endif
 
 		if (last_word16-1 != inc_count) {
-			fprintf(stderr, "%d: uint128_t_inc() failed at value %u: got %u\n", __LINE__, inc_count, last_word16);
+			FAIL("uint128_t_inc() failed at value %u: got %u\n", inc_count, last_word16);
 			//FAIL();
 			//exit(1);
 		}
@@ -868,7 +856,7 @@ void test_uint128_t_inc() {
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "00000000000000000000000000010000";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_inc() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_inc() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -882,7 +870,7 @@ void test_uint128_t_inc() {
 	//printf("Expecting \"%s\"\n", expected_result);
 
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_inc() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_inc() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -910,7 +898,7 @@ void test_uint128_t_dec() {
 		last_word16 = test_u128 & 0xffff;
 #endif
 		if (last_word16+1 != 65535-dec_count) {
-			fprintf(stderr, "%d: uint128_t_dec() failed at value %u: got %u\n", __LINE__, dec_count, last_word16);
+			FAIL("uint128_t_dec() failed at value %u: got %u\n", dec_count, last_word16);
 			//FAIL();
 			//exit(1);
 		}
@@ -919,7 +907,7 @@ void test_uint128_t_dec() {
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "fffffffffffffffffffffffffffeffff";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_dec() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_dec() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -933,7 +921,7 @@ void test_uint128_t_dec() {
 	//printf("Expecting \"%s\"\n", expected_result);
 
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_dec() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_dec() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -957,7 +945,7 @@ void test_uint16_t_to_uint128_t() {
 		last_word16 = result_u128 & 0xffff;
 #endif
 		if (last_word16 != source) {
-			fprintf(stderr, "%d: uint16_t_to_uint128_t() failed on source value %u\n", __LINE__, source);
+			FAIL("uint16_t_to_uint128_t() failed on source value %u\n", source);
 			//FAIL();
 			//exit(1);
 		}
@@ -972,7 +960,7 @@ void test_uint16_t_to_uint128_t() {
 #else
 		if ((result_u128 & ((uint128_t)0xffffffffffffff << 64)) != 0) {
 #endif
-			fprintf(stderr, "%d: uint16_t_to_uint128_t() failed on source value %u: MSW have been altered\n", __LINE__, source);
+			FAIL("uint16_t_to_uint128_t() failed on source value %u: MSW have been altered\n", source);
 			//FAIL();
 			//exit(1);
 		}
@@ -986,7 +974,7 @@ void test_uint16_t_to_uint128_t() {
 	last_word16 = result_u128 & 0xffff;
 #endif
 	if (last_word16 != source) {
-		fprintf(stderr, "%d: uint16_t_to_uint128_t() failed on source value %u\n", __LINE__, source);
+		FAIL("uint16_t_to_uint128_t() failed on source value %u\n", source);
 		//FAIL();
 		//exit(1);
 	}
@@ -1001,7 +989,7 @@ void test_uint16_t_to_uint128_t() {
 #else
 	if ((result_u128 & ((uint128_t)0xffffffffffffff << 64)) != 0) {
 #endif
-		fprintf(stderr, "%d: uint16_t_to_uint128_t() failed on source value %u: MSW have been altered\n", __LINE__, source);
+		FAIL("uint16_t_to_uint128_t() failed on source value %u: MSW have been altered\n", source);
 		//FAIL();
 		//exit(1);
 	}
@@ -1024,7 +1012,7 @@ void test_uint8_t_to_uint128_t() {
 		last_byte8 = result_u128 & 0xff;
 #endif
 		if (last_byte8 != source) {
-			fprintf(stderr, "%d: uint8_t_to_uint128_t() failed on source value %u\n", __LINE__, source);
+			FAIL("uint8_t_to_uint128_t() failed on source value %u\n", source);
 			//FAIL();
 			//exit(1);
 		}
@@ -1048,7 +1036,7 @@ void test_uint8_t_to_uint128_t() {
 		if ( (result_u128 & ((uint128_t)0xffffffffffffff << 64)) != 0 ||	/* High 64 bits should be 0 */
 		     (result_u128 & (uint128_t)0xffffffffffff00) != 0) {	/* Next 56 bits should be 0, (ignore low 8 bits) */
 #endif
-			fprintf(stderr, "%d: uint8_t_to_uint128_t() failed on source value %u: MSW have been altered\n", __LINE__, source);
+			FAIL("uint8_t_to_uint128_t() failed on source value %u: MSW have been altered\n", source);
 			//FAIL();
 			//exit(1);
 		}
@@ -1062,7 +1050,7 @@ void test_uint8_t_to_uint128_t() {
 	last_byte8 = result_u128 & 0xff;
 #endif
 	if (last_byte8 != source) {
-		fprintf(stderr, "%d: uint8_t_to_uint128_t() failed on source value %u\n", __LINE__, source);
+		FAIL("uint8_t_to_uint128_t() failed on source value %u\n", source);
 		//FAIL();
 		//exit(1);
 	}
@@ -1086,7 +1074,7 @@ void test_uint8_t_to_uint128_t() {
 		if ( (result_u128 & ((uint128_t)0xffffffffffffff << 64)) != 0 ||	/* High 64 bits should be 0 */
 		     (result_u128 & (uint128_t)0xffffffffffff00) != 0) {	/* Next 56 bits should be 0, (ignore low 8 bits) */
 #endif
-		fprintf(stderr, "%d: uint8_t_to_uint128_t() failed on source value %u: MSW have been altered\n", __LINE__, source);
+		FAIL("uint8_t_to_uint128_t() failed on source value %u: MSW have been altered\n", source);
 		//FAIL();
 		//exit(1);
 	}
@@ -1115,7 +1103,7 @@ void test_uint128_t_sub() {
 		last_word16 = result_u128 & 0xffff;
 #endif
 		if (last_word16 != 65535-dec_count) {
-			fprintf(stderr, "%d: uint128_t_sub() failed at iteration %u: got %u, expected %u\n", __LINE__, dec_count, last_word16, 65535-dec_count);
+			FAIL("uint128_t_sub() failed at iteration %u: got %u, expected %u\n", dec_count, last_word16, 65535-dec_count);
 			//FAIL();
 			//exit(1);
 		}
@@ -1130,7 +1118,7 @@ void test_uint128_t_sub() {
 #else
 		if (result_u128 >> 64 != test1_u128 >> 64) {
 #endif
-			fprintf(stderr, "%d: uint128_t_sub() failed at iteration %u: MSW have been altered\n", __LINE__, dec_count);
+			FAIL("uint128_t_sub() failed at iteration %u: MSW have been altered\n", dec_count);
 			//FAIL();
 			//exit(1);
 		}
@@ -1142,7 +1130,7 @@ void test_uint128_t_sub() {
 	uint128_t_to_hexstr(result_u128, 16, result);
 	expected_result = "fffffffffffffffffffffffffffe0000";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_sub() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_sub() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -1151,7 +1139,7 @@ void test_uint128_t_sub() {
 	uint128_t_to_hexstr(result_u128, 16, result);
 	expected_result = "ffffffffffffffffffffffffff7e0000";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_sub() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_sub() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -1161,7 +1149,7 @@ void test_uint128_t_sub() {
 	uint128_t_to_hexstr(result_u128, 16, result);
 	expected_result = "fffffffffffffffeffffffffff7e0001";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_sub() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_sub() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -1171,7 +1159,7 @@ void test_uint128_t_sub() {
 	uint128_t_to_hexstr(result_u128, 16, result);
 	expected_result = "fefffffffffffffeffffffffff7e0001";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_sub() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_sub() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -1185,7 +1173,7 @@ void test_uint128_t_sub() {
 
 	expected_result = "00000000000000000000000000000000";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_sub() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_sub() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -1234,7 +1222,7 @@ void test_uint128_t_sub() {
 	uint128_t_to_hexstr(result_u128, 16, result);
 
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_sub() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_sub() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -1245,7 +1233,7 @@ void test_uint128_t_sub() {
 	uint128_t_to_hexstr(result_u128, 16, result);	/* substracting 0, should get same value as before */
 
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_sub() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_sub() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -1276,7 +1264,7 @@ void test_uint128_t_add() {
 		last_word16 = result_u128 & 0xffff;
 #endif
 		if (last_word16 != inc_count) {
-			fprintf(stderr, "%d: uint128_t_add() failed at iteration %u: got %u, expected %u\n", __LINE__, inc_count, last_word16, inc_count);
+			FAIL("uint128_t_add() failed at iteration %u: got %u, expected %u\n", inc_count, last_word16, inc_count);
 			//FAIL();
 			//exit(1);
 		}
@@ -1291,7 +1279,7 @@ void test_uint128_t_add() {
 #else
 	   if (result_u128 >> 64 != test1_u128 >> 64) {
 #endif
-			fprintf(stderr, "%d: uint128_t_add() failed at iteration %u: MSW have been altered\n", __LINE__, inc_count);
+			FAIL("uint128_t_add() failed at iteration %u: MSW have been altered\n", inc_count);
 			//FAIL();
 			//exit(1);
 		}
@@ -1303,7 +1291,7 @@ void test_uint128_t_add() {
 	uint128_t_to_hexstr(result_u128, 16, result);
 	expected_result = "0000000000000000000000000001ffff";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_add() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_add() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -1312,7 +1300,7 @@ void test_uint128_t_add() {
 	uint128_t_to_hexstr(result_u128, 16, result);
 	expected_result = "0000000000000000000000000081ffff";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_add() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_add() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -1322,7 +1310,7 @@ void test_uint128_t_add() {
 	uint128_t_to_hexstr(result_u128, 16, result);
 	expected_result = "0000000000000001000000000081fffe";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_add() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_add() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -1332,7 +1320,7 @@ void test_uint128_t_add() {
 	uint128_t_to_hexstr(result_u128, 16, result);
 	expected_result = "0100000000000001000000000081fffe";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_add() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_add() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -1346,7 +1334,7 @@ void test_uint128_t_add() {
 
 	expected_result = "00000000000000000000000000000000";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_add() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_add() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -1396,7 +1384,7 @@ void test_uint128_t_add() {
 	uint128_t_to_hexstr(result_u128, 16, result);
 
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_add() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_add() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -1407,7 +1395,7 @@ void test_uint128_t_add() {
 	uint128_t_to_hexstr(result_u128, 16, result);	/* adding 0, should get same value as before */
 
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_add() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_add() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -1428,7 +1416,7 @@ void test_uint128_t_mixed_add_sub_inc_dec() {
 		test2_u128 = uint128_t_sub(test2_u128, test1_u128);	/* remove -1 (add 1) 0xffff times */
 	}
 	if (!U128_IS_ZERO(test2_u128)) {	/* Expect test2_u128==0 */
-		fprintf(stderr, "%d: test failed\n", __LINE__);
+		FAIL("test failed\n");
 		//FAIL();
 		exit(1);
 	}
@@ -1439,7 +1427,7 @@ void test_uint128_t_mixed_add_sub_inc_dec() {
 		test2_u128 = uint128_t_sub(test2_u128, test1_u128);	/* Remove 1 0xffff times */
 	}
 	if (!U128_IS_ZERO(test2_u128)) {	/* Expect test2_u128==0 */
-		fprintf(stderr, "%d: test failed\n", __LINE__);
+		FAIL("test failed\n");
 		//FAIL();
 		exit(1);
 	}
@@ -1479,7 +1467,7 @@ void test_uint128_t_mixed_add_sub_inc_dec() {
 		test1_u128 = uint128_t_dec(test1_u128);	/* -1 */
 
 		if (!(uint128_t_cmp(test2_u128, test1_u128) == 0)) {	/* Expect test2_u128==0 */
-			fprintf(stderr, "%d: test failed\n", __LINE__);
+			FAIL("test failed\n");
 			//FAIL();
 			exit(1);
 		}
@@ -1499,7 +1487,7 @@ void test_uint128_t_or() {
 	test2_u128 = test1_u128;
 	result_u128 = uint128_t_or(test1_u128, test2_u128);	/* A or A = A */
 	if (!(uint128_t_cmp(result_u128, test1_u128) == 0)) {
-		fprintf(stderr, "%d: uint128_t_or() failed\n", __LINE__);
+		FAIL("uint128_t_or() failed\n");
 		//FAIL();
 		exit(1);
 	}
@@ -1509,7 +1497,7 @@ void test_uint128_t_or() {
 	test2_u128 = test1_u128;
 	result_u128 = uint128_t_or(test1_u128, test2_u128);	/* A or A = A */
 	if (!(uint128_t_cmp(result_u128, test1_u128) == 0)) {
-		fprintf(stderr, "%d: uint128_t_or() failed\n", __LINE__);
+		FAIL("uint128_t_or() failed\n");
 		//FAIL();
 		exit(1);
 	}
@@ -1537,19 +1525,19 @@ void test_uint128_t_or() {
 	test2_u128 = test1_u128;
 	result_u128 = uint128_t_or(test1_u128, test2_u128);	/* A or A = A */
 	if (!(uint128_t_cmp(result_u128, test1_u128) == 0)) {
-		fprintf(stderr, "%d: uint128_t_or() failed\n", __LINE__);
+		FAIL("uint128_t_or() failed\n");
 		//FAIL();
 		exit(1);
 	}
 	result_u128 = uint128_t_or(test1_u128, uint128_t_zero());	/* A or 0 = A */
 	if (!(uint128_t_cmp(result_u128, test1_u128) == 0)) {
-		fprintf(stderr, "%d: uint128_t_or() failed\n", __LINE__);
+		FAIL("uint128_t_or() failed\n");
 		//FAIL();
 		exit(1);
 	}
 	result_u128 = uint128_t_or(test1_u128, uint128_t_max());	/* A or (-1) = (-1) */
 	if (!(uint128_t_cmp(result_u128, uint128_t_max()) == 0)) {
-		fprintf(stderr, "%d: uint128_t_or() failed\n", __LINE__);
+		FAIL("uint128_t_or() failed\n");
 		//FAIL();
 		exit(1);
 	}
@@ -1578,7 +1566,7 @@ void test_uint128_t_or() {
 	result_u128 = uint128_t_or(test1_u128, test2_u128);	/* A or !A = (uint128_t)(-1) */
 
 	if (!(uint128_t_cmp(result_u128, uint128_t_max()) == 0)) {
-		fprintf(stderr, "%d: uint128_t_or() failed\n", __LINE__);
+		FAIL("uint128_t_or() failed\n");
 		//FAIL();
 		exit(1);
 	}
@@ -1597,7 +1585,7 @@ void test_uint128_t_and() {
 	test2_u128 = test1_u128;
 	result_u128 = uint128_t_and(test1_u128, test2_u128);	/* A and A = A */
 	if (!(uint128_t_cmp(result_u128, test1_u128) == 0)) {
-		fprintf(stderr, "%d: uint128_t_and() failed\n", __LINE__);
+		FAIL("uint128_t_and() failed\n");
 		//FAIL();
 		exit(1);
 	}
@@ -1607,7 +1595,7 @@ void test_uint128_t_and() {
 	test2_u128 = test1_u128;
 	result_u128 = uint128_t_and(test1_u128, test2_u128);	/* A and A = A */
 	if (!(uint128_t_cmp(result_u128, test1_u128) == 0)) {
-		fprintf(stderr, "%d: uint128_t_and() failed\n", __LINE__);
+		FAIL("uint128_t_and() failed\n");
 		//FAIL();
 		exit(1);
 	}
@@ -1635,19 +1623,19 @@ void test_uint128_t_and() {
 	test2_u128 = test1_u128;
 	result_u128 = uint128_t_and(test1_u128, test2_u128);	/* A and A = A */
 	if (!(uint128_t_cmp(result_u128, test1_u128) == 0)) {
-		fprintf(stderr, "%d: uint128_t_and() failed\n", __LINE__);
+		FAIL("uint128_t_and() failed\n");
 		//FAIL();
 		exit(1);
 	}
 	result_u128 = uint128_t_and(test1_u128, uint128_t_max());	/* A and (-1) = A */
 	if (!(uint128_t_cmp(result_u128, test1_u128) == 0)) {
-		fprintf(stderr, "%d: uint128_t_and() failed\n", __LINE__);
+		FAIL("uint128_t_and() failed\n");
 		//FAIL();
 		exit(1);
 	}
 	result_u128 = uint128_t_and(test1_u128, uint128_t_zero());	/* A and 0 = 0 */
 	if (!U128_IS_ZERO(result_u128)) {
-		fprintf(stderr, "%d: uint128_t_and() failed\n", __LINE__);
+		FAIL("uint128_t_and() failed\n");
 		//FAIL();
 		exit(1);
 	}
@@ -1676,7 +1664,7 @@ void test_uint128_t_and() {
 	result_u128 = uint128_t_and(test1_u128, test2_u128);	/* A and !A = 0 */
 
 	if (!U128_IS_ZERO(result_u128)) {
-		fprintf(stderr, "%d: uint128_t_and() failed\n", __LINE__);
+		FAIL("uint128_t_and() failed\n");
 		//FAIL();
 		exit(1);
 	}
@@ -1748,25 +1736,25 @@ void test_uint128_t_cmp() {
 	U128_SET_ZERO(test1_u128);
 	U128_SET_ZERO(test2_u128);
 	if (!(uint128_t_cmp(test1_u128, test2_u128) == 0)) {	/* Expect 0==0 */
-		fprintf(stderr, "%d: uint128_t_cmp() failed\n", __LINE__);
+		FAIL("uint128_t_cmp() failed\n");
 		//FAIL();
 		exit(1);
 	}
 	test1_u128 = uint128_t_inc(test1_u128);
 	if (!(uint128_t_cmp(test1_u128, test2_u128) > 0)) {	/* Expect 1>0 */
-		fprintf(stderr, "%d: uint128_t_cmp() failed\n", __LINE__);
+		FAIL("uint128_t_cmp() failed\n");
 		//FAIL();
 		exit(1);
 	}
 	test2_u128 = uint128_t_inc(test2_u128);
 	if (!(uint128_t_cmp(test1_u128, test2_u128) == 0)) {	/* Expect 1==1 */
-		fprintf(stderr, "%d: uint128_t_cmp() failed\n", __LINE__);
+		FAIL("uint128_t_cmp() failed\n");
 		//FAIL();
 		exit(1);
 	}
 	test1_u128 = uint128_t_dec(test1_u128);
 	if (!(uint128_t_cmp(test1_u128, test2_u128) < 0)) {	/* Expect 0<1 */
-		fprintf(stderr, "%d: uint128_t_cmp() failed\n", __LINE__);
+		FAIL("uint128_t_cmp() failed\n");
 		//FAIL();
 		exit(1);
 	}
@@ -1775,23 +1763,23 @@ void test_uint128_t_cmp() {
 	U128_SET_ZERO(test2_u128);
 	test1_u128 = uint128_t_dec(test1_u128);
 	if (!(uint128_t_cmp(test1_u128, test2_u128) > 0)) {	/* Expect (uint128_t)(-1)>0 */
-		fprintf(stderr, "%d: uint128_t_cmp() failed\n", __LINE__);
+		FAIL("uint128_t_cmp() failed\n");
 		//FAIL();
 		exit(1);
 	}
 	if (!(uint128_t_cmp(test2_u128, test1_u128) < 0)) {	/* Expect 0<(uint128_t)(-1) */
-		fprintf(stderr, "%d: uint128_t_cmp() failed\n", __LINE__);
+		FAIL("uint128_t_cmp() failed\n");
 		//FAIL();
 		exit(1);
 	}
 	test2_u128 = uint128_t_inc(test2_u128);
 	if (!(uint128_t_cmp(test1_u128, test2_u128) > 0)) {	/* Expect (uint128_t)(-1)>1 */
-		fprintf(stderr, "%d: uint128_t_cmp() failed\n", __LINE__);
+		FAIL("uint128_t_cmp() failed\n");
 		//FAIL();
 		exit(1);
 	}
 	if (!(uint128_t_cmp(test2_u128, test1_u128) < 0)) {	/* Expect 1<(uint128_t)(-1) */
-		fprintf(stderr, "%d: uint128_t_cmp() failed\n", __LINE__);
+		FAIL("uint128_t_cmp() failed\n");
 		//FAIL();
 		exit(1);
 	}

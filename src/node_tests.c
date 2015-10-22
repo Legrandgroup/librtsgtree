@@ -14,9 +14,7 @@ void check_result_is_uint128(uint128_t value, uint128_t expected, unsigned int f
 	if (uint128_t_cmp(value, expected) != 0) {
 		uint128_t_to_hexstr((uint128_t)value, 16, value_str);
 		uint128_t_to_hexstr((uint128_t)expected, 16, expected_str);
-		fprintf(stderr, "%d: uint128 comparison failed, got:\n\"%s\", expected:\n\"%s\"\n", func_line, value_str, expected_str);
-		//FAIL();
-		exit(1);
+		FAIL("at source line %d: uint128 comparison failed, got:\n\"%s\", expected:\n\"%s\"\n", func_line, value_str, expected_str);
 	}	
 }
 
@@ -87,7 +85,7 @@ void test_uint128_t_to_ipv6() {
 	inet_ntop(AF_INET6, &dst_in_addr, result, INET6_ADDRSTRLEN);
 	expected_result="a5a2:1502:45a8:87c4:e504:1afe:899c:470f";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_to_ipv6() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_to_ipv6() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -117,7 +115,7 @@ void test_uint128_t_to_ipv6() {
 	inet_ntop(AF_INET6, &dst_in_addr, result, INET6_ADDRSTRLEN);
 	expected_result="2001:41c8:1000:21::21:4";
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: uint128_t_to_ipv6() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("uint128_t_to_ipv6() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -135,13 +133,13 @@ void test_get_tree_prefix_len() {
 	tree.hostA = 0;
 	tree.ip_type = IPV6;
 	if (get_tree_prefix_len(&tree) != 124) {
-		fprintf(stderr, "%d: get_tree_prefix_len() failed\n", __LINE__);
+		FAIL("get_tree_prefix_len() failed\n");
 		//FAIL();
 		exit(1);
 	}
 	tree.Rmax = 120;	/* 120 ranks IPv6 tree (maximum size for private addressing) */
 	if (get_tree_prefix_len(&tree) != 8) {
-		fprintf(stderr, "%d: get_tree_prefix_len() failed\n", __LINE__);
+		FAIL("get_tree_prefix_len() failed\n");
 		//FAIL();
 		exit(1);
 	}
@@ -152,13 +150,13 @@ void test_get_tree_prefix_len() {
 	tree.hostA = 2;
 	tree.ip_type = IPV4;
 	if (get_tree_prefix_len(&tree) != 24) {
-		fprintf(stderr, "%d: get_tree_prefix_len() failed\n", __LINE__);
+		FAIL("get_tree_prefix_len() failed\n");
 		//FAIL();
 		exit(1);
 	}
 	tree.Rmax = 22;	/* 22 ranks IPv4 tree (maximum size for private addressing) */
 	if (get_tree_prefix_len(&tree) != 8) {
-		fprintf(stderr, "%d: get_tree_prefix_len() failed\n", __LINE__);
+		FAIL("get_tree_prefix_len() failed\n");
 		//FAIL();
 		exit(1);
 	}
@@ -176,19 +174,19 @@ void test_get_hosts_prefix_len() {
 	tree.hostA = 0;
 	tree.ip_type = IPV6;
 	if (get_hosts_prefix_len(&tree) != 128) {
-		fprintf(stderr, "%d: get_hosts_prefix_len() failed\n", __LINE__);
+		FAIL("get_hosts_prefix_len() failed\n");
 		//FAIL();
 		exit(1);
 	}
 	tree.hostA = 2;
 	if (get_hosts_prefix_len(&tree) != 126) {
-		fprintf(stderr, "%d: get_hosts_prefix_len() failed\n", __LINE__);
+		FAIL("get_hosts_prefix_len() failed\n");
 		//FAIL();
 		exit(1);
 	}
 	tree.hostA = 8;
 	if (get_hosts_prefix_len(&tree) != 120) {
-		fprintf(stderr, "%d: get_hosts_prefix_len() failed\n", __LINE__);
+		FAIL("get_hosts_prefix_len() failed\n");
 		//FAIL();
 		exit(1);
 	}
@@ -198,13 +196,13 @@ void test_get_hosts_prefix_len() {
 	tree.hostA = 2;
 	tree.ip_type = IPV4;
 	if (get_hosts_prefix_len(&tree) != 30) {
-		fprintf(stderr, "%d: get_hosts_prefix_len() failed\n", __LINE__);
+		FAIL("get_hosts_prefix_len() failed\n");
 		//FAIL();
 		exit(1);
 	}
 	tree.hostA = 8;
 	if (get_hosts_prefix_len(&tree) != 24) {
-		fprintf(stderr, "%d: get_hosts_prefix_len() failed\n", __LINE__);
+		FAIL("get_hosts_prefix_len() failed\n");
 		//FAIL();
 		exit(1);
 	}
@@ -271,7 +269,7 @@ void test_get_root_node_id() {
 	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
 	expected_result = "0000000000000000" "0000000000000008";	/* Root node for a tree with Rmax=4 should have ID 8 */
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: get_root_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("get_root_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -285,7 +283,7 @@ void test_get_root_node_id() {
 	uint128_t_to_hexstr((uint128_t)test_node, 16, result);
 	expected_result = "0000000000000000" "0000000000000020";	/* Root node for a tree with Rmax=6 should have ID 32 */
 	if (strcmp(result, expected_result) != 0) {
-		fprintf(stderr, "%d: get_root_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", __LINE__, result, expected_result);
+		FAIL("get_root_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 		//FAIL();
 		exit(1);
 	}
@@ -305,13 +303,13 @@ void test_node_id_to_rank() {
 	tree.hostA = 0;
 
 	if (node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(8))) != (rank_t)1) {
-		fprintf(stderr, "%d: node_id_to_rank() failed for rank 1\n", __LINE__);
+		FAIL("node_id_to_rank() failed for rank 1\n");
 		//FAIL();
 		exit(1);
 	}
 	if (node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(4))) != (rank_t)2 ||
 	    node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(12))) != (rank_t)2) {
-		fprintf(stderr, "%d: node_id_to_rank() failed for rank 2\n", __LINE__);
+		FAIL("node_id_to_rank() failed for rank 2\n");
 		//FAIL();
 		exit(1);
 	}
@@ -319,7 +317,7 @@ void test_node_id_to_rank() {
 	    node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(6))) != (rank_t)3 ||
 		node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(10))) != (rank_t)3 ||
 		node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(14))) != (rank_t)3) {
-		fprintf(stderr, "%d: node_id_to_rank() failed for rank 3\n", __LINE__);
+		FAIL("node_id_to_rank() failed for rank 3\n");
 		//FAIL();
 		exit(1);
 	}
@@ -331,29 +329,29 @@ void test_node_id_to_rank() {
 	    node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(11))) != (rank_t)4 ||
 		node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(13))) != (rank_t)4 ||
 		node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(15))) != (rank_t)4) {
-		fprintf(stderr, "%d: node_id_to_rank() failed for rank 4\n", __LINE__);
+		FAIL("node_id_to_rank() failed for rank 4\n");
 		//FAIL();
 		exit(1);
 	}
 
 	/* Test invalid node IDs */
 	if (node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(16))) != (rank_t)0) {
-		fprintf(stderr, "%d: node_id_to_rank() failed for invalid node ID 16\n", __LINE__);
+		FAIL("node_id_to_rank() failed for invalid node ID 16\n");
 		//FAIL();
 		exit(1);
 	}
 	if (node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(0xffff))) != (rank_t)0) {
-		fprintf(stderr, "%d: node_id_to_rank() failed for invalid node ID 0xffff\n", __LINE__);
+		FAIL("node_id_to_rank() failed for invalid node ID 0xffff\n");
 		//FAIL();
 		exit(1);
 	}
 	if (node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(0x8000))) != (rank_t)0) {
-		fprintf(stderr, "%d: node_id_to_rank() failed for invalid node ID 0x8000\n", __LINE__);
+		FAIL("node_id_to_rank() failed for invalid node ID 0x8000\n");
 		//FAIL();
 		exit(1);
 	}
 	if (node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(0))) != (rank_t)0) {
-		fprintf(stderr, "%d: node_id_to_rank() failed for invalid node ID 0\n", __LINE__);
+		FAIL("node_id_to_rank() failed for invalid node ID 0\n");
 		//FAIL();
 		exit(1);
 	}
@@ -365,13 +363,13 @@ void test_node_id_to_rank() {
 	tree.hostA = 2;
 
 	if (node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(32))) != (rank_t)1) {
-		fprintf(stderr, "%d: node_id_to_rank() failed for rank 1\n", __LINE__);
+		FAIL("node_id_to_rank() failed for rank 1\n");
 		//FAIL();
 		exit(1);
 	}
 	if (node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(16))) != (rank_t)2 ||
 	    node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(48))) != (rank_t)2) {
-		fprintf(stderr, "%d: node_id_to_rank() failed for rank 2\n", __LINE__);
+		FAIL("node_id_to_rank() failed for rank 2\n");
 		//FAIL();
 		exit(1);
 	}
@@ -379,7 +377,7 @@ void test_node_id_to_rank() {
 	    node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(24))) != (rank_t)3 ||
 		node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(40))) != (rank_t)3 ||
 		node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(56))) != (rank_t)3) {
-		fprintf(stderr, "%d: node_id_to_rank() failed for rank 3\n", __LINE__);
+		FAIL("node_id_to_rank() failed for rank 3\n");
 		//FAIL();
 		exit(1);
 	}
@@ -391,7 +389,7 @@ void test_node_id_to_rank() {
 	    node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(44))) != (rank_t)4 ||
 		node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(52))) != (rank_t)4 ||
 		node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(60))) != (rank_t)4) {
-		fprintf(stderr, "%d: node_id_to_rank() failed for rank 4\n", __LINE__);
+		FAIL("node_id_to_rank() failed for rank 4\n");
 		//FAIL();
 		exit(1);
 	}
@@ -411,7 +409,7 @@ void test_node_id_to_rank() {
 	    node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(54))) != (rank_t)5 ||
 		node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(58))) != (rank_t)5 ||
 		node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(62))) != (rank_t)5) {
-		fprintf(stderr, "%d: node_id_to_rank() failed for rank 5\n", __LINE__);
+		FAIL("node_id_to_rank() failed for rank 5\n");
 		//FAIL();
 		exit(1);
 	}
@@ -447,29 +445,29 @@ void test_node_id_to_rank() {
 	    node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(59))) != (rank_t)6 ||
 		node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(61))) != (rank_t)6 ||
 		node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(63))) != (rank_t)6) {
-		fprintf(stderr, "%d: node_id_to_rank() failed for rank 6\n", __LINE__);
+		FAIL("node_id_to_rank() failed for rank 6\n");
 		//FAIL();
 		exit(1);
 	}
 
 	/* Test invalid node IDs */
 	if (node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(64))) != (rank_t)0) {
-		fprintf(stderr, "%d: node_id_to_rank() failed for invalid node ID 64\n", __LINE__);
+		FAIL("node_id_to_rank() failed for invalid node ID 64\n");
 		//FAIL();
 		exit(1);
 	}
 	if (node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(0xffff))) != (rank_t)0) {
-		fprintf(stderr, "%d: node_id_to_rank() failed for invalid node ID 0xffff\n", __LINE__);
+		FAIL("node_id_to_rank() failed for invalid node ID 0xffff\n");
 		//FAIL();
 		exit(1);
 	}
 	if (node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(0x8000))) != (rank_t)0) {
-		fprintf(stderr, "%d: node_id_to_rank() failed for invalid node ID 0x8000\n", __LINE__);
+		FAIL("node_id_to_rank() failed for invalid node ID 0x8000\n");
 		//FAIL();
 		exit(1);
 	}
 	if (node_id_to_rank(&tree, (node_id_t)(uint16_t_to_uint128_t(0))) != (rank_t)0) {
-		fprintf(stderr, "%d: node_id_to_rank() failed for invalid node ID 0\n", __LINE__);
+		FAIL("node_id_to_rank() failed for invalid node ID 0\n");
 		//FAIL();
 		exit(1);
 	}
@@ -495,7 +493,7 @@ void test_get_parent_node_id() {
 	test_node = get_root_node_id(&tree);
 	test_node = get_parent_node_id(&tree, test_node);	/* No parent for root */
 	if (!U128_IS_ZERO(test_node)) {
-		fprintf(stderr, "%d: get_parent_node_id() failed, no parent should be provided for root node\n", __LINE__);
+		FAIL("get_parent_node_id() failed, no parent should be provided for root node\n");
 		//FAIL();
 		exit(1);
 	}
@@ -548,7 +546,7 @@ void test_get_parent_node_id() {
 	test_node = get_root_node_id(&tree);
 	test_node = get_parent_node_id(&tree, test_node);	/* No parent for root */
 	if (!U128_IS_ZERO(test_node)) {
-		fprintf(stderr, "%d: get_parent_node_id() failed, no parent should be provided for root node\n", __LINE__);
+		FAIL("get_parent_node_id() failed, no parent should be provided for root node\n");
 		//FAIL();
 		exit(1);
 	}
@@ -808,17 +806,17 @@ void test_get_top_interface_config() {
 
 	//TODO: check that tree was not altered as side effect when passed as a reference above
 	if (ip_addr_result.ip_type != IPV6) {	/* ip_type should have been propagated as is to result */
-		fprintf(stderr, "%d: get_top_interface_config() modified ip_type field\n", __LINE__);
+		FAIL("get_top_interface_config() modified ip_type field\n");
 		//FAIL();
 		exit(1);
 	}
 	if (strcmp(ip_addr_str, "fd00::8") != 0) {	/* Should get fd00::8 for root node's top interface */
-		fprintf(stderr, "%d: get_top_interface_config() got wrong IP address: %s\n", __LINE__, ip_addr_str);
+		FAIL("get_top_interface_config() got wrong IP address: %s\n", ip_addr_str);
 		//FAIL();
 		exit(1);
 	}
 	if (ip_addr_result.prefix != 128) {	/* Should get /128 for root node's top interface netmask */
-		fprintf(stderr, "%d: get_top_interface_config() got wrong netmask: %d\n", __LINE__, ip_addr_result.prefix);
+		FAIL("get_top_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
 		//FAIL();
 		exit(1);
 	}
@@ -830,17 +828,17 @@ void test_get_top_interface_config() {
 
 	//TODO: check that tree was not altered as side effect when passed as a reference above
 	if (ip_addr_result.ip_type != IPV6) {	/* ip_type should have been propagated as is to result */
-		fprintf(stderr, "%d: get_top_interface_config() modified ip_type field\n", __LINE__);
+		FAIL("get_top_interface_config() modified ip_type field\n");
 		//FAIL();
 		exit(1);
 	}
 	if (strcmp(ip_addr_str, "fd00::4") != 0) {	/* Should get fd00::8 for root node's top interface */
-		fprintf(stderr, "%d: get_top_interface_config() got wrong IP address: %s\n", __LINE__, ip_addr_str);
+		FAIL("get_top_interface_config() got wrong IP address: %s\n", ip_addr_str);
 		//FAIL();
 		exit(1);
 	}
 	if (ip_addr_result.prefix != 128) {	/* Should get /128 for root node's top interface netmask */
-		fprintf(stderr, "%d: get_top_interface_config() got wrong netmask: %d\n", __LINE__, ip_addr_result.prefix);
+		FAIL("get_top_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
 		//FAIL();
 		exit(1);
 	}
@@ -852,17 +850,17 @@ void test_get_top_interface_config() {
 
 	//TODO: check that tree was not altered as side effect when passed as a reference above
 	if (ip_addr_result.ip_type != IPV6) {	/* ip_type should have been propagated as is to result */
-		fprintf(stderr, "%d: get_top_interface_config() modified ip_type field\n", __LINE__);
+		FAIL("get_top_interface_config() modified ip_type field\n");
 		//FAIL();
 		exit(1);
 	}
 	if (strcmp(ip_addr_str, "fd00::c") != 0) {	/* Should get fd00::8 for root node's top interface */
-		fprintf(stderr, "%d: get_top_interface_config() got wrong IP address: %s\n", __LINE__, ip_addr_str);
+		FAIL("get_top_interface_config() got wrong IP address: %s\n", ip_addr_str);
 		//FAIL();
 		exit(1);
 	}
 	if (ip_addr_result.prefix != 128) {	/* Should get /128 for root node's top interface netmask */
-		fprintf(stderr, "%d: get_top_interface_config() got wrong netmask: %d\n", __LINE__, ip_addr_result.prefix);
+		FAIL("get_top_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
 		//FAIL();
 		exit(1);
 	}
@@ -874,17 +872,17 @@ void test_get_top_interface_config() {
 
 	//TODO: check that tree was not altered as side effect when passed as a reference above
 	if (ip_addr_result.ip_type != IPV6) {	/* ip_type should have been propagated as is to result */
-		fprintf(stderr, "%d: get_top_interface_config() modified ip_type field\n", __LINE__);
+		FAIL("get_top_interface_config() modified ip_type field\n");
 		//FAIL();
 		exit(1);
 	}
 	if (strcmp(ip_addr_str, "fd00::1") != 0) {	/* Should get fd00::f for tree's left-most leaf's top interface */
-		fprintf(stderr, "%d: get_top_interface_config() got wrong IP address: %s\n", __LINE__, ip_addr_str);
+		FAIL("get_top_interface_config() got wrong IP address: %s\n", ip_addr_str);
 		//FAIL();
 		exit(1);
 	}
 	if (ip_addr_result.prefix != 128) {	/* Should get /128 for root node's top interface netmask */
-		fprintf(stderr, "%d: get_top_interface_config() got wrong netmask: %d\n", __LINE__, ip_addr_result.prefix);
+		FAIL("get_top_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
 		//FAIL();
 		exit(1);
 	}
@@ -895,17 +893,17 @@ void test_get_top_interface_config() {
 
 	//TODO: check that tree was not altered as side effect when passed as a reference above
 	if (ip_addr_result.ip_type != IPV6) {	/* ip_type should have been propagated as is to result */
-		fprintf(stderr, "%d: get_top_interface_config() modified ip_type field\n", __LINE__);
+		FAIL("get_top_interface_config() modified ip_type field\n");
 		//FAIL();
 		exit(1);
 	}
 	if (strcmp(ip_addr_str, "fd00::f") != 0) {	/* Should get fd00::f for tree's right-most leaf's top interface */
-		fprintf(stderr, "%d: get_top_interface_config() got wrong IP address: %s\n", __LINE__, ip_addr_str);
+		FAIL("get_top_interface_config() got wrong IP address: %s\n", ip_addr_str);
 		//FAIL();
 		exit(1);
 	}
 	if (ip_addr_result.prefix != 128) {	/* Should get /128 for root node's top interface netmask */
-		fprintf(stderr, "%d: get_top_interface_config() got wrong netmask: %d\n", __LINE__, ip_addr_result.prefix);
+		FAIL("get_top_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
 		//FAIL();
 		exit(1);
 	}
@@ -931,7 +929,7 @@ void test_get_top_interface_config() {
 	//FIXME: Add unit test for get_top_interface_config() on IPv4 trees
 
 	//if (ip_addr_result.ip_type != IPV4) {	/* ip_type should have been propagated as is to result */
-	//	fprintf(stderr, "%d: get_top_interface_config() modified ip_type field\n", __LINE__);
+	//	FAIL("get_top_interface_config() modified ip_type field\n");
 	//	//FAIL();
 	//	exit(1);
 	//}
@@ -967,7 +965,7 @@ void test_get_left_interface_config() {
 
 	//TODO: check that tree was not altered as side effect when passed as a reference above
 	if (ip_addr_result.ip_type != NONE) {	/* IP type should be set to none, IPv6 trees do require setting addresses to interfaces to children */
-		fprintf(stderr, "%d: get_left_interface_config() modified ip_type field\n", __LINE__);
+		FAIL("get_left_interface_config() modified ip_type field\n");
 		//FAIL();
 		exit(1);
 	}
@@ -992,7 +990,7 @@ void test_get_left_interface_config() {
 	//FIXME: Add unit test for get_left_interface_config() on IPv4 trees
 
 	//if (ip_addr_result.ip_type != IPV4) {	/* ip_type should have been propagated as is to result */
-	//	fprintf(stderr, "%d: get_left_interface_config() modified ip_type field\n", __LINE__);
+	//	FAIL("get_left_interface_config() modified ip_type field\n");
 	//	//FAIL();
 	//	exit(1);
 	//}
@@ -1027,7 +1025,7 @@ void test_get_right_interface_config() {
 
 	//TODO: check that tree was not altered as side effect when passed as a reference above
 	if (ip_addr_result.ip_type != NONE) {	/* IP type should be set to none, IPv6 trees do require setting addresses to interfaces to children */
-		fprintf(stderr, "%d: get_right_interface_config() modified ip_type field\n", __LINE__);
+		FAIL("get_right_interface_config() modified ip_type field\n");
 		//FAIL();
 		exit(1);
 	}
@@ -1052,7 +1050,7 @@ void test_get_right_interface_config() {
 	//FIXME: Add unit test for get_right_interface_config() on IPv4 trees
 
 	//if (ip_addr_result.ip_type != IPV4) {	/* ip_type should have been propagated as is to result */
-	//	fprintf(stderr, "%d: get_right_interface_config() modified ip_type field\n", __LINE__);
+	//	FAIL("get_right_interface_config() modified ip_type field\n");
 	//	//FAIL();
 	//	exit(1);
 	//}
@@ -1085,7 +1083,7 @@ void ip_route_to_str(const ip_route_t input, char* output) {
 
 #ifdef IPV4_SUPPORT
 	if (input.ip_type == IPV4) {
-		fprintf(stderr, "%d: tests on IPV4 not supported yet\n", __LINE__);
+		FAIL("tests on IPV4 not supported yet\n");
 		//FAIL();
 		exit(1);
 	}
@@ -1116,134 +1114,134 @@ void test_get_left_right_top_interface_route() {
 	test_node = get_root_node_id(&tree);	/* Will get 8 */
 	ip_route_to_str(ip_route_result = get_left_interface_route(&tree, test_node), ipv6_route_str);
 	if (ip_route_result.ip_type != IPV6) {	/* ip_type should have been propagated as is to ip_route_result */
-		fprintf(stderr, "%d: get_left_interface_route() modified ip_type field\n", __LINE__);
+		FAIL("get_left_interface_route() modified ip_type field\n");
 		//FAIL();
 		exit(1);
 	}
 	/* Expect a route of fd00::0/125 */
 	if (strcmp(ipv6_route_str, "fd00::/125") != 0) {
-		fprintf(stderr, "%d: get_left_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		FAIL("get_left_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 		//FAIL();
 		exit(1);
 	}
 	ip_route_to_str(ip_route_result = get_right_interface_route(&tree, test_node), ipv6_route_str);
 	if (ip_route_result.ip_type != IPV6) {	/* ip_type should have been propagated as is to ip_route_result */
-		fprintf(stderr, "%d: get_right_interface_route() modified ip_type field\n", __LINE__);
+		FAIL("get_right_interface_route() modified ip_type field\n");
 		//FAIL();
 		exit(1);
 	}
 	/* Expect a route of fd00::0/125 */
 	if (strcmp(ipv6_route_str, "fd00::8/125") != 0) {
-		fprintf(stderr, "%d: get_right_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		FAIL("get_right_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 		//FAIL();
 		exit(1);
 	}
 	ip_route_result = get_top_interface_route(&tree, test_node);
 	if (ip_route_result.ip_type != NONE) {	/* root node has no top route */
-		fprintf(stderr, "%d: get_top_interface_route() modified ip_type field\n", __LINE__);
+		FAIL("get_top_interface_route() modified ip_type field\n");
 		//FAIL();
 		exit(1);
 	}
 
 	ip_route_to_str(get_left_interface_route(&tree, uint8_t_to_uint128_t(4)), ipv6_route_str);
 	if (strcmp(ipv6_route_str, "fd00::/126") != 0) {
-		fprintf(stderr, "%d: get_left_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		FAIL("get_left_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 		//FAIL();
 		exit(1);
 	}
 	ip_route_to_str(get_right_interface_route(&tree, uint8_t_to_uint128_t(4)), ipv6_route_str);
 	if (strcmp(ipv6_route_str, "fd00::4/126") != 0) {
-		fprintf(stderr, "%d: get_right_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		FAIL("get_right_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 		//FAIL();
 		exit(1);
 	}
 
 	ip_route_to_str(get_left_interface_route(&tree, uint8_t_to_uint128_t(12)), ipv6_route_str);
 	if (strcmp(ipv6_route_str, "fd00::8/126") != 0) {
-		fprintf(stderr, "%d: get_left_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		FAIL("get_left_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 		//FAIL();
 		exit(1);
 	}
 	ip_route_to_str(get_right_interface_route(&tree, uint8_t_to_uint128_t(12)), ipv6_route_str);
 	if (strcmp(ipv6_route_str, "fd00::c/126") != 0) {
-		fprintf(stderr, "%d: get_right_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		FAIL("get_right_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 		//FAIL();
 		exit(1);
 	}
 
 	ip_route_to_str(get_left_interface_route(&tree, uint8_t_to_uint128_t(2)), ipv6_route_str);
 	if (strcmp(ipv6_route_str, "fd00::1/128") != 0) {
-		fprintf(stderr, "%d: get_left_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		FAIL("get_left_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 		//FAIL();
 		exit(1);
 	}
 	ip_route_to_str(get_right_interface_route(&tree, uint8_t_to_uint128_t(2)), ipv6_route_str);
 	if (strcmp(ipv6_route_str, "fd00::3/128") != 0) {
-		fprintf(stderr, "%d: get_right_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		FAIL("get_right_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 		//FAIL();
 		exit(1);
 	}
 
 	ip_route_to_str(get_left_interface_route(&tree, uint8_t_to_uint128_t(6)), ipv6_route_str);
 	if (strcmp(ipv6_route_str, "fd00::5/128") != 0) {
-		fprintf(stderr, "%d: get_left_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		FAIL("get_left_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 		//FAIL();
 		exit(1);
 	}
 	ip_route_to_str(get_right_interface_route(&tree, uint8_t_to_uint128_t(6)), ipv6_route_str);
 	if (strcmp(ipv6_route_str, "fd00::7/128") != 0) {
-		fprintf(stderr, "%d: get_right_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		FAIL("get_right_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 		//FAIL();
 		exit(1);
 	}
 
 	ip_route_to_str(get_left_interface_route(&tree, uint8_t_to_uint128_t(10)), ipv6_route_str);
 	if (strcmp(ipv6_route_str, "fd00::9/128") != 0) {
-		fprintf(stderr, "%d: get_left_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		FAIL("get_left_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 		//FAIL();
 		exit(1);
 	}
 	ip_route_to_str(get_right_interface_route(&tree, uint8_t_to_uint128_t(10)), ipv6_route_str);
 	if (strcmp(ipv6_route_str, "fd00::b/128") != 0) {
-		fprintf(stderr, "%d: get_right_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		FAIL("get_right_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 		//FAIL();
 		exit(1);
 	}
 
 	ip_route_to_str(get_left_interface_route(&tree, uint8_t_to_uint128_t(14)), ipv6_route_str);
 	if (strcmp(ipv6_route_str, "fd00::d/128") != 0) {
-		fprintf(stderr, "%d: get_left_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		FAIL("get_left_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 		//FAIL();
 		exit(1);
 	}
 	ip_route_to_str(get_right_interface_route(&tree, uint8_t_to_uint128_t(14)), ipv6_route_str);
 	if (strcmp(ipv6_route_str, "fd00::f/128") != 0) {
-		fprintf(stderr, "%d: get_right_interface_route() got wrong IP address: %s\n", __LINE__, ipv6_route_str);
+		FAIL("get_right_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 		//FAIL();
 		exit(1);
 	}
 
 	ip_route_result = get_left_interface_route(&tree, uint8_t_to_uint128_t(1));
 	if (ip_route_result.ip_type != NONE) {
-		fprintf(stderr, "%d: get_left_interface_route() should return no route\n", __LINE__);
+		FAIL("get_left_interface_route() should return no route\n");
 		//FAIL();
 		exit(1);
 	}
 	ip_route_result = get_right_interface_route(&tree, uint8_t_to_uint128_t(1));
 	if (ip_route_result.ip_type != NONE) {
-		fprintf(stderr, "%d: get_right_interface_route() should return no route\n", __LINE__);
+		FAIL("get_right_interface_route() should return no route\n");
 		//FAIL();
 		exit(1);
 	}
 	ip_route_result = get_left_interface_route(&tree, uint8_t_to_uint128_t(15));
 	if (ip_route_result.ip_type != NONE) {
-		fprintf(stderr, "%d: get_left_interface_route() should return no route\n", __LINE__);
+		FAIL("get_left_interface_route() should return no route\n");
 		//FAIL();
 		exit(1);
 	}
 	ip_route_result = get_right_interface_route(&tree, uint8_t_to_uint128_t(15));
 	if (ip_route_result.ip_type != NONE) {
-		fprintf(stderr, "%d: get_right_interface_route() should return no route\n", __LINE__);
+		FAIL("get_right_interface_route() should return no route\n");
 		//FAIL();
 		exit(1);
 	}
@@ -1268,7 +1266,7 @@ void test_get_left_right_top_interface_route() {
 	//FIXME: Add unit test for get_left_interface_route() on IPv4 trees
 
 	//if (ip_route_result.ip_type != IPV4) {	/* ip_type should have been propagated as is to result */
-	//	fprintf(stderr, "%d: get_left_interface_route() modified ip_type field\n", __LINE__);
+	//	FAIL("get_left_interface_route() modified ip_type field\n");
 	//	//FAIL();
 	//	exit(1);
 	//}
