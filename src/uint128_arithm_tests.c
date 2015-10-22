@@ -77,6 +77,69 @@ void test_zero_max_uint128_t() {
 	printf("%s: tests passed\n", __func__);
 }
 
+/* Unit test for uint128_t_get_byte_no()
+ */
+
+void test_uint128_t_get_byte_no() {
+	uint128_t test_u128;
+	uint8_t byte;
+
+#ifndef HAS_INT128
+	test_u128.uint128_a8[0] = 0xf0;
+	test_u128.uint128_a8[1] = 0x1e;
+	test_u128.uint128_a8[2] = 0x2d;
+	test_u128.uint128_a8[3] = 0x3c;
+	test_u128.uint128_a8[4] = 0x4b;
+	test_u128.uint128_a8[5] = 0x5a;
+	test_u128.uint128_a8[6] = 0x69;
+	test_u128.uint128_a8[7] = 0x78;
+	test_u128.uint128_a8[8] = 0x87;
+	test_u128.uint128_a8[9] = 0x96;
+	test_u128.uint128_a8[10] = 0xa5;
+	test_u128.uint128_a8[11] = 0xb4;
+	test_u128.uint128_a8[12] = 0xc3;
+	test_u128.uint128_a8[13] = 0xd2;
+	test_u128.uint128_a8[14] = 0xe1;
+	test_u128.uint128_a8[15] = 0x0f;
+#else
+	test_u128 = ((uint128_t)0xf01e2d3c4b5a6978)<<64 | (uint128_t)0x8796a5b4c3d2e10f;
+#endif
+	if ((byte = uint128_t_get_byte_no(test_u128, 15)) != 0xf0)
+		FAIL("uint128_t_get_byte_no() failed extracting byte #15: got %02x\n", byte);
+	if ((byte = uint128_t_get_byte_no(test_u128, 14)) != 0x1e)
+		FAIL("uint128_t_get_byte_no() failed extracting byte #14: got %02x\n", byte);
+	if ((byte = uint128_t_get_byte_no(test_u128, 13)) != 0x2d)
+		FAIL("uint128_t_get_byte_no() failed extracting byte #13: got %02x\n", byte);
+	if ((byte = uint128_t_get_byte_no(test_u128, 12)) != 0x3c)
+		FAIL("uint128_t_get_byte_no() failed extracting byte #12: got %02x\n", byte);
+	if ((byte = uint128_t_get_byte_no(test_u128, 11)) != 0x4b)
+		FAIL("uint128_t_get_byte_no() failed extracting byte #11: got %02x\n", byte);
+	if ((byte = uint128_t_get_byte_no(test_u128, 10)) != 0x5a)
+		FAIL("uint128_t_get_byte_no() failed extracting byte #10: got %02x\n", byte);
+	if ((byte = uint128_t_get_byte_no(test_u128, 9)) != 0x69)
+		FAIL("uint128_t_get_byte_no() failed extracting byte #9: got %02x\n", byte);
+	if ((byte = uint128_t_get_byte_no(test_u128, 8)) != 0x78)
+		FAIL("uint128_t_get_byte_no() failed extracting byte #8: got %02x\n", byte);
+	if ((byte = uint128_t_get_byte_no(test_u128, 7)) != 0x87)
+		FAIL("uint128_t_get_byte_no() failed extracting byte #7: got %02x\n", byte);
+	if ((byte = uint128_t_get_byte_no(test_u128, 6)) != 0x96)
+		FAIL("uint128_t_get_byte_no() failed extracting byte #6: got %02x\n", byte);
+	if ((byte = uint128_t_get_byte_no(test_u128, 5)) != 0xa5)
+		FAIL("uint128_t_get_byte_no() failed extracting byte #5: got %02x\n", byte);
+	if ((byte = uint128_t_get_byte_no(test_u128, 4)) != 0xb4)
+		FAIL("uint128_t_get_byte_no() failed extracting byte #4: got %02x\n", byte);
+	if ((byte = uint128_t_get_byte_no(test_u128, 3)) != 0xc3)
+		FAIL("uint128_t_get_byte_no() failed extracting byte #3: got %02x\n", byte);
+	if ((byte = uint128_t_get_byte_no(test_u128, 2)) != 0xd2)
+		FAIL("uint128_t_get_byte_no() failed extracting byte #2: got %02x\n", byte);
+	if ((byte = uint128_t_get_byte_no(test_u128, 1)) != 0xe1)
+		FAIL("uint128_t_get_byte_no() failed extracting byte #1: got %02x\n", byte);
+	if ((byte = uint128_t_get_byte_no(test_u128, 0)) != 0x0f)
+		FAIL("uint128_t_get_byte_no() failed extracting byte #0: got %02x\n", byte);
+
+	printf("%s: tests passed\n", __func__);
+}
+
 /* Unit test for uint128_t_to_binstr()
  */
 void test_uint128_t_to_binstr() {
@@ -1740,6 +1803,7 @@ void test_uint128_t_hton() {
 
 void unit_tests_uint128() {
 	test_zero_max_uint128_t();
+	test_uint128_t_get_byte_no();
 	test_uint128_t_to_binstr();
 	test_uint128_t_to_hexstr();
 	test_power2_to_uint128_t();

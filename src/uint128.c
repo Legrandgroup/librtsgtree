@@ -23,9 +23,9 @@ inline uint128_t uint128_t_max() {
 uint8_t uint128_t_get_byte_no(const uint128_t input, const uint8_t byte_no) {
 	assert(byte_no<16);
 #ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
-	return input.uint128_a8[byte_no];
+	return input.uint128_a8[15-byte_no];
 #else	// HAS_INT128
-	return (input >> ((15-byte_no)*8)) & 0xff;
+	return (input >> (byte_no*8)) & 0xff;
 #endif
 }
 
@@ -328,14 +328,14 @@ void uint128_t_to_binstr(const uint128_t input, const uint8_t nb_bits, char* out
 	nb_bits_in_additional_MSB = nb_bits % 8;
 
 	if (nb_bits_in_additional_MSB)	/* If the highest MSB is incomplete... first dump the few MSbits at the head of the string */
-		uint8_t_to_binstr(uint128_t_get_byte_no(input, 15-nb_full_bytes_total),	/* nb_full_bytes_total can be up to 15 (16 would mean nb_bits_in_additional_MSB==0) */
+		uint8_t_to_binstr(uint128_t_get_byte_no(input, nb_full_bytes_total),	/* nb_full_bytes_total can be up to 15 (16 would mean nb_bits_in_additional_MSB==0) */
 		                  nb_bits_in_additional_MSB,
 		                  output);
 
 	//output[nb_bits_in_additional_MSB]='\0'; // For debug only
 	already_parsed_full_bytes = 0;
 	while (already_parsed_full_bytes<nb_full_bytes_total) {	/* Parse all bytes inside uint128_t... starting from LSB down to byte 7 (appended at end of the string) */
-		uint8_t_to_binstr(uint128_t_get_byte_no(input, 15-nb_full_bytes_total + already_parsed_full_bytes + 1),	/* Get the next byte out of the uint128_t... we parse from MSB (left most) to LSB (right most, or byte index 15) */
+		uint8_t_to_binstr(uint128_t_get_byte_no(input, nb_full_bytes_total - already_parsed_full_bytes - 1),	/* Get the next byte out of the uint128_t... we parse from MSB (left most) to LSB (right most, or byte 0) */
 		                  8,
 		                  &(output[nb_bits_in_additional_MSB + already_parsed_full_bytes*8]));
 		//The following is for debug

@@ -167,7 +167,7 @@ typedef unsigned __int128 uint128_t;
  * \brief Extract a specific byte from a uint128_t integer
  *
  * \param input The uint128_t variable from which we perform the extraction
- * \param byte_no The byte number we want to extract (value should be between 0 for the most significant byte, and 15 for the least significant byte)
+ * \param byte_no The byte number we want to extract (value should be between 15 for the most significant byte, and 0 for the least significant byte)
  *
  * \return The byte extracted from \p input
  */
