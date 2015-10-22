@@ -1679,3 +1679,28 @@ void test_uint128_t_cmp() {
 void test_uint128_t_hton() {
 	printf("!!! %s: warning: not implemented\n", __func__);
 }
+
+void unit_tests_uint128() {
+	test_zero_max_uint128_t();
+	test_uint128_t_to_binstr();
+	test_uint128_t_to_hexstr();
+	test_power2_to_uint128_t();
+	test_uint128_t_right_shift();
+	test_uint128_t_left_shift();
+	test_uint128_t_mix_shift();
+	test_uint128_t_right_shift_n();
+	test_uint128_t_left_shift_n();
+	test_uint128_t_inc();
+	test_uint128_t_dec();
+	test_uint16_t_to_uint128_t();
+	test_uint8_t_to_uint128_t();
+	test_uint128_t_sub();
+	test_uint128_t_add();
+	test_uint128_t_mixed_add_sub_inc_dec();
+	test_uint128_t_or();
+	test_uint128_t_and();
+	test_uint128_t_right_0bit_count();
+	test_msb_1bits_to_uint128_t();
+	test_uint128_t_cmp();
+	test_uint128_t_hton();
+}

@@ -1266,3 +1266,24 @@ void test_get_left_right_top_interface_route() {
 
 	printf("%s: tests passed\n", __func__);
 }
+
+void unit_tests_node() {
+#ifdef IPV6_SUPPORT
+	test_uint128_t_to_ipv6();
+#endif
+	test_get_tree_prefix_len();
+	test_get_hosts_prefix_len();
+	test_Rmax_to_max_node_id();
+#ifdef IPV6_SUPPORT
+	test_ipv6_prefix_to_uint128_t_mask();
+#endif
+	test_node_id_to_rank();
+	test_get_root_node_id();
+	test_get_parent_node_id();
+	test_get_left_child_node_id();
+	test_get_right_child_node_id();
+	test_get_top_interface_config();
+	test_get_left_interface_config();
+	test_get_right_interface_config();
+	test_get_left_right_top_interface_route();
+}
