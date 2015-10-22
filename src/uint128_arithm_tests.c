@@ -14,6 +14,7 @@ void test_zero_max_uint128_t() {
 
 	U128_SET_MAX(test_u128);
 	U128_SET_ZERO(test_u128);
+#ifndef HAS_INT128
 	if (test_u128.uint128_a16[0] == 0 &&
 	    test_u128.uint128_a16[1] == 0 &&
 	    test_u128.uint128_a16[2] == 0 &&
@@ -22,6 +23,9 @@ void test_zero_max_uint128_t() {
 	    test_u128.uint128_a16[5] == 0 &&
 	    test_u128.uint128_a16[6] == 0 &&
 	    test_u128.uint128_a16[7] == 0) {
+#else
+	if (test_u128 == 0) {
+#endif
 	}
 	else {
 		fprintf(stderr, "U128_SET_ZERO() Failed\n");
@@ -34,6 +38,7 @@ void test_zero_max_uint128_t() {
 		exit(1);
 	}
 	U128_SET_MAX(test_u128);
+#ifndef HAS_INT128
 	if (test_u128.uint128_a16[0] == 0xffff &&
 	    test_u128.uint128_a16[1] == 0xffff &&
 	    test_u128.uint128_a16[2] == 0xffff &&
@@ -42,6 +47,9 @@ void test_zero_max_uint128_t() {
 	    test_u128.uint128_a16[5] == 0xffff &&
 	    test_u128.uint128_a16[6] == 0xffff &&
 	    test_u128.uint128_a16[7] == 0xffff) {
+#else
+	if (test_u128 == (uint128_t)(-1)) {
+#endif
 	}
 	else {
 		fprintf(stderr, "U128_SET_MAX() Failed\n");
@@ -94,10 +102,14 @@ void test_uint128_t_to_binstr() {
 		exit(1);
 	}
 
+#ifndef HAS_INT128
 	U128_SET_ZERO(test_u128);
 	test_u128.uint128_a16[0] = htons(0xfe80);
 	test_u128.uint128_a16[6] = htons(0x8000);
 	test_u128.uint128_a16[7] = htons(0xa5a5);
+#else
+	test_u128 = ((uint_128t)0xfe80)<<102 | (uint_128t)0x8000a5a5;
+#endif
 	uint128_t_to_binstr(test_u128, 128, result);
 	expected_result = "1111111010000000"    /* Word 0 */ \
                       zero_word_16bits      /* Word 1 */ \
@@ -114,12 +126,16 @@ void test_uint128_t_to_binstr() {
 	}
 
 	/* Test printing ipv6.google.com (2a00:1450:4007:80e::200e) IPv6 address as a unit128_t */
+#ifndef HAS_INT128
 	U128_SET_ZERO(test_u128);
 	test_u128.uint128_a16[0] = htons(0x2a00);
 	test_u128.uint128_a16[1] = htons(0x1450);
 	test_u128.uint128_a16[2] = htons(0x4007);
 	test_u128.uint128_a16[3] = htons(0x080e);
 	test_u128.uint128_a16[7] = htons(0x200e);
+#else
+	test_u128 = ((uint_128t)0x2a0014504007080e)<<64 | (uint_128t)0x200e;
+#endif
 	uint128_t_to_binstr(test_u128, 128, result);
 	expected_result = "0010101000000000" /* Word 0 */ \
 	                  "0001010001010000" /* Word 1 */ \
@@ -135,6 +151,7 @@ void test_uint128_t_to_binstr() {
 		exit(1);
 	}
 	/* Same 128-bit value (2a00:1450:4007:80e::200e), but assigned byte-per-byte */
+#ifndef HAS_INT128	/* Assignment byte per byte is only interesting on non-native 128 arithmetic */
 	U128_SET_ZERO(test_u128);
 	test_u128.uint128_a8[0] = 0x2a;
 	test_u128.uint128_a8[1] = 0x00;
@@ -152,7 +169,9 @@ void test_uint128_t_to_binstr() {
 		//FAIL();
 		exit(1);
 	}
+#endif
 
+#ifndef HAS_INT128
 	U128_SET_ZERO(test_u128);
 	test_u128.uint128_a8[0] = 0xa5;
 	test_u128.uint128_a8[1] = 0xa2;
@@ -170,6 +189,9 @@ void test_uint128_t_to_binstr() {
 	test_u128.uint128_a8[13] = 0x9c;
 	test_u128.uint128_a8[14] = 0x47;
 	test_u128.uint128_a8[15] = 0x0f;
+#else
+	test_u128 = ((uint_128t)0xa5a2150245a887c4)<<64 | (uint_128t)0xe5041afe899c470f;
+#endif
 	uint128_t_to_binstr(test_u128, 128, result);
 	expected_result = "1010" "0101" /* Byte 0 */ \
 	                  "1010" "0010" /* Byte 1 */ \
@@ -212,6 +234,7 @@ void test_uint128_t_to_hexstr() {
 	char* expected_result;
 	uint8_t nb_bytes_missing;
 
+#ifndef HAS_INT128
 	U128_SET_ZERO(test_u128);
 	test_u128.uint128_a8[0] = 0xa5;
 	test_u128.uint128_a8[1] = 0xa2;
@@ -229,6 +252,9 @@ void test_uint128_t_to_hexstr() {
 	test_u128.uint128_a8[13] = 0x9c;
 	test_u128.uint128_a8[14] = 0x47;
 	test_u128.uint128_a8[15] = 0x0f;
+#else
+	test_u128 = ((uint_128t)0xa5a2150245a887c4)<<64 | (uint_128t)0xe5041afe899c470f;
+#endif
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "a5a2" "1502" "45a8" "87c4" "e504" "1afe" "899c" "470f";
 	if (strcmp(result, expected_result) != 0) {
@@ -236,6 +262,7 @@ void test_uint128_t_to_hexstr() {
 		//FAIL();
 		exit(1);
 	}
+#ifndef HAS_INT128
 	test_u128.uint128_a8[0] = 0x0f;
 	test_u128.uint128_a8[1] = 0x1e;
 	test_u128.uint128_a8[2] = 0x2d;
@@ -252,6 +279,9 @@ void test_uint128_t_to_hexstr() {
 	test_u128.uint128_a8[13] = 0xd2;
 	test_u128.uint128_a8[14] = 0xe1;
 	test_u128.uint128_a8[15] = 0xf0;
+#else
+	test_u128 = ((uint_128t)0x0f1e2d3c4b5a6978)<<64 | (uint_128t)0x8796a5b4c3d2e1f0;
+#endif
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "0f1e2d3c4b5a69788796a5b4c3d2e1f0";
 	if (strcmp(result, expected_result) != 0) {
@@ -342,6 +372,7 @@ void test_uint128_t_right_shift() {
 		//FAIL();
 		exit(1);
 	}
+#ifndef HAS_INT128
 	test_u128.uint128_a8[0] = 0xf0;
 	test_u128.uint128_a8[1] = 0x1e;
 	test_u128.uint128_a8[2] = 0x2d;
@@ -358,6 +389,9 @@ void test_uint128_t_right_shift() {
 	test_u128.uint128_a8[13] = 0xd2;
 	test_u128.uint128_a8[14] = 0xe1;
 	test_u128.uint128_a8[15] = 0x0f;
+#else
+	test_u128 = ((uint_128t)0xf01e2d3c4b5a6978)<<64 | (uint_128t)0x8796a5b4c3d2e10f;
+#endif
 
 
 	expected_result = "f01e2d3c4b5a69788796a5b4c3d2e10f";
@@ -400,6 +434,7 @@ void test_uint128_t_right_shift_n() {
 	char result[129];
 	char* expected_result;
 
+#ifndef HAS_INT128
 	test_u128.uint128_a8[0] = 0xf0;
 	test_u128.uint128_a8[1] = 0x1e;
 	test_u128.uint128_a8[2] = 0x2d;
@@ -416,6 +451,9 @@ void test_uint128_t_right_shift_n() {
 	test_u128.uint128_a8[13] = 0xd2;
 	test_u128.uint128_a8[14] = 0xe1;
 	test_u128.uint128_a8[15] = 0x0f;
+#else
+	test_u128 = ((uint_128t)0xf01e2d3c4b5a6978)<<64 | (uint_128t)0x8796a5b4c3d2e10f;
+#endif
 
 
 	test_u128 = uint128_t_right_shift_n(test_u128, 0);	/* No shift */
@@ -516,6 +554,7 @@ void test_uint128_t_left_shift() {
 		//FAIL();
 		exit(1);
 	}
+#ifndef HAS_INT128
 	test_u128.uint128_a8[0] = 0xf0;
 	test_u128.uint128_a8[1] = 0x1e;
 	test_u128.uint128_a8[2] = 0x2d;
@@ -532,6 +571,9 @@ void test_uint128_t_left_shift() {
 	test_u128.uint128_a8[13] = 0xd2;
 	test_u128.uint128_a8[14] = 0xe1;
 	test_u128.uint128_a8[15] = 0x0f;
+#else
+	test_u128 = ((uint_128t)0xf01e2d3c4b5a6978)<<64 | (uint_128t)0x8796a5b4c3d2e10f;
+#endif
 
 
 	expected_result = "f01e2d3c4b5a69788796a5b4c3d2e10f";
@@ -574,6 +616,7 @@ void test_uint128_t_left_shift_n() {
 	char result[129];
 	char* expected_result;
 
+#ifndef HAS_INT128
 	test_u128.uint128_a8[0] = 0xf0;
 	test_u128.uint128_a8[1] = 0x1e;
 	test_u128.uint128_a8[2] = 0x2d;
@@ -590,6 +633,9 @@ void test_uint128_t_left_shift_n() {
 	test_u128.uint128_a8[13] = 0xd2;
 	test_u128.uint128_a8[14] = 0xe1;
 	test_u128.uint128_a8[15] = 0x0f;
+#else
+	test_u128 = ((uint_128t)0xf01e2d3c4b5a6978)<<64 | (uint_128t)0x8796a5b4c3d2e10f;
+#endif
 
 
 	test_u128 = uint128_t_left_shift_n(test_u128, 0);	/* No shift */
@@ -669,6 +715,7 @@ void test_uint128_t_mix_shift() {
 	uint8_t shift;
 	uint8_t string_pos;
 
+#ifndef HAS_INT128
 	test1_u128.uint128_a8[0] = 0xf0;
 	test1_u128.uint128_a8[1] = 0x1e;
 	test1_u128.uint128_a8[2] = 0x2d;
@@ -685,6 +732,9 @@ void test_uint128_t_mix_shift() {
 	test1_u128.uint128_a8[13] = 0xd2;
 	test1_u128.uint128_a8[14] = 0xe1;
 	test1_u128.uint128_a8[15] = 0x0f;
+#else
+	test_u128 = ((uint_128t)0xf01e2d3c4b5a6978)<<64 | (uint_128t)0x8796a5b4c3d2e10f;
+#endif
 
 	test2_u128 = test1_u128;	/* Copy test1 into test2 */
 
@@ -1041,6 +1091,7 @@ void test_uint128_t_sub() {
 		exit(1);
 	}
 
+#ifndef HAS_INT128
 	test1_u128.uint128_a8[0] = 0x12;
 	test1_u128.uint128_a8[1] = 0x34;
 	test1_u128.uint128_a8[2] = 0x56;
@@ -1074,6 +1125,10 @@ void test_uint128_t_sub() {
 	test2_u128.uint128_a8[13] = 0xd2;
 	test2_u128.uint128_a8[14] = 0xe1;
 	test2_u128.uint128_a8[15] = 0x0f;
+#else
+	test1_u128 = ((uint_128t)0x123456789abcdef0)<<64 | (uint_128t)0x123456789abcdef0;
+	test2_u128 = ((uint_128t)0xf01e2d3c4b5a6978)<<64 | (uint_128t)0x8796a5b4c3d2e10f;
+#endif
 
 	expected_result = "2216293c4f6275778a9db0c3d6e9fde1";	/* echo 'print "%x" % (0xff123456789abcdef0123456789abcdef0 - 0xf01e2d3c4b5a69788796a5b4c3d2e10f)' | python */
 	result_u128 = uint128_t_sub(test1_u128, test2_u128);
@@ -1189,6 +1244,7 @@ void test_uint128_t_add() {
 		exit(1);
 	}
 
+#ifndef HAS_INT128
 	test1_u128.uint128_a8[0] = 0x12;
 	test1_u128.uint128_a8[1] = 0x34;
 	test1_u128.uint128_a8[2] = 0x56;
@@ -1222,6 +1278,10 @@ void test_uint128_t_add() {
 	test2_u128.uint128_a8[13] = 0xd2;
 	test2_u128.uint128_a8[14] = 0xe1;
 	test2_u128.uint128_a8[15] = 0x0f;
+#else
+	test1_u128 = ((uint_128t)0x123456789abcdef0)<<64 | (uint_128t)0x123456789abcdef0;
+	test2_u128 = ((uint_128t)0xf01e2d3c4b5a6978)<<64 | (uint_128t)0x8796a5b4c3d2e10f;
+#endif
 
 	expected_result = "025283b4e617486899cafc2d5e8fbfff";	/* echo 'print "%x" % (0x123456789abcdef0123456789abcdef0 + 0xf01e2d3c4b5a69788796a5b4c3d2e10f)' | python */
 
@@ -1278,6 +1338,7 @@ void test_uint128_t_mixed_add_sub_inc_dec() {
 	}
 
 	for (i = 0; i<0xffff; i++) {
+#ifndef HAS_INT128
 		test1_u128.uint128_a8[0] = rand() & 0xff;
 		test1_u128.uint128_a8[1] = rand() & 0xff;
 		test1_u128.uint128_a8[2] = rand() & 0xff;
@@ -1294,7 +1355,11 @@ void test_uint128_t_mixed_add_sub_inc_dec() {
 		test1_u128.uint128_a8[13] = rand() & 0xff;
 		test1_u128.uint128_a8[14] = rand() & 0xff;
 		test1_u128.uint128_a8[15] = rand() & 0xff;
-
+#else
+		test1_u128 =  (rand() & 0xffff) << 48 | (rand() & 0xffff) << 32 | (rand() & 0xffff) << 16 | (rand() & 0xffff);	/* Build 64 random bits */
+		test1_u128 <<= 64;	/* Move to 64 most significant bits */
+		test1_u128 |= (rand() & 0xffff) << 48 | (rand() & 0xffff) << 32 | (rand() & 0xffff) << 16 | (rand() & 0xffff);	/* Build 64 random bits */
+#endif
 		test2_u128 = test1_u128;
 
 		test1_u128 = uint128_t_inc(test1_u128);	/* +1 */
@@ -1342,6 +1407,7 @@ void test_uint128_t_or() {
 		exit(1);
 	}
 
+#ifndef HAS_INT128
 	test1_u128.uint128_a8[0] = 0xa5;
 	test1_u128.uint128_a8[1] = 0x5a;
 	test1_u128.uint128_a8[2] = 0xa5;
@@ -1358,6 +1424,9 @@ void test_uint128_t_or() {
 	test1_u128.uint128_a8[13] = 0x5a;
 	test1_u128.uint128_a8[14] = 0xa5;
 	test1_u128.uint128_a8[15] = 0x5a;
+#else
+	test1_u128 = ((uint_128t)0xa55aa55aa55aa55a)<<64 | (uint_128t)0xa55aa55aa55aa55a;
+#endif
 	test2_u128 = test1_u128;
 	result_u128 = uint128_t_or(test1_u128, test2_u128);	/* A or A = A */
 	if (!(uint128_t_cmp(result_u128, test1_u128) == 0)) {
@@ -1378,6 +1447,7 @@ void test_uint128_t_or() {
 		exit(1);
 	}
 
+#ifndef HAS_INT128
 	test2_u128.uint128_a8[0] = 0x5a;
 	test2_u128.uint128_a8[1] = 0xa5;
 	test2_u128.uint128_a8[2] = 0x5a;
@@ -1394,6 +1464,9 @@ void test_uint128_t_or() {
 	test2_u128.uint128_a8[13] = 0xa5;
 	test2_u128.uint128_a8[14] = 0x5a;
 	test2_u128.uint128_a8[15] = 0xa5;
+#else
+	test2_u128 = ((uint_128t)0x5aa55aa55aa55aa5)<<64 | (uint_128t)0x5aa55aa55aa55aa5;
+#endif
 
 	result_u128 = uint128_t_or(test1_u128, test2_u128);	/* A or !A = (uint128_t)(-1) */
 
@@ -1432,6 +1505,7 @@ void test_uint128_t_and() {
 		exit(1);
 	}
 
+#ifndef HAS_INT128
 	test1_u128.uint128_a8[0] = 0xa5;
 	test1_u128.uint128_a8[1] = 0x5a;
 	test1_u128.uint128_a8[2] = 0xa5;
@@ -1448,6 +1522,9 @@ void test_uint128_t_and() {
 	test1_u128.uint128_a8[13] = 0x5a;
 	test1_u128.uint128_a8[14] = 0xa5;
 	test1_u128.uint128_a8[15] = 0x5a;
+#else
+	test1_u128 = ((uint_128t)0xa55aa55aa55aa55a)<<64 | (uint_128t)0xa55aa55aa55aa55a;
+#endif
 	test2_u128 = test1_u128;
 	result_u128 = uint128_t_and(test1_u128, test2_u128);	/* A and A = A */
 	if (!(uint128_t_cmp(result_u128, test1_u128) == 0)) {
@@ -1468,6 +1545,7 @@ void test_uint128_t_and() {
 		exit(1);
 	}
 
+#ifndef HAS_INT128
 	test2_u128.uint128_a8[0] = 0x5a;
 	test2_u128.uint128_a8[1] = 0xa5;
 	test2_u128.uint128_a8[2] = 0x5a;
@@ -1484,6 +1562,9 @@ void test_uint128_t_and() {
 	test2_u128.uint128_a8[13] = 0xa5;
 	test2_u128.uint128_a8[14] = 0x5a;
 	test2_u128.uint128_a8[15] = 0xa5;
+#else
+	test2_u128 = ((uint_128t)0x5aa55aa55aa55aa5)<<64 | (uint_128t)0x5aa55aa55aa55aa5;
+#endif
 
 	result_u128 = uint128_t_and(test1_u128, test2_u128);	/* A and !A = 0 */
 
@@ -1530,7 +1611,7 @@ void test_uint128_t_right_0bit_count() {
 /* Unit test for msb_1bits_to_uint128_t()
  */
 void test_msb_1bits_to_uint128_t() {
-	printf("!!! %s: warning: not implemeted\n", __func__);
+	printf("!!! %s: warning: not implemented\n", __func__);
 }
 
 /* Unit test for uint128_t_cmp()
@@ -1596,5 +1677,5 @@ void test_uint128_t_cmp() {
 /* Unit test for uint128_t_cmp()
  */
 void test_uint128_t_hton() {
-	printf("!!! %s: warning: not implemeted\n", __func__);
+	printf("!!! %s: warning: not implemented\n", __func__);
 }
