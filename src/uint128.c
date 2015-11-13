@@ -6,6 +6,15 @@
 #include <assert.h>	// For assert()
 #include <stdlib.h>	// For abort()
 
+inline uint8_t uint128_t_get_byte_no(const uint128_t input, const uint8_t byte_no) {
+	assert(byte_no<16);
+#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
+	return input.uint128_a8[15-byte_no];
+#else	// HAS_INT128
+	return (input >> (byte_no*8)) & 0xff;
+#endif
+}
+
 #ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 uint128_t power2_to_uint128_t(uint8_t power) {
 	uint128_t result;
@@ -239,7 +248,6 @@ void uint8_t_to_binstr(uint8_t input, const uint8_t bits_no, char output[9]) {
 	output[pos] = '\0';	/* Terminate string */
 }
 
-#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 void uint128_t_to_binstr(const uint128_t input, const uint8_t nb_bits, char* output) {
 
 	register uint8_t already_parsed_full_bytes;
@@ -254,14 +262,14 @@ void uint128_t_to_binstr(const uint128_t input, const uint8_t nb_bits, char* out
 	nb_bits_in_additional_MSB = nb_bits % 8;
 
 	if (nb_bits_in_additional_MSB)	/* If the highest MSB is incomplete... first dump the few MSbits at the head of the string */
-		uint8_t_to_binstr(input.uint128_a8[15-nb_full_bytes_total],	/* nb_full_bytes_total can be up to 15 (16 would mean nb_bits_in_additional_MSB==0) */
+		uint8_t_to_binstr(uint128_t_get_byte_no(input, nb_full_bytes_total),	/* nb_full_bytes_total can be up to 15 (16 would mean nb_bits_in_additional_MSB==0) */
 		                  nb_bits_in_additional_MSB,
 		                  output);
 
 	//output[nb_bits_in_additional_MSB]='\0'; // For debug only
 	already_parsed_full_bytes = 0;
 	while (already_parsed_full_bytes<nb_full_bytes_total) {	/* Parse all bytes inside uint128_t... starting from LSB down to byte 7 (appended at end of the string) */
-		uint8_t_to_binstr(input.uint128_a8[15-nb_full_bytes_total + already_parsed_full_bytes + 1],	/* Get the next byte out of the uint128_t... we parse from MSB (left most) to LSB (right most, or byte index 15) */
+		uint8_t_to_binstr(uint128_t_get_byte_no(input, nb_full_bytes_total - already_parsed_full_bytes - 1),	/* Get the next byte out of the uint128_t... we parse from MSB (left most) to LSB (right most, or byte 0) */
 		                  8,
 		                  &(output[nb_bits_in_additional_MSB + already_parsed_full_bytes*8]));
 		//The following is for debug
@@ -270,13 +278,7 @@ void uint128_t_to_binstr(const uint128_t input, const uint8_t nb_bits, char* out
 	}
 	output[nb_bits_in_additional_MSB + already_parsed_full_bytes*8] = '\0';	/* Terminate C-string */
 }
-#else	// HAS_INT128
-void uint128_t_to_binstr(const uint128_t input, const uint8_t nb_bits, char* output) {
-	*output = '\0'; // TODO
-}
-#endif
 
-#ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 void uint128_t_to_hexstr(const uint128_t input, const uint8_t nb_bytes, char* output) {
 
 	uint8_t current_index;
@@ -288,8 +290,8 @@ void uint128_t_to_hexstr(const uint128_t input, const uint8_t nb_bytes, char* ou
 	//assert(nb_bytes>=0); // Not required, we are working with an unsigned int
 	assert(nb_bytes<=16);
 
-	for (current_index = sizeof(input.uint128_a8)-nb_bytes; current_index<sizeof(input.uint128_a8); current_index++) {
-		current_byte = input.uint128_a8[current_index];
+	for (current_index = 16-nb_bytes; current_index<16; current_index++) {
+		current_byte = uint128_t_get_byte_no(input, 15-current_index);
 
 		hi_nibble = current_byte >> 4;
 		lo_nibble = current_byte & 0x0f;
@@ -305,11 +307,6 @@ void uint128_t_to_hexstr(const uint128_t input, const uint8_t nb_bytes, char* ou
 	}
 	*output = '\0';	/* Terminate C-string */
 }
-#else	// HAS_INT128
-void uint128_t_to_hexstr(const uint128_t input, const uint8_t nb_bytes, char* output) {
-	*output = '\0'; // TODO
-}
-#endif
 
 #ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 uint8_t uint128_t_right_0bit_count(const uint128_t input) {
@@ -344,7 +341,27 @@ uint8_t uint128_t_right_0bit_count(const uint128_t input) {
 }
 #else	// HAS_INT128
 uint8_t uint128_t_right_0bit_count(const uint128_t input) {
-	return 0; // TODO
+
+	uint128_t input_copy = input;
+	uint8_t result = 0;
+
+	if (input == 0)
+		return 128;
+
+	/* If we get here, we know there is at least one bit set */
+	while ((input_copy & 0xffffffff) == 0) {
+		result+=32;
+		input_copy>>=32;
+	}
+	while ((input_copy & 0xff) == 0) {
+		result+=8;
+		input_copy>>=8;
+	}
+	while ((input_copy & 0x1) == 0) {
+		result++;
+		input_copy>>=1;
+	}
+	return result;
 }
 #endif
 
@@ -371,7 +388,10 @@ uint128_t msb_1bits_to_uint128_t(uint8_t n) {
 }
 #else	// HAS_INT128
 uint128_t msb_1bits_to_uint128_t(uint8_t n) {
-	return ((uint128_t)1<<n)-1;
+	assert(n<=128);
+
+
+	return ~( uint128_t_left_shift_n(1, 128-n) - 1 );
 }
 #endif
 
@@ -406,41 +426,41 @@ inline uint128_t uint128_t_hton(const uint128_t input) {
 	return input;
 #elif IS_LITTLE_ENDIAN
 	uint128_t output;
-	((uint8_t *)output)[0] = ((uint8_t *)&input)[15];
-	((uint8_t *)output)[1] = ((uint8_t *)&input)[14];
-	((uint8_t *)output)[2] = ((uint8_t *)&input)[13];
-	((uint8_t *)output)[3] = ((uint8_t *)&input)[12];
-	((uint8_t *)output)[4] = ((uint8_t *)&input)[11];
-	((uint8_t *)output)[5] = ((uint8_t *)&input)[10];
-	((uint8_t *)output)[6] = ((uint8_t *)&input)[9];
-	((uint8_t *)output)[7] = ((uint8_t *)&input)[8];
-	((uint8_t *)output)[8] = ((uint8_t *)&input)[7];
-	((uint8_t *)output)[9] = ((uint8_t *)&input)[6];
-	((uint8_t *)output)[10] = ((uint8_t *)&input)[5];
-	((uint8_t *)output)[11] = ((uint8_t *)&input)[4];
-	((uint8_t *)output)[12] = ((uint8_t *)&input)[3];
-	((uint8_t *)output)[13] = ((uint8_t *)&input)[2];
-	((uint8_t *)output)[14] = ((uint8_t *)&input)[1];
-	((uint8_t *)output)[15] = ((uint8_t *)&input)[0];
+	((uint8_t *)&output)[0] = ((uint8_t *)&input)[15];
+	((uint8_t *)&output)[1] = ((uint8_t *)&input)[14];
+	((uint8_t *)&output)[2] = ((uint8_t *)&input)[13];
+	((uint8_t *)&output)[3] = ((uint8_t *)&input)[12];
+	((uint8_t *)&output)[4] = ((uint8_t *)&input)[11];
+	((uint8_t *)&output)[5] = ((uint8_t *)&input)[10];
+	((uint8_t *)&output)[6] = ((uint8_t *)&input)[9];
+	((uint8_t *)&output)[7] = ((uint8_t *)&input)[8];
+	((uint8_t *)&output)[8] = ((uint8_t *)&input)[7];
+	((uint8_t *)&output)[9] = ((uint8_t *)&input)[6];
+	((uint8_t *)&output)[10] = ((uint8_t *)&input)[5];
+	((uint8_t *)&output)[11] = ((uint8_t *)&input)[4];
+	((uint8_t *)&output)[12] = ((uint8_t *)&input)[3];
+	((uint8_t *)&output)[13] = ((uint8_t *)&input)[2];
+	((uint8_t *)&output)[14] = ((uint8_t *)&input)[1];
+	((uint8_t *)&output)[15] = ((uint8_t *)&input)[0];
 	return output;
 #else // unspecified endianness... use an endianness-agnostic version
 	uint128_t output;
-	((uint8_t *)output)[0] = input & 0xff;
-	((uint8_t *)output)[1] = (input>>8) & 0xff;
-	((uint8_t *)output)[2] = (input>>16) & 0xff;
-	((uint8_t *)output)[3] = (input>>24) & 0xff;
-	((uint8_t *)output)[4] = (input>>32) & 0xff;
-	((uint8_t *)output)[5] = (input>>40) & 0xff;
-	((uint8_t *)output)[6] = (input>>48) & 0xff;
-	((uint8_t *)output)[7] = (input>>56) & 0xff;
-	((uint8_t *)output)[8] = (input>>64) & 0xff;
-	((uint8_t *)output)[9] = (input>>72) & 0xff;
-	((uint8_t *)output)[10] = (input>>80) & 0xff;
-	((uint8_t *)output)[11] = (input>>88) & 0xff;
-	((uint8_t *)output)[12] = (input>>96) & 0xff;
-	((uint8_t *)output)[13] = (input>>104) & 0xff;
-	((uint8_t *)output)[14] = (input>>112) & 0xff;
-	((uint8_t *)output)[15] = (input>>120) & 0xff;
+	((uint8_t *)&output)[0] = (input>>120) & 0xff;
+	((uint8_t *)&output)[1] = (input>>112) & 0xff;
+	((uint8_t *)&output)[2] = (input>>104) & 0xff;
+	((uint8_t *)&output)[3] = (input>>96) & 0xff;
+	((uint8_t *)&output)[4] = (input>>88) & 0xff;
+	((uint8_t *)&output)[5] = (input>>80) & 0xff;
+	((uint8_t *)&output)[6] = (input>>72) & 0xff;
+	((uint8_t *)&output)[7] = (input>>64) & 0xff;
+	((uint8_t *)&output)[8] = (input>>56) & 0xff;
+	((uint8_t *)&output)[9] = (input>>48) & 0xff;
+	((uint8_t *)&output)[10] = (input>>40) & 0xff;
+	((uint8_t *)&output)[11] = (input>>32) & 0xff;
+	((uint8_t *)&output)[12] = (input>>24) & 0xff;
+	((uint8_t *)&output)[13] = (input>>16) & 0xff;
+	((uint8_t *)&output)[14] = (input>>8) & 0xff;
+	((uint8_t *)&output)[15] = input & 0xff;
 	return output;
 #endif
 }
