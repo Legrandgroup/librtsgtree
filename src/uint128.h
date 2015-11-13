@@ -161,7 +161,7 @@ typedef unsigned __int128 uint128_t;
  * \param n The uint128_t variable to check
  */
 #define U128_IS_MAX(n) (n == (uint128_t)-1)
-#endif
+#endif	// HAS_INT128
 
 /**
  * \brief Extract a specific byte from a uint128_t integer
@@ -171,7 +171,7 @@ typedef unsigned __int128 uint128_t;
  *
  * \return The byte extracted from \p input
  */
-inline uint8_t uint128_t_get_byte_no(const uint128_t input, const uint8_t byte_no);
+uint8_t uint128_t_get_byte_no(const uint128_t input, const uint8_t byte_no);
 
 /**
  * \brief Return 0 as an uint128_t
@@ -240,7 +240,10 @@ uint128_t uint128_t_right_shift_n(const uint128_t input, uint8_t n);
 // For native int128, we inline this function so it is defined here and not in the .c file
 #ifdef HAS_INT128
 inline uint128_t uint128_t_right_shift_n(const uint128_t input, uint8_t n) {
-	return input>>n;
+	if (n==128)
+		return 0;	/* native shifting 128 bits is broken on some platforms */
+	else
+		return input>>n;
 }
 #endif
 
@@ -272,7 +275,10 @@ uint128_t uint128_t_left_shift_n(const uint128_t input, uint8_t n);
 // For native int128, we inline this function so it is defined here and not in the .c file
 #ifdef HAS_INT128
 inline uint128_t uint128_t_left_shift_n(const uint128_t input, uint8_t n) {
-	return input<<n;
+	if (n==128)
+		return 0;	/* native shifting 128 bits is broken on some platforms */
+	else
+		return input<<n;
 }
 #endif
 
