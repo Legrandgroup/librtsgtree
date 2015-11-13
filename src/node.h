@@ -14,6 +14,7 @@
 #include "uint128.h"	// For uint128_t
 
 #include <string.h>	// For memcpy()
+#include <assert.h>	// For assert()
 
 typedef uint8_t rank_t;
 typedef uint8_t prefix_t;
@@ -73,7 +74,11 @@ typedef if_ip_addr_t ip_route_t;
  *
  * \result The maximum node ID (B = 2^(Rmax - 1))
  */
-inline uint128_t Rmax_to_max_node_id(const rank_t Rmax);
+inline node_id_t Rmax_to_max_node_id(const rank_t Rmax) {
+	assert(Rmax != 128);
+
+	return uint128_t_dec(power2_to_uint128_t(Rmax));	/* FIXME: Why not use a dedicated right bit-filling function like ipv6_prefix_to_uint128_t_mask() to be more efficient? */
+}
 
 #ifdef IPV6_SUPPORT
 /**
@@ -82,7 +87,22 @@ inline uint128_t Rmax_to_max_node_id(const rank_t Rmax);
  * \param[in] input The 128-bit value representing the IPv6 address to convert
  * \param[out] output A struct in6_addr for which s6_addr will be filled-in based on \p input (note: other fields are unchanged)
 **/
-inline void uint128_t_to_ipv6(const uint128_t input, struct in6_addr* output);
+inline void uint128_t_to_ipv6(const uint128_t input, struct in6_addr* output) {
+#ifndef HAS_INT128
+	assert(sizeof(output->s6_addr) == sizeof(input.uint128_a8));
+
+	/* With uint128_t defined in uint128.h, we are already in network order... we can perform a direct copy */
+	memcpy((void *)(output->s6_addr), (void *)(input.uint128_a8), sizeof(input.uint128_a8));
+#else
+	uint128_t inputn;	/* Network order version of input */
+
+	assert(sizeof(output->s6_addr) == sizeof(inputn));
+
+	inputn = uint128_t_hton(input);	/* With native int128, we should first convert from platform endianness to network order before copying */
+
+	memcpy((void *)(output->s6_addr), (void *)(&inputn), sizeof(inputn));
+#endif
+}
 #endif	// IPV6_SUPPORT
 
 #ifdef IPV4_SUPPORT
@@ -92,7 +112,11 @@ inline void uint128_t_to_ipv6(const uint128_t input, struct in6_addr* output);
  * \param[in] input The 32-bit value representing the IPv4 address to convert
  * \param[out] output A struct in_addr for which s_addr will be filled-in based on \p input (note: other fields are unchanged)
 **/
-inline void uint32_t_to_ipv4(const uint32_t input, struct in_addr* output);
+inline void uint32_t_to_ipv4(const uint32_t input, struct in_addr* output) {
+	assert(sizeof(output->s_addr) == sizeof(input));
+
+	output->s_addr = input;
+}
 #endif	// IPV4_SUPPORT
 
 /**
@@ -104,7 +128,22 @@ inline void uint32_t_to_ipv4(const uint32_t input, struct in_addr* output);
  *
  * \result The IP address size in bits (between 32 or 128)
  */
-inline prefix_t get_tree_ip_addr_bit_sz(const self_ip_routing_tree_t* tree);
+inline prefix_t get_tree_ip_addr_bit_sz(const self_ip_routing_tree_t* tree) {
+	
+	assert(tree);
+	assert(tree->ip_type);
+#ifdef IPV6_SUPPORT
+	if (tree->ip_type == IPV6)
+		return 128;
+	else
+#endif
+#ifdef IPV4_SUPPORT
+		if (tree->ip_type == IPV4)
+			return 32;
+		else
+#endif
+			assert(0);	/* Error */
+}
 
 /**
  * \brief Get the number of most significant bits that form the network part of a tree (common prefix bitmask between all hosts of the tree)
