@@ -490,7 +490,7 @@ void test_uint128_t_right_shift_n() {
 	uint128_t_to_hexstr(test_u128, 16, result);
 	expected_result = "0000000f01e2d3c4b5a69788796a5b4c";
 	if (strcmp(result, expected_result) != 0)
-		FAIL("%d: uint128_t_right_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
+		FAIL("uint128_t_right_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 
 	test_u128 = uint128_t_right_shift_n(test_u128, 32);
 	uint128_t_to_hexstr(test_u128, 16, result);
