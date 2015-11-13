@@ -178,7 +178,7 @@ uint8_t uint128_t_get_byte_no(const uint128_t input, const uint8_t byte_no);
  *
  * \return (uint128_t)0
  */
-inline uint128_t uint128_t_zero() {
+static inline uint128_t uint128_t_zero() {
 	uint128_t result_zero;
 
 	U128_SET_ZERO(result_zero);
@@ -190,7 +190,7 @@ inline uint128_t uint128_t_zero() {
  *
  * \return (uint128_t)-1
  */
-inline uint128_t uint128_t_max() {
+static inline uint128_t uint128_t_max() {
 	uint128_t result_max;
 
 	U128_SET_MAX(result_max);
@@ -207,7 +207,7 @@ uint128_t power2_to_uint128_t(uint8_t power);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
 #ifdef HAS_INT128
-inline uint128_t power2_to_uint128_t(uint8_t power) {
+static inline uint128_t power2_to_uint128_t(uint8_t power) {
 	return ((uint128_t)1)<<power;
 }
 #endif
@@ -223,7 +223,7 @@ uint128_t uint128_t_right_shift(const uint128_t input);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
 #ifdef HAS_INT128
-inline uint128_t uint128_t_right_shift(const uint128_t input) {
+static inline uint128_t uint128_t_right_shift(const uint128_t input) {
 	return input>>1;
 }
 #endif
@@ -239,7 +239,7 @@ uint128_t uint128_t_right_shift_n(const uint128_t input, uint8_t n);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
 #ifdef HAS_INT128
-inline uint128_t uint128_t_right_shift_n(const uint128_t input, uint8_t n) {
+static inline uint128_t uint128_t_right_shift_n(const uint128_t input, uint8_t n) {
 	if (n==128)
 		return 0;	/* native shifting 128 bits is broken on some platforms */
 	else
@@ -258,7 +258,7 @@ uint128_t uint128_t_left_shift(const uint128_t input);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
 #ifdef HAS_INT128
-inline uint128_t uint128_t_left_shift(const uint128_t input) {
+static inline uint128_t uint128_t_left_shift(const uint128_t input) {
 	return input<<1;
 }
 #endif
@@ -274,7 +274,7 @@ uint128_t uint128_t_left_shift_n(const uint128_t input, uint8_t n);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
 #ifdef HAS_INT128
-inline uint128_t uint128_t_left_shift_n(const uint128_t input, uint8_t n) {
+static inline uint128_t uint128_t_left_shift_n(const uint128_t input, uint8_t n) {
 	if (n==128)
 		return 0;	/* native shifting 128 bits is broken on some platforms */
 	else
@@ -293,7 +293,7 @@ uint128_t uint128_t_inc(const uint128_t input);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
 #ifdef HAS_INT128
-inline uint128_t uint128_t_inc(const uint128_t input) {
+static inline uint128_t uint128_t_inc(const uint128_t input) {
 	return input+1;
 }
 #endif
@@ -309,7 +309,7 @@ uint128_t uint128_t_dec(const uint128_t input);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
 #ifdef HAS_INT128
-inline uint128_t uint128_t_dec(const uint128_t input) {
+static inline uint128_t uint128_t_dec(const uint128_t input) {
 	return input-1;
 }
 #endif
@@ -328,7 +328,7 @@ uint128_t uint128_t_sub(const uint128_t from, uint128_t subtraction);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
 #ifdef HAS_INT128
-inline uint128_t uint128_t_sub(const uint128_t from, uint128_t subtraction) {
+static inline uint128_t uint128_t_sub(const uint128_t from, uint128_t subtraction) {
 	return from-subtraction;
 }
 #endif
@@ -347,7 +347,7 @@ uint128_t uint128_t_add(const uint128_t first, uint128_t second);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
 #ifdef HAS_INT128
-uint128_t uint128_t_add(const uint128_t first, uint128_t second) {
+static inline uint128_t uint128_t_add(const uint128_t first, uint128_t second) {
 	return first+second;
 }
 #endif
@@ -364,7 +364,7 @@ uint128_t uint128_t_or(const uint128_t first, uint128_t second);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
 #ifdef HAS_INT128
-inline uint128_t uint128_t_or(const uint128_t first, uint128_t second) {
+static inline uint128_t uint128_t_or(const uint128_t first, uint128_t second) {
 	return first|second;
 }
 #endif
@@ -381,7 +381,7 @@ uint128_t uint128_t_and(const uint128_t first, uint128_t second);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
 #ifdef HAS_INT128
-uint128_t uint128_t_and(const uint128_t first, uint128_t second) {
+static inline uint128_t uint128_t_and(const uint128_t first, uint128_t second) {
 	return first&second;
 }
 #endif
@@ -397,7 +397,7 @@ uint128_t uint8_t_to_uint128_t(uint8_t from);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
 #ifdef HAS_INT128
-inline uint128_t uint8_t_to_uint128_t(uint8_t from) {
+static inline uint128_t uint8_t_to_uint128_t(uint8_t from) {
 	return (uint128_t)from;
 }
 #endif
@@ -413,7 +413,7 @@ uint128_t uint16_t_to_uint128_t(uint16_t from);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
 #ifdef HAS_INT128
-uint128_t uint16_t_to_uint128_t(uint16_t from) {
+static inline uint128_t uint16_t_to_uint128_t(uint16_t from) {
 	return (uint128_t)from;
 }
 #endif

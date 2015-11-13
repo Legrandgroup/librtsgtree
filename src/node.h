@@ -74,7 +74,7 @@ typedef if_ip_addr_t ip_route_t;
  *
  * \result The maximum node ID (B = 2^(Rmax - 1))
  */
-inline node_id_t Rmax_to_max_node_id(const rank_t Rmax) {
+static inline node_id_t Rmax_to_max_node_id(const rank_t Rmax) {
 	assert(Rmax != 128);
 
 	return uint128_t_dec(power2_to_uint128_t(Rmax));	/* FIXME: Why not use a dedicated right bit-filling function like ipv6_prefix_to_uint128_t_mask() to be more efficient? */
@@ -87,7 +87,7 @@ inline node_id_t Rmax_to_max_node_id(const rank_t Rmax) {
  * \param[in] input The 128-bit value representing the IPv6 address to convert
  * \param[out] output A struct in6_addr for which s6_addr will be filled-in based on \p input (note: other fields are unchanged)
 **/
-inline void uint128_t_to_ipv6(const uint128_t input, struct in6_addr* output) {
+static inline void uint128_t_to_ipv6(const uint128_t input, struct in6_addr* output) {
 #ifndef HAS_INT128
 	assert(sizeof(output->s6_addr) == sizeof(input.uint128_a8));
 
@@ -112,7 +112,7 @@ inline void uint128_t_to_ipv6(const uint128_t input, struct in6_addr* output) {
  * \param[in] input The 32-bit value representing the IPv4 address to convert
  * \param[out] output A struct in_addr for which s_addr will be filled-in based on \p input (note: other fields are unchanged)
 **/
-inline void uint32_t_to_ipv4(const uint32_t input, struct in_addr* output) {
+static inline void uint32_t_to_ipv4(const uint32_t input, struct in_addr* output) {
 	assert(sizeof(output->s_addr) == sizeof(input));
 
 	output->s_addr = input;
@@ -128,7 +128,7 @@ inline void uint32_t_to_ipv4(const uint32_t input, struct in_addr* output) {
  *
  * \result The IP address size in bits (between 32 or 128)
  */
-inline prefix_t get_tree_ip_addr_bit_sz(const self_ip_routing_tree_t* tree) {
+static inline prefix_t get_tree_ip_addr_bit_sz(const self_ip_routing_tree_t* tree) {
 	
 	assert(tree);
 	assert(tree->ip_type);
@@ -195,7 +195,7 @@ node_id_t get_root_node_id(const self_ip_routing_tree_t* tree);
  *
  * \return The rank (in the tree) of the requested \p node (or 0 if \p node is invalid for the provided \p tree)
  */
-inline rank_t node_id_to_rank(const self_ip_routing_tree_t* tree, node_id_t node);
+rank_t node_id_to_rank(const self_ip_routing_tree_t* tree, node_id_t node);
 
 /**
  * \brief Get the parent node ID based on a child node ID

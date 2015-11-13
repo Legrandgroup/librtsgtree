@@ -36,7 +36,7 @@ node_id_t get_root_node_id(const self_ip_routing_tree_t* tree) {
 	return power2_to_uint128_t(tree->Rmax - 1);
 }
 
-rank_t node_id_to_rank(const self_ip_routing_tree_t* tree, node_id_t node) {
+inline rank_t node_id_to_rank(const self_ip_routing_tree_t* tree, node_id_t node) {
 	rank_t b;
 
 	assert(tree);
