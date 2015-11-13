@@ -168,14 +168,24 @@ typedef unsigned __int128 uint128_t;
  *
  * \return (uint128_t)0
  */
-inline uint128_t uint128_t_zero();
+inline uint128_t uint128_t_zero() {
+	uint128_t result_zero;
+
+	U128_SET_ZERO(result_zero);
+	return result_zero;
+}
 
 /**
  * \brief Return -1 as an uint128_t
  *
  * \return (uint128_t)-1
  */
-inline uint128_t uint128_t_max();
+inline uint128_t uint128_t_max() {
+	uint128_t result_max;
+
+	U128_SET_MAX(result_max);
+	return result_max;
+}
 
 /**
  * \brief Calculate 2 ^ power for a 128-bit wide unsigned int
@@ -184,6 +194,13 @@ inline uint128_t uint128_t_max();
  * \return 2 ^ \p power as a 128-bit wide unsigned int
 **/
 uint128_t power2_to_uint128_t(uint8_t power);
+
+// For native int128, we inline this function so it is defined here and not in the .c file
+#ifdef HAS_INT128
+inline uint128_t power2_to_uint128_t(uint8_t power) {
+	return ((uint128_t)1)<<power;
+}
+#endif
 
 /**
  * \brief Right shift a uint128_t of 1 bit
@@ -194,6 +211,13 @@ uint128_t power2_to_uint128_t(uint8_t power);
 **/
 uint128_t uint128_t_right_shift(const uint128_t input);
 
+// For native int128, we inline this function so it is defined here and not in the .c file
+#ifdef HAS_INT128
+inline uint128_t uint128_t_right_shift(const uint128_t input) {
+	return input>>1;
+}
+#endif
+
 /**
  * \brief Right shift a uint128_t of \p n bits
  *
@@ -201,7 +225,14 @@ uint128_t uint128_t_right_shift(const uint128_t input);
  *
  * \return The resulting uint128_t once bit-shifted
 **/
-inline uint128_t uint128_t_right_shift_n(const uint128_t input, uint8_t n);
+uint128_t uint128_t_right_shift_n(const uint128_t input, uint8_t n);
+
+// For native int128, we inline this function so it is defined here and not in the .c file
+#ifdef HAS_INT128
+inline uint128_t uint128_t_right_shift_n(const uint128_t input, uint8_t n) {
+	return input>>n;
+}
+#endif
 
 /**
  * \brief Left shift a uint128_t of 1 bit
@@ -212,6 +243,13 @@ inline uint128_t uint128_t_right_shift_n(const uint128_t input, uint8_t n);
 **/
 uint128_t uint128_t_left_shift(const uint128_t input);
 
+// For native int128, we inline this function so it is defined here and not in the .c file
+#ifdef HAS_INT128
+inline uint128_t uint128_t_left_shift(const uint128_t input) {
+	return input<<1;
+}
+#endif
+
 /**
  * \brief Left shift a uint128_t of \p n bits
  *
@@ -219,7 +257,14 @@ uint128_t uint128_t_left_shift(const uint128_t input);
  *
  * \return The resulting uint128_t once bit-shifted
 **/
-inline uint128_t uint128_t_left_shift_n(const uint128_t input, uint8_t n);
+uint128_t uint128_t_left_shift_n(const uint128_t input, uint8_t n);
+
+// For native int128, we inline this function so it is defined here and not in the .c file
+#ifdef HAS_INT128
+inline uint128_t uint128_t_left_shift_n(const uint128_t input, uint8_t n) {
+	return input<<n;
+}
+#endif
 
 /**
  * \brief Increment a uint128_t
@@ -230,6 +275,13 @@ inline uint128_t uint128_t_left_shift_n(const uint128_t input, uint8_t n);
 **/
 uint128_t uint128_t_inc(const uint128_t input);
 
+// For native int128, we inline this function so it is defined here and not in the .c file
+#ifdef HAS_INT128
+inline uint128_t uint128_t_inc(const uint128_t input) {
+	return input+1;
+}
+#endif
+
 /**
  * \brief Decrement a uint128_t
  *
@@ -238,6 +290,13 @@ uint128_t uint128_t_inc(const uint128_t input);
  * \return The result of \p input - 1 in a uint128_t
 **/
 uint128_t uint128_t_dec(const uint128_t input);
+
+// For native int128, we inline this function so it is defined here and not in the .c file
+#ifdef HAS_INT128
+inline uint128_t uint128_t_dec(const uint128_t input) {
+	return input-1;
+}
+#endif
 
 /**
  * \brief Calculate the subtraction between two uint128_t
@@ -251,6 +310,13 @@ uint128_t uint128_t_dec(const uint128_t input);
 **/
 uint128_t uint128_t_sub(const uint128_t from, uint128_t subtraction);
 
+// For native int128, we inline this function so it is defined here and not in the .c file
+#ifdef HAS_INT128
+inline uint128_t uint128_t_sub(const uint128_t from, uint128_t subtraction) {
+	return from-subtraction;
+}
+#endif
+
 /**
  * \brief Calculate the addition between two uint128_t
  *
@@ -261,7 +327,14 @@ uint128_t uint128_t_sub(const uint128_t from, uint128_t subtraction);
  *
  * \return The result of (first + second) as an uint128_t
 **/
-inline uint128_t uint128_t_add(const uint128_t first, uint128_t second);
+uint128_t uint128_t_add(const uint128_t first, uint128_t second);
+
+// For native int128, we inline this function so it is defined here and not in the .c file
+#ifdef HAS_INT128
+uint128_t uint128_t_add(const uint128_t first, uint128_t second) {
+	return first+second;
+}
+#endif
 
 /**
  * \brief Calculate the bitwise or operation between two uint128_t
@@ -271,7 +344,14 @@ inline uint128_t uint128_t_add(const uint128_t first, uint128_t second);
  *
  * \return The result of (first | second) as an uint128_t
 **/
-inline uint128_t uint128_t_or(const uint128_t first, uint128_t second);
+uint128_t uint128_t_or(const uint128_t first, uint128_t second);
+
+// For native int128, we inline this function so it is defined here and not in the .c file
+#ifdef HAS_INT128
+inline uint128_t uint128_t_or(const uint128_t first, uint128_t second) {
+	return first|second;
+}
+#endif
 
 /**
  * \brief Calculate the bitwise and operation between two uint128_t
@@ -283,6 +363,13 @@ inline uint128_t uint128_t_or(const uint128_t first, uint128_t second);
 **/
 uint128_t uint128_t_and(const uint128_t first, uint128_t second);
 
+// For native int128, we inline this function so it is defined here and not in the .c file
+#ifdef HAS_INT128
+uint128_t uint128_t_and(const uint128_t first, uint128_t second) {
+	return first&second;
+}
+#endif
+
 /**
  * \brief Create a uint128_t from a uint8_t
  *
@@ -292,6 +379,13 @@ uint128_t uint128_t_and(const uint128_t first, uint128_t second);
 **/
 uint128_t uint8_t_to_uint128_t(uint8_t from);
 
+// For native int128, we inline this function so it is defined here and not in the .c file
+#ifdef HAS_INT128
+inline uint128_t uint8_t_to_uint128_t(uint8_t from) {
+	return (uint128_t)from;
+}
+#endif
+
 /**
  * \brief Create a uint128_t from a uint16_t
  *
@@ -300,6 +394,13 @@ uint128_t uint8_t_to_uint128_t(uint8_t from);
  * \return the resulting uint128_t
 **/
 uint128_t uint16_t_to_uint128_t(uint16_t from);
+
+// For native int128, we inline this function so it is defined here and not in the .c file
+#ifdef HAS_INT128
+uint128_t uint16_t_to_uint128_t(uint16_t from) {
+	return (uint128_t)from;
+}
+#endif
 
 /**
  * \brief Dump a uint16_t word to a binary representation in a char*

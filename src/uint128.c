@@ -6,20 +6,6 @@
 #include <assert.h>	// For assert()
 #include <stdlib.h>	// For abort()
 
-inline uint128_t uint128_t_zero() {
-	uint128_t result_zero;
-
-	U128_SET_ZERO(result_zero);
-	return result_zero;
-}
-
-inline uint128_t uint128_t_max() {
-	uint128_t result_max;
-
-	U128_SET_MAX(result_max);
-	return result_max;
-}
-
 #ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 uint128_t power2_to_uint128_t(uint8_t power) {
 	uint128_t result;
@@ -31,10 +17,6 @@ uint128_t power2_to_uint128_t(uint8_t power) {
 	byte_index = 15 - power / 8;	/* Calculate which byte to change */
 	result.uint128_a8[byte_index] = 1<<(power % 8);	/* Set to 1 the appropriate bit of the matching byte */
 	return result;
-}
-#else	// HAS_INT128
-inline uint128_t power2_to_uint128_t(uint8_t power) {
-	return ((uint128_t)1)<<power;
 }
 #endif
 
@@ -57,10 +39,6 @@ uint128_t uint128_t_right_shift(const uint128_t input) {
 
 	  return output;
 }
-#else	// HAS_INT128
-inline uint128_t uint128_t_right_shift(const uint128_t input) {
-	return input>>1;
-}
 #endif
 
 #ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
@@ -70,10 +48,6 @@ uint128_t uint128_t_right_shift_n(const uint128_t input, uint8_t n) {
 	while (n--!=0)
 		result = uint128_t_right_shift(result);
 	return result;
-}
-#else	// HAS_INT128
-inline uint128_t uint128_t_right_shift_n(const uint128_t input, uint8_t n) {
-	return input>>n;
 }
 #endif
 
@@ -96,10 +70,6 @@ uint128_t uint128_t_left_shift(const uint128_t input) {
 
 	  return output;
 }
-#else	// HAS_INT128
-inline uint128_t uint128_t_left_shift(const uint128_t input) {
-	return input<<1;
-}
 #endif
 
 #ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
@@ -109,10 +79,6 @@ uint128_t uint128_t_left_shift_n(const uint128_t input, uint8_t n) {
 	while (n--!=0)
 		result = uint128_t_left_shift(result);
 	return result;
-}
-#else	// HAS_INT128
-inline uint128_t uint128_t_left_shift_n(const uint128_t input, uint8_t n) {
-	return input<<n;
 }
 #endif
 
@@ -136,10 +102,6 @@ uint128_t uint128_t_inc(const uint128_t input) {
 	  }
 	  return output;
 }
-#else	// HAS_INT128
-inline uint128_t uint128_t_inc(const uint128_t input) {
-	return input+1;
-}
 #endif
 
 #ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
@@ -160,10 +122,6 @@ uint128_t uint128_t_dec(const uint128_t input) {
 		  }
 	  }
 	  return output;
-}
-#else	// HAS_INT128
-inline uint128_t uint128_t_dec(const uint128_t input) {
-	return input-1;
 }
 #endif
 
@@ -190,10 +148,6 @@ uint128_t uint128_t_sub(const uint128_t from, uint128_t subtraction) {
 	  }
 	  return output;
 }
-#else	// HAS_INT128
-inline uint128_t uint128_t_sub(const uint128_t from, uint128_t subtraction) {
-	return from-subtraction;
-}
 #endif
 
 #ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
@@ -219,10 +173,6 @@ uint128_t uint128_t_add(const uint128_t first, uint128_t second) {
 	  }
 	  return output;
 }
-#else	// HAS_INT128
-uint128_t uint128_t_add(const uint128_t first, uint128_t second) {
-	return first+second;
-}
 #endif
 
 #ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
@@ -233,10 +183,6 @@ uint128_t uint128_t_or(const uint128_t first, uint128_t second) {
 	  for (byte_index = index_of_last_byte; byte_index>=0; byte_index--)
 		  second.uint128_a8[byte_index] |= first.uint128_a8[byte_index];
 	  return second;
-}
-#else	// HAS_INT128
-inline uint128_t uint128_t_or(const uint128_t first, uint128_t second) {
-	return first|second;
 }
 #endif
 
@@ -249,10 +195,6 @@ uint128_t uint128_t_and(const uint128_t first, uint128_t second) {
 		  second.uint128_a8[byte_index] &= first.uint128_a8[byte_index];
 	  return second;
 }
-#else	// HAS_INT128
-uint128_t uint128_t_and(const uint128_t first, uint128_t second) {
-	return first&second;
-}
 #endif
 
 #ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
@@ -263,10 +205,6 @@ uint128_t uint8_t_to_uint128_t(uint8_t from) {
 	U128_SET_ZERO(result);
 	result.uint128_a8[sizeof(result.uint128_a8)-1] = from;
 	return result;
-}
-#else	// HAS_INT128
-uint128_t uint8_t_to_uint128_t(uint8_t from) {
-	return (uint128_t)from;
 }
 #endif
 
@@ -279,10 +217,6 @@ uint128_t uint16_t_to_uint128_t(uint16_t from) {
 	result.uint128_a8[sizeof(result.uint128_a16)-1] = (uint8_t)(from & 0xff);
 	result.uint128_a8[sizeof(result.uint128_a16)-2] = (uint8_t)(from >> 8);
 	return result;
-}
-#else	// HAS_INT128
-uint128_t uint16_t_to_uint128_t(uint16_t from) {
-	return (uint128_t)from;
 }
 #endif
 
