@@ -74,7 +74,7 @@ void test_Rmax_to_max_node_id() {
  */
 void test_uint128_t_to_ipv6() {
 	node_id_t test_node;
-	char* expected_result;
+	const char* expected_result;
 
 	char result[INET6_ADDRSTRLEN+1];
 	struct in6_addr dst_in_addr;
@@ -228,7 +228,7 @@ void test_get_hosts_prefix_len() {
 void test_ipv6_prefix_to_uint128_t_mask() {
 	uint128_t test_netmask;
 	char result[33];
-	char* expected_result;
+	const char* expected_result;
 
 	test_netmask = ipv6_prefix_to_uint128_t_mask(0);
 	uint128_t_to_hexstr((uint128_t)test_netmask, 16, result);
@@ -284,7 +284,7 @@ void test_ipv6_prefix_to_uint128_t_mask() {
 void test_get_root_node_id() {
 	node_id_t test_node;
 	char result[33];
-	char* expected_result;
+	const char* expected_result;
 	self_ip_routing_tree_t tree;
 
 #ifdef IPV6_SUPPORT

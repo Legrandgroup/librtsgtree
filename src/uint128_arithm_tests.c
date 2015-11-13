@@ -82,7 +82,7 @@ void test_zero_max_uint128_t() {
 void test_uint128_t_to_binstr() {
 	uint128_t test_u128;
 	char result[129];
-	char* expected_result;
+	const char* expected_result;
 	uint8_t nb_bits_missing;
 
 	U128_SET_ZERO(test_u128);
@@ -230,7 +230,7 @@ void test_uint128_t_to_binstr() {
 void test_uint128_t_to_hexstr() {
 	uint128_t test_u128;
 	char result[33];
-	char* expected_result;
+	const char* expected_result;
 	uint8_t nb_bytes_missing;
 
 #ifndef HAS_INT128
@@ -342,7 +342,7 @@ void test_uint128_t_right_shift() {
 	uint128_t test_u128;
 	char result[129];
 	char expected;
-	char* expected_result;
+	const char* expected_result;
 
 	int8_t power;
 	uint8_t shift;
@@ -431,7 +431,7 @@ void test_uint128_t_right_shift_n() {
 
 	uint128_t test_u128;
 	char result[129];
-	char* expected_result;
+	const char* expected_result;
 
 #ifndef HAS_INT128
 	test_u128.uint128_a8[0] = 0xf0;
@@ -524,7 +524,7 @@ void test_uint128_t_left_shift() {
 	uint128_t test_u128;
 	char result[129];
 	char expected;
-	char* expected_result;
+	const char* expected_result;
 
 	uint8_t power;
 	uint8_t shift;
@@ -613,7 +613,7 @@ void test_uint128_t_left_shift_n() {
 
 	uint128_t test_u128;
 	char result[129];
-	char* expected_result;
+	const char* expected_result;
 
 #ifndef HAS_INT128
 	test_u128.uint128_a8[0] = 0xf0;
@@ -793,7 +793,7 @@ void test_uint128_t_mix_shift() {
 void test_uint128_t_inc() {
 	uint128_t test_u128;
 	char result[33];
-	char* expected_result;
+	const char* expected_result;
 
 	uint16_t inc_count;
 	uint16_t last_word16;
@@ -840,7 +840,7 @@ void test_uint128_t_inc() {
 void test_uint128_t_dec() {
 	uint128_t test_u128;
 	char result[33];
-	char* expected_result;
+	const char* expected_result;
 
 	uint16_t dec_count;
 	uint16_t last_word16;
@@ -1007,7 +1007,7 @@ void test_uint128_t_sub() {
 	uint128_t test2_u128;
 	uint128_t result_u128;
 	char result[33];
-	char* expected_result;
+	const char* expected_result;
 
 	uint16_t dec_count;
 	uint16_t last_word16;
@@ -1160,7 +1160,7 @@ void test_uint128_t_add() {
 	uint128_t test2_u128;
 	uint128_t result_u128;
 	char result[33];
-	char* expected_result;
+	const char* expected_result;
 
 	uint16_t inc_count;
 	uint16_t last_word16;
