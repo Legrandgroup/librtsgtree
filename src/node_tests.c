@@ -1187,7 +1187,7 @@ void unit_tests_node() {
 	test_get_left_right_top_bottom_interface_route();
 }
 #else
-void unit_tests_uint128() {
+void unit_tests_node() {
 	
 }
 #endif
