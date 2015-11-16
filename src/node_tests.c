@@ -1166,7 +1166,7 @@ TEST(node_tests, test_get_left_right_top_bottom_interface_route) {
 }
 
 #ifndef USE_CPPUTEST
-void unit_tests_node() {
+int unit_tests_node(int argc, char* argv[]) {
 #ifdef IPV6_SUPPORT
 	test_uint128_t_to_ipv6();
 #endif
@@ -1185,9 +1185,10 @@ void unit_tests_node() {
 	test_get_left_interface_config();
 	test_get_right_interface_config();
 	test_get_left_right_top_bottom_interface_route();
+	return 0;
 }
 #else
-void unit_tests_node() {
-	
+int unit_tests_node(int argc, char* argv[]) {
+	return  CommandLineTestRunner::RunAllTests(argc, argv);
 }
 #endif

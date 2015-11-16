@@ -1643,7 +1643,7 @@ TEST(uint128_tests, test_uint128_t_hton) {
 }
 
 #ifndef USE_CPPUTEST
-void unit_tests_uint128() {
+int unit_tests_uint128(int argc, char* argv[]) {
 	test_zero_max_uint128_t();
 	test_uint128_t_get_byte_no();
 	test_uint128_t_to_binstr();
@@ -1667,9 +1667,10 @@ void unit_tests_uint128() {
 	test_msb_1bits_to_uint128_t();
 	test_uint128_t_cmp();
 	test_uint128_t_hton();
+	return 0;
 }
 #else
-void unit_tests_uint128() {
-	
+int unit_tests_uint128(int argc, char* argv[]) {
+	return  CommandLineTestRunner::RunAllTests(argc, argv);
 }
 #endif

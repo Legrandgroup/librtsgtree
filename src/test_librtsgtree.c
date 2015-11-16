@@ -10,14 +10,23 @@
 #include <assert.h>	// For assert()
 #include "node.h"
 
-void unit_tests_uint128();	// Declaration of uint128 unit test procedure (see uint128_arithm_tests.c)
-void unit_tests_node();	// Declaration of node unit test procedure (see node_tests.c)
+int unit_tests_uint128(int argc, char* argv[]);	// Declaration of uint128 unit test procedure (see uint128_arithm_tests.c)
+int unit_tests_node(int argc, char* argv[]);	// Declaration of node unit test procedure (see node_tests.c)
 
-int main(void) {
+int main(int argc, char* argv[]) {
+	int result = 0;
+	int rc;
+	
 	printf("*** Testing uint128 ***\n");
-	unit_tests_uint128();
+	rc = unit_tests_uint128(argc, argv);
+	result = rc;
 	printf("*** Testing node ***\n");
-	unit_tests_node();
-	printf("\n*** All unit tests passed successfully ***\n");
-	return EXIT_SUCCESS;
+	rc = unit_tests_node(argc, argv);
+	if (result == 0)
+		result == rc;
+	
+	if (result == 0)
+		printf("\n*** All unit tests passed successfully ***\n");
+	
+	return result;
 }
