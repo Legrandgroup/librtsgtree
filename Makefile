@@ -72,7 +72,7 @@ TEST_SRCS +=$(SRC_PATH)/node_tests.c \
 all: $(PROJECT_NAME) test Makefile
 
 OBJS = $(patsubst %.c, %.o, $(SRCS))
-TEST_OBJS = $(patsubst %.c, %.o, $(TEST_SRCS))
+TEST_OBJS = $(patsubst %.c, %.o, $(TEST_SRCS)) $(CPPUTEST_STATIC_LIB)
 
 %.o: %.c
 	@echo Compiling $<
