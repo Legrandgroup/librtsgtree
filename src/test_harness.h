@@ -53,7 +53,7 @@ inline std::string vformat(const char* fmt, ...) {
                                      ); } while(0);
 #else
 #include <stdio.h>
-#define TEST_GROUP(x)
+#define TEST_GROUP(x) struct testgroup_ ## x
 #define TEST(group, func) void func()
 #define FAILF(message, ...) do { fprintf(stderr, "%s():%d: ", __func__, __LINE__); fprintf(stderr, message, ## __VA_ARGS__); exit(1); } while(0);
 #endif

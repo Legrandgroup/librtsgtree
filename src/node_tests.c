@@ -6,6 +6,8 @@
 #include <stdint.h>
 #include <string.h>	// For memcpy()
 
+TEST_GROUP(node_tests) {
+};
 
 void check_result_is_uint128(uint128_t value, uint128_t expected, unsigned int func_line) {
 	char value_str[33];
@@ -20,7 +22,7 @@ void check_result_is_uint128(uint128_t value, uint128_t expected, unsigned int f
 
 /* Unit test for Rmax_to_max_node_id()
  */
-void test_Rmax_to_max_node_id() {
+TEST(node_tests, test_Rmax_to_max_node_id) {
 	node_id_t test_node;
 
 	if (!U128_IS_ZERO(Rmax_to_max_node_id(0)))
@@ -53,7 +55,7 @@ void test_Rmax_to_max_node_id() {
 #ifdef IPV6_SUPPORT
 /* Unit test for uint128_t_to_ipv6()
  */
-void test_uint128_t_to_ipv6() {
+TEST(node_tests, test_uint128_t_to_ipv6) {
 	node_id_t test_node;
 	const char* expected_result;
 
@@ -120,7 +122,7 @@ void test_uint128_t_to_ipv6() {
 
 /* Unit test for get_tree_prefix_len()
  */
-void test_get_tree_prefix_len() {
+TEST(node_tests, test_get_tree_prefix_len) {
 	self_ip_routing_tree_t tree;
 
 #ifdef IPV6_SUPPORT
@@ -153,7 +155,7 @@ void test_get_tree_prefix_len() {
 
 /* Unit test for get_hosts_prefix_len()
  */
-void test_get_hosts_prefix_len() {
+TEST(node_tests, test_get_hosts_prefix_len) {
 	self_ip_routing_tree_t tree;
 
 #ifdef IPV6_SUPPORT
@@ -188,7 +190,7 @@ void test_get_hosts_prefix_len() {
 #ifdef IPV6_SUPPORT
 /* Unit test for ipv6_prefix_to_uint128_t_mask()
  */
-void test_ipv6_prefix_to_uint128_t_mask() {
+TEST(node_tests, test_ipv6_prefix_to_uint128_t_mask) {
 	uint128_t test_netmask;
 	char result[33];
 	const char* expected_result;
@@ -229,7 +231,7 @@ void test_ipv6_prefix_to_uint128_t_mask() {
 
 /* Unit test for get_root_node_id()
  */
-void test_get_root_node_id() {
+TEST(node_tests, test_get_root_node_id) {
 	node_id_t test_node;
 	char result[33];
 	const char* expected_result;
@@ -262,7 +264,7 @@ void test_get_root_node_id() {
 
 /* Unit test for node_id_to_rank()
  */
-void test_node_id_to_rank() {
+TEST(node_tests, test_node_id_to_rank) {
 	self_ip_routing_tree_t tree;
 
 #ifdef IPV6_SUPPORT
@@ -406,7 +408,7 @@ void test_node_id_to_rank() {
 
 /* Unit test for get_parent_node_id()
  */
-void test_get_parent_node_id() {
+TEST(node_tests, test_get_parent_node_id) {
 	node_id_t test_node;
 	char result[33];
 	char* expected_result;
@@ -527,7 +529,7 @@ void test_get_parent_node_id() {
 
 /* Unit test for get_left_child_node_id()
  */
-void test_get_left_child_node_id() {
+TEST(node_tests, test_get_left_child_node_id) {
 	node_id_t test_node;
 	char result[33];
 	char* expected_result;
@@ -616,7 +618,7 @@ void test_get_left_child_node_id() {
 
 /* Unit test for get_right_child_node_id()
  */
-void test_get_right_child_node_id() {
+TEST(node_tests, test_get_right_child_node_id) {
 	node_id_t test_node;
 	char result[33];
 	char* expected_result;
@@ -705,7 +707,7 @@ void test_get_right_child_node_id() {
 
 /* Unit test for get_top_interface_config()
  */
-void test_get_top_interface_config() {
+TEST(node_tests, test_get_top_interface_config) {
 	node_id_t test_node;
 	self_ip_routing_tree_t tree;
 	if_ip_addr_t ip_addr_result;
@@ -826,7 +828,7 @@ void test_get_top_interface_config() {
 
 /* Unit test for get_left_interface_config()
  */
-void test_get_left_interface_config() {
+TEST(node_tests, test_get_left_interface_config) {
 	node_id_t test_node;
 	self_ip_routing_tree_t tree;
 	if_ip_addr_t ip_addr_result;
@@ -881,7 +883,7 @@ void test_get_left_interface_config() {
 
 /* Unit test for get_right_interface_config()
  */
-void test_get_right_interface_config() {
+TEST(node_tests, test_get_right_interface_config) {
 	node_id_t test_node;
 	self_ip_routing_tree_t tree;
 	if_ip_addr_t ip_addr_result;
@@ -966,7 +968,7 @@ void ip_route_to_str(const ip_route_t input, char* output) {
 
 /* Unit test for get_left_interface_route(), get_right_interface_route(), get_top_interface_route() and get_bottom_interface_route()
  */
-void test_get_left_right_top_bottom_interface_route() {
+TEST(node_tests, test_get_left_right_top_bottom_interface_route) {
 	node_id_t test_node;
 	self_ip_routing_tree_t tree;
 	ip_route_t ip_route_result;
@@ -1163,6 +1165,7 @@ void test_get_left_right_top_bottom_interface_route() {
 	printf("%s: tests passed\n", __func__);
 }
 
+#ifndef USE_CPPUTEST
 void unit_tests_node() {
 #ifdef IPV6_SUPPORT
 	test_uint128_t_to_ipv6();
@@ -1183,3 +1186,8 @@ void unit_tests_node() {
 	test_get_right_interface_config();
 	test_get_left_right_top_bottom_interface_route();
 }
+#else
+void unit_tests_uint128() {
+	
+}
+#endif

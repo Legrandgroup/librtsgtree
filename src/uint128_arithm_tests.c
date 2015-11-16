@@ -8,9 +8,12 @@
 
 #define zero_word_16bits "00000000" "00000000"
 
+TEST_GROUP(uint128_tests) {
+};
+
 /* Unit test for U128_SET_ZERO()
  */
-void test_zero_max_uint128_t() {
+TEST(uint128_tests, test_zero_max_uint128_t) {
 	uint128_t test_u128;
 
 	U128_SET_MAX(test_u128);
@@ -68,7 +71,7 @@ void test_zero_max_uint128_t() {
 /* Unit test for uint128_t_get_byte_no()
  */
 
-void test_uint128_t_get_byte_no() {
+TEST(uint128_tests, test_uint128_t_get_byte_no) {
 	uint128_t test_u128;
 	uint8_t byte;
 
@@ -130,7 +133,7 @@ void test_uint128_t_get_byte_no() {
 
 /* Unit test for uint128_t_to_binstr()
  */
-void test_uint128_t_to_binstr() {
+TEST(uint128_tests, test_uint128_t_to_binstr) {
 	uint128_t test_u128;
 	char result[129];
 	const char* expected_result;
@@ -261,7 +264,7 @@ void test_uint128_t_to_binstr() {
 
 /* Unit test for uint128_t_to_hexstr()
  */
-void test_uint128_t_to_hexstr() {
+TEST(uint128_tests, test_uint128_t_to_hexstr) {
 	uint128_t test_u128;
 	char result[33];
 	const char* expected_result;
@@ -329,7 +332,7 @@ void test_uint128_t_to_hexstr() {
 
 /* Unit test for power2_to_uint128_t()
  * Note: uint8_t_to_binstr() will be covered while testing this */
-void test_power2_to_uint128_t() {
+TEST(uint128_tests, test_power2_to_uint128_t) {
 	uint128_t test_u128;
 	char result[129];
 	char expected;
@@ -359,7 +362,7 @@ void test_power2_to_uint128_t() {
 
 /* Unit test for uint128_t_right_shift()
  */
-void test_uint128_t_right_shift() {
+TEST(uint128_tests, test_uint128_t_right_shift) {
 	uint128_t test_u128;
 	char result[129];
 	char expected;
@@ -440,7 +443,7 @@ void test_uint128_t_right_shift() {
 
 /* Unit test for uint128_t_right_shift_n()
  */
-void test_uint128_t_right_shift_n() {
+TEST(uint128_tests, test_uint128_t_right_shift_n) {
 
 	uint128_t test_u128;
 	char result[129];
@@ -518,7 +521,7 @@ void test_uint128_t_right_shift_n() {
 
 /* Unit test for uint128_t_left_shift()
  */
-void test_uint128_t_left_shift() {
+TEST(uint128_tests, test_uint128_t_left_shift) {
 	uint128_t test_u128;
 	char result[129];
 	char expected;
@@ -600,7 +603,7 @@ void test_uint128_t_left_shift() {
 
 /* Unit test for uint128_t_left_shift_n()
  */
-void test_uint128_t_left_shift_n() {
+TEST(uint128_tests, test_uint128_t_left_shift_n) {
 
 	uint128_t test_u128;
 	char result[129];
@@ -677,7 +680,7 @@ void test_uint128_t_left_shift_n() {
 
 /* Unit test for mixed uint128_t_left_shift() and uint128_t_right_shift()
  */
-void test_uint128_t_mix_shift() {
+TEST(uint128_tests, test_uint128_t_mix_shift) {
 	uint128_t test1_u128;
 	uint128_t test2_u128;
 	char result1[129];
@@ -760,7 +763,7 @@ void test_uint128_t_mix_shift() {
 
 /* Unit test for uint128_t_inc()
  */
-void test_uint128_t_inc() {
+TEST(uint128_tests, test_uint128_t_inc) {
 	uint128_t test_u128;
 	char result[33];
 	const char* expected_result;
@@ -804,7 +807,7 @@ void test_uint128_t_inc() {
 
 /* Unit test for uint128_t_dec()
  */
-void test_uint128_t_dec() {
+TEST(uint128_tests, test_uint128_t_dec) {
 	uint128_t test_u128;
 	char result[33];
 	const char* expected_result;
@@ -847,7 +850,7 @@ void test_uint128_t_dec() {
 
 /* Unit test for uint16_t_to_uint128_t()
  */
-void test_uint16_t_to_uint128_t() {
+TEST(uint128_tests, test_uint16_t_to_uint128_t) {
 	uint16_t source;
 	uint16_t last_word16;
 	uint128_t result_u128;
@@ -906,7 +909,7 @@ void test_uint16_t_to_uint128_t() {
 
 /* Unit test for uint8_t_to_uint128_t()
  */
-void test_uint8_t_to_uint128_t() {
+TEST(uint128_tests, test_uint8_t_to_uint128_t) {
 	uint8_t source;
 	uint8_t last_byte8;
 	uint128_t result_u128;
@@ -983,7 +986,7 @@ void test_uint8_t_to_uint128_t() {
 
 /* Unit test for uint128_t_sub()
  */
-void test_uint128_t_sub() {
+TEST(uint128_tests, test_uint128_t_sub) {
 	uint128_t test1_u128;
 	uint128_t test2_u128;
 	uint128_t result_u128;
@@ -1119,7 +1122,7 @@ void test_uint128_t_sub() {
 
 /* Unit test for uint128_t_add()
  */
-void test_uint128_t_add() {
+TEST(uint128_tests, test_uint128_t_add) {
 	uint128_t test1_u128;
 	uint128_t test2_u128;
 	uint128_t result_u128;
@@ -1254,7 +1257,7 @@ void test_uint128_t_add() {
 	printf("%s: tests passed\n", __func__);
 }
 
-void test_uint128_t_mixed_add_sub_inc_dec() {
+TEST(uint128_tests, test_uint128_t_mixed_add_sub_inc_dec) {
 	uint128_t test1_u128;
 	uint128_t test2_u128;
 	uint16_t i;
@@ -1321,7 +1324,7 @@ void test_uint128_t_mixed_add_sub_inc_dec() {
 
 /* Unit test for uint128_t_or()
  */
-void test_uint128_t_or() {
+TEST(uint128_tests, test_uint128_t_or) {
 	uint128_t test1_u128;
 	uint128_t test2_u128;
 	uint128_t result_u128;
@@ -1403,7 +1406,7 @@ void test_uint128_t_or() {
 
 /* Unit test for uint128_t_and()
  */
-void test_uint128_t_and() {
+TEST(uint128_tests, test_uint128_t_and) {
 	uint128_t test1_u128;
 	uint128_t test2_u128;
 	uint128_t result_u128;
@@ -1485,7 +1488,7 @@ void test_uint128_t_and() {
 
 /* Unit test for uint128_t_right_0bit_count()
  */
-void test_uint128_t_right_0bit_count() {
+TEST(uint128_tests, test_uint128_t_right_0bit_count) {
 	uint128_t test_u128;
 	uint8_t bit_count;
 	uint8_t result;
@@ -1510,7 +1513,7 @@ void test_uint128_t_right_0bit_count() {
 
 /* Unit test for msb_1bits_to_uint128_t()
  */
-void test_msb_1bits_to_uint128_t() {
+TEST(uint128_tests, test_msb_1bits_to_uint128_t) {
 
 	uint8_t counted_msb_bits;
 	uint128_t result;
@@ -1540,7 +1543,7 @@ void test_msb_1bits_to_uint128_t() {
 
 /* Unit test for uint128_t_cmp()
  */
-void test_uint128_t_cmp() {
+TEST(uint128_tests, test_uint128_t_cmp) {
 	uint128_t test1_u128;
 	uint128_t test2_u128;
 
@@ -1582,7 +1585,7 @@ void test_uint128_t_cmp() {
 
 /* Unit test for uint128_t_hton()
  */
-void test_uint128_t_hton() {
+TEST(uint128_tests, test_uint128_t_hton) {
 
 	uint128_t test_u128;
 	uint8_t *uint128_repr_ptr;
@@ -1639,6 +1642,7 @@ void test_uint128_t_hton() {
 	printf("%s: tests passed\n", __func__);
 }
 
+#ifndef USE_CPPUTEST
 void unit_tests_uint128() {
 	test_zero_max_uint128_t();
 	test_uint128_t_get_byte_no();
@@ -1664,3 +1668,8 @@ void unit_tests_uint128() {
 	test_uint128_t_cmp();
 	test_uint128_t_hton();
 }
+#else
+void unit_tests_uint128() {
+	
+}
+#endif
