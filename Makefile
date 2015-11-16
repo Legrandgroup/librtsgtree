@@ -12,6 +12,8 @@ define HELP
  libsgtree project makefile help
  ------------------------------------
 
+ In order to test with cpputest, run the following command:
+ CFLAGS="-DUSE_CPPUTEST `pkg-config --cflags cpputest`" LIBS="`pkg-config --libs cpputest`" CPPUTEST_STATIC_LIB=/path/to/libCppUTest.a make CC=g++ <target>
  Please use `make <target>' where <target> is one of:
 
 
