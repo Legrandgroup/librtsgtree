@@ -185,9 +185,7 @@ if_ip_addr_t get_bottom_interface_config(const self_ip_routing_tree_t* tree, con
 		result.prefix = get_hosts_prefix_len(tree);
 	}
 	else {	/* hostA == 0, there should be no bottom interface config */
-		memset(&(result.in_addr.__ipv6_in6_addr), sizeof(result.in_addr.__ipv6_in6_addr), 0);
-		result.prefix = 128;
-		result.ip_type = NONE;	/* Bottom interface has no IP address in IPv6 trees with hostA==0 (reference interface is top interface in that case) */
+		return no_interface_config();	/* Bottom interface has no IP address in IPv6 trees with hostA==0 (reference interface is top interface in that case) */
 	}
 
 	return result;
@@ -204,9 +202,7 @@ if_ip_addr_t get_left_interface_config(const self_ip_routing_tree_t* tree, const
 	result.ip_type = tree->ip_type;
 #ifdef IPV6_SUPPORT
 	if (tree->ip_type == IPV6) {
-		memset(&(result.in_addr.__ipv6_in6_addr), sizeof(result.in_addr.__ipv6_in6_addr), 0);
-		result.prefix = 128;
-		result.ip_type = NONE;	/* Left interface has no IP address in IPv6 trees (only link-local fe80::/64 addresses are used on interfaces with children) */
+		return no_interface_config();	/* Left interface has no IP address in IPv6 trees (only link-local fe80::/64 addresses are used on interfaces with children) */
 	}
 	else
 #endif
@@ -234,9 +230,7 @@ if_ip_addr_t get_right_interface_config(const self_ip_routing_tree_t* tree, cons
 	result.ip_type = tree->ip_type;
 #ifdef IPV6_SUPPORT
 	if (tree->ip_type == IPV6) {
-		memset(&(result.in_addr.__ipv6_in6_addr), sizeof(result.in_addr.__ipv6_in6_addr), 0);
-		result.prefix = 128;
-		result.ip_type = NONE;	/* Right interface has no IP address in IPv6 trees (only link-local fe80::/64 addresses are used on interfaces with children) */
+		return no_interface_config();	/* Right interface has no IP address in IPv6 trees (only link-local fe80::/64 addresses are used on interfaces with children) */
 	}
 	else
 #endif
@@ -302,9 +296,7 @@ ip_route_t get_top_interface_route(const self_ip_routing_tree_t* tree, const nod
 #ifdef IPV6_SUPPORT
 	if (tree->ip_type == IPV6) {
 		if (node_rank == 1) {	/* Root of tree has no specific route for top interface (only default) */
-			uint128_t_to_ipv6(uint128_t_zero(), &(result.in_addr.__ipv6_in6_addr));
-			result.prefix = 128;
-			result.ip_type = NONE;
+			return no_interface_route();
 		}
 		else {
 			result = get_reference_interface_config(tree, get_parent_node_id(tree, node));	/* We add a route to the parent node's reference interface */
