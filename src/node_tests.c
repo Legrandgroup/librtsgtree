@@ -716,6 +716,7 @@ TEST(node_tests, test_get_top_interface_config) {
 #ifdef IPV6_SUPPORT
 	tree.ip_type = IPV6;
 	tree.Rmax = 4;
+	/* First perform test without any local network attached to nodes (hostA=0) */
 	tree.hostA = 0;
 #ifndef HAS_INT128
 	U128_SET_ZERO(tree.prefix);
@@ -729,7 +730,8 @@ TEST(node_tests, test_get_top_interface_config) {
 
 	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 
-	//TODO: check that tree was not altered as side effect when passed as a reference above
+	if (tree.ip_type != IPV6 || tree.Rmax != 4 || tree.hostA != 0)
+		FAILF("get_top_interface_config() modified the input tree argument\n");
 	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
 		FAILF("get_top_interface_config() modified ip_type field\n");
 
@@ -744,7 +746,6 @@ TEST(node_tests, test_get_top_interface_config) {
 
 	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 
-	//TODO: check that tree was not altered as side effect when passed as a reference above
 	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
 		FAILF("get_top_interface_config() modified ip_type field\n");
 
@@ -759,7 +760,6 @@ TEST(node_tests, test_get_top_interface_config) {
 
 	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 
-	//TODO: check that tree was not altered as side effect when passed as a reference above
 	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
 		FAILF("get_top_interface_config() modified ip_type field\n");
 
@@ -774,7 +774,6 @@ TEST(node_tests, test_get_top_interface_config) {
 
 	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 
-	//TODO: check that tree was not altered as side effect when passed as a reference above
 	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
 		FAILF("get_top_interface_config() modified ip_type field\n");
 
@@ -789,7 +788,6 @@ TEST(node_tests, test_get_top_interface_config) {
 
 	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 
-	//TODO: check that tree was not altered as side effect when passed as a reference above
 	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
 		FAILF("get_top_interface_config() modified ip_type field\n");
 
@@ -799,6 +797,36 @@ TEST(node_tests, test_get_top_interface_config) {
 	if (ip_addr_result.prefix != 128)	/* Should get /128 for root node's top interface netmask */
 		FAILF("get_top_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
 
+	/* Test with routable local networks (hostA!=0) */
+	tree.hostA = 64;	/* Each node has a /64 network attached */
+
+	test_node = get_root_node_id(&tree);	/* Will get 8 */
+	ip_addr_result = get_top_interface_config(&tree, test_node);
+	if (tree.ip_type != IPV6 || tree.Rmax != 4 || tree.hostA != 64)
+		FAILF("get_top_interface_config() modified the input tree argument\n");
+	if (ip_addr_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
+		FAILF("get_top_interface_config() should return no configuration\n");
+
+	test_node = get_left_child_node_id(&tree, get_root_node_id(&tree));	/* Will get 4 */
+	ip_addr_result = get_top_interface_config(&tree, test_node);
+	if (ip_addr_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
+		FAILF("get_top_interface_config() should return no configuration\n");
+
+	test_node = get_right_child_node_id(&tree, get_root_node_id(&tree));	/* Will get 12 */
+	ip_addr_result = get_top_interface_config(&tree, test_node);
+	if (ip_addr_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
+		FAILF("get_top_interface_config() should return no configuration\n");
+
+	test_node = uint8_t_to_uint128_t(1);	/* Take left-most leaf of tree (ID 1) */
+	ip_addr_result = get_top_interface_config(&tree, test_node);
+	if (ip_addr_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
+		FAILF("get_top_interface_config() should return no configuration\n");
+
+	test_node = uint8_t_to_uint128_t(15);	/* Take right-most leaf of tree (ID 15) */
+	ip_addr_result = get_top_interface_config(&tree, test_node);
+	if (ip_addr_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
+		FAILF("get_top_interface_config() should return no configuration\n");
+	
 #endif	// IPV6_SUPPORT
 
 #ifdef IPV4_SUPPORT
@@ -851,9 +879,10 @@ TEST(node_tests, test_get_left_interface_config) {
 
 	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 
-	//TODO: check that tree was not altered as side effect when passed as a reference above
-	if (ip_addr_result.ip_type != NONE)	/* IP type should be set to none, IPv6 trees do require setting addresses to interfaces to children */
-		FAILF("get_left_interface_config() modified ip_type field\n");
+	if (tree.ip_type != IPV6 || tree.Rmax != 4 || tree.hostA != 0)
+		FAILF("get_left_interface_config() modified the input tree argument\n");
+	if (ip_addr_result.ip_type != NONE)	/* IP type should be set to none, IPv6 trees have no IPv6 addresses on interfaces to children */
+		FAILF("get_left_interface_config() should return no config\n");
 #endif	// IPV6_SUPPORT
 
 #ifdef IPV4_SUPPORT
@@ -905,9 +934,70 @@ TEST(node_tests, test_get_right_interface_config) {
 
 	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 
-	//TODO: check that tree was not altered as side effect when passed as a reference above
-	if (ip_addr_result.ip_type != NONE)	/* IP type should be set to none, IPv6 trees do require setting addresses to interfaces to children */
-		FAILF("get_right_interface_config() modified ip_type field\n");
+	if (tree.ip_type != IPV6 || tree.Rmax != 4 || tree.hostA != 0)
+		FAILF("get_right_interface_config() modified the input tree argument\n");
+	if (ip_addr_result.ip_type != NONE)	/* IP type should be set to none, IPv6 trees have no IPv6 addresses on interfaces to children */
+		FAILF("get_right_interface_config() should return no config\n");
+#endif	// IPV6_SUPPORT
+
+#ifdef IPV4_SUPPORT
+	tree.ip_type = IPV4;
+	tree.Rmax = 6;
+	tree.hostA = 2;
+#ifndef HAS_INT128
+	U128_SET_ZERO(tree.prefix);
+	tree.prefix.uint128_a8[12] = 192;
+	tree.prefix.uint128_a8[13] = 168;
+	tree.prefix.uint128_a8[14] = 0;
+	tree.prefix.uint128_a8[15] = 0;	/* Prefix is 192.168.0.0/24 */
+#else
+	tree.prefix = (uint128_t)192<<24 | (uint128_t)168<<16 | (uint128_t)0<<8 | (uint128_t)0;
+#endif
+
+#warning Test for IPv4 is not implemented yet
+	//ip_addr_result = get_right_interface_config(&tree, test_node);
+	//FIXME: Add unit test for get_right_interface_config() on IPv4 trees
+
+	//if (ip_addr_result.ip_type != IPV4)	/* ip_type should have been propagated as is to result */
+	//	FAILF("get_right_interface_config() modified ip_type field\n");
+
+#endif	// IPV4_SUPPORT
+
+	printf("%s: tests passed\n", __func__);
+}
+
+/* Unit test for get_right_interface_config()
+ */
+TEST(node_tests, test_get_bottom_interface_config) {
+	node_id_t test_node;
+	self_ip_routing_tree_t tree;
+	if_ip_addr_t ip_addr_result;
+	char ip_addr_str[INET6_ADDRSTRLEN+1];
+
+#ifdef IPV6_SUPPORT
+	tree.ip_type = IPV6;
+	tree.Rmax = 4;
+	tree.hostA = 0;
+#ifndef HAS_INT128
+	U128_SET_ZERO(tree.prefix);
+	tree.prefix.uint128_a8[0] = 0xfd;	/* Prefix is fd00::/124 */
+#else
+	tree.prefix = (uint128_t)0xfd << 120;   /* Prefix is fd00::/124 */
+#endif
+
+	test_node = get_root_node_id(&tree);	/* Will get 8 */
+	ip_addr_result = get_bottom_interface_config(&tree, test_node);
+
+	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
+
+	if (tree.ip_type != IPV6 || tree.Rmax != 4 || tree.hostA != 0)
+		FAILF("get_bottom_interface_config() modified the input tree argument\n");
+	if (strcmp(ip_addr_str, "fd00::1") != 0)	/* IP type should be set to unspecified, IPv6 trees do require setting addresses to interfaces to children */
+		FAILF("get_bottom_interface_config() modified ip_type field\n");
+	
+	/* FIXME: test bottom interface config for hostA!=0 */
+#warning Test for get_bottom_interface_config() on IPv6 tree with hostA!=0 is not implemented yet
+	
 #endif	// IPV6_SUPPORT
 
 #ifdef IPV4_SUPPORT
@@ -1184,6 +1274,7 @@ int unit_tests_node(int argc, char* argv[]) {
 	test_get_top_interface_config();
 	test_get_left_interface_config();
 	test_get_right_interface_config();
+	test_get_bottom_interface_config();
 	test_get_left_right_top_bottom_interface_route();
 	return 0;
 }
