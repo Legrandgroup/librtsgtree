@@ -186,6 +186,7 @@ if_ip_addr_t get_bottom_interface_config(const self_ip_routing_tree_t* tree, con
 	//assert(tree->hostA != 0); // We do not assert this in case calling code does not make sure that hostA != 0, instead, we will return a ::/0 (unspecified address)
 
 	if (tree->hostA != 0) {
+		assert(tree->hostA >= 2);	/* We need at least 2 bits to address network, broadcast and a first address (which is the node bottom interface) */
 		result.ip_type = tree->ip_type;
 		uint128_t_to_ipv6(get_reference_interface_ipv6_addr(tree, (uint128_t)node), &(result.in_addr.__ipv6_in6_addr));
 		result.prefix = get_hosts_prefix_len(tree);
