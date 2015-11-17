@@ -122,8 +122,9 @@ uint128_t get_reference_interface_ipv6_addr(const self_ip_routing_tree_t* tree, 
 
 	assert(tree);
 	result = uint128_t_left_shift_n((uint128_t)node, tree->hostA);
-	return uint128_t_or(result,
-	                    uint128_t_and(tree->prefix, ipv6_prefix_to_uint128_t_mask(get_hosts_prefix_len(tree))));
+	result = uint128_t_or(result,
+	                      uint128_t_and(tree->prefix, ipv6_prefix_to_uint128_t_mask(get_hosts_prefix_len(tree))));
+	return result;
 }
 #endif	// IPV6_SUPPORT
 
