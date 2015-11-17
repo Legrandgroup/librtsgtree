@@ -117,6 +117,16 @@ node_id_t get_right_child_node_id(const self_ip_routing_tree_t* tree, const node
 }
 
 #ifdef IPV6_SUPPORT
+/**
+ * \brief Get the reference IPv6 address and netmask for a specific \p node (it is the IPv6 address and prefix used to reach this node in the tree)
+ *
+ * Note: tree.ip_type, tree.Rmax, tree.hostA and tree.prefix must be provisioned correctly in argument \p tree to get a correct result
+ *
+ * \param tree The tree inside which we perform the calculation
+ * \param node The node ID of which we want to calculate the network interface characteristics
+ *
+ * \return The IPv6 addressing of the reference network interface for \p node
+**/
 uint128_t get_reference_interface_ipv6_addr(const self_ip_routing_tree_t* tree, const node_id_t node) {
 	uint128_t result;
 
@@ -125,6 +135,25 @@ uint128_t get_reference_interface_ipv6_addr(const self_ip_routing_tree_t* tree, 
 	result = uint128_t_or(result,
 	                      uint128_t_and(tree->prefix, ipv6_prefix_to_uint128_t_mask(get_hosts_prefix_len(tree))));
 	return result;
+}
+
+/**
+ * \brief Get the locally-attached IPv6 network and netmask for a specific \p node (it is the IPv6 address and prefix used to reach nodes on the local LAN of this node in the tree)
+ *
+ * Note: tree.ip_type, tree.Rmax, tree.hostA and tree.prefix must be provisioned correctly in argument \p tree to get a correct result
+ *
+ * \param tree The tree inside which we perform the calculation
+ * \param node The node ID of which we want to calculate the network interface characteristics
+ *
+ * \return The IPv6 addressing of the locally-attached network for \p node
+**/
+uint128_t get_reference_ipv6_network(const self_ip_routing_tree_t* tree, const node_id_t node) {
+	uint128_t result;
+
+	assert(tree);
+	result = uint128_t_left_shift_n((uint128_t)node, tree->hostA);
+	return uint128_t_or(result,
+	                   uint128_t_and(tree->prefix, ipv6_prefix_to_uint128_t_mask(get_hosts_prefix_len(tree))));
 }
 #endif	// IPV6_SUPPORT
 
@@ -188,7 +217,7 @@ if_ip_addr_t get_bottom_interface_config(const self_ip_routing_tree_t* tree, con
 	if (tree->hostA != 0) {
 		assert(tree->hostA >= 2);	/* We need at least 2 bits to address network, broadcast and a first address (which is the node bottom interface) */
 		result.ip_type = tree->ip_type;
-		uint128_t_to_ipv6(get_reference_interface_ipv6_addr(tree, (uint128_t)node), &(result.in_addr.__ipv6_in6_addr));
+		uint128_t_to_ipv6(get_reference_ipv6_network(tree, (uint128_t)node), &(result.in_addr.__ipv6_in6_addr));
 		result.prefix = get_hosts_prefix_len(tree);
 	}
 	else {	/* hostA == 0, there should be no bottom interface config */
@@ -359,7 +388,7 @@ ip_route_t get_child_interface_route(const self_ip_routing_tree_t* tree, const n
 		assert(node_rank != tree->Rmax);	/* node_rank == tree->Rmax case must be handled by caller */
 		if (node_rank+1 == tree->Rmax) {	/* We are on the penultimate rank */
 			uint128_t_to_ipv6(
-			                  get_reference_interface_ipv6_addr(tree, child_node),	/* get_child_func_t being either get_left_child_node_id() or get_right_child_node_id() */
+			                  get_reference_ipv6_network(tree, child_node),	/* get_child_func_t being either get_left_child_node_id() or get_right_child_node_id() */
 			                  &(result.in_addr.__ipv6_in6_addr)
 			                 );
 			assert(tree->hostA < 128);
@@ -370,7 +399,7 @@ ip_route_t get_child_interface_route(const self_ip_routing_tree_t* tree, const n
 			assert(node_rank < tree->Rmax);
 
 			//printf("Will compute AND mask between:\n");
-			//uint128_t_to_hexstr(get_reference_interface_ipv6_addr(tree, child_node), 16, result_txt);
+			//uint128_t_to_hexstr(get_reference_ipv6_network(tree, child_node), 16, result_txt);
 			//printf("%s (child IPv6)\nand\n", result_txt);
 			//uint128_t_to_hexstr(ipv6_prefix_to_uint128_t_mask(get_tree_prefix_len(tree) + node_rank), 16, result_txt);
 			//printf("%s (mask for %d+%d prefix)\n=\n", result_txt, get_tree_prefix_len(tree), node_rank);
@@ -382,7 +411,7 @@ ip_route_t get_child_interface_route(const self_ip_routing_tree_t* tree, const n
 
 			uint128_t_to_ipv6(
 			                  uint128_t_and(
-			                                get_reference_interface_ipv6_addr(tree, child_node),	/* get_child_func_t being either get_left_child_node_id() or get_right_child_node_id() */
+			                                get_reference_ipv6_network(tree, child_node),	/* get_child_func_t being either get_left_child_node_id() or get_right_child_node_id() */
 			                                ipv6_prefix_to_uint128_t_mask(get_tree_prefix_len(tree) + node_rank)
 			                               ),
 			                  &(result.in_addr.__ipv6_in6_addr)
