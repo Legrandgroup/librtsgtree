@@ -1009,7 +1009,7 @@ TEST(node_tests, test_get_bottom_interface_config) {
 		FAILF("get_bottom_interface_config() modified the input tree argument\n");
 	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
 		FAILF("get_bottom_interface_config() modified ip_type field\n");
-	if (strcmp(ip_addr_str, "fd00:0:0:8::") != 0)	/* This is the expected root node's bottom interface */
+	if (strcmp(ip_addr_str, "fd00:0:0:8::1") != 0)	/* This is the expected root node's bottom interface */
 		FAILF("get_bottom_interface_config() got wrong IP address: %s\n", ip_addr_str);
 	if (ip_addr_result.prefix != 64)	/* Should get /64 for root node's bottom interface netmask */
 		FAILF("get_bottom_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
@@ -1019,7 +1019,7 @@ TEST(node_tests, test_get_bottom_interface_config) {
 	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
 		FAILF("get_bottom_interface_config() modified ip_type field\n");
-	if (strcmp(ip_addr_str, "fd00:0:0:4::") != 0)	/* This is the expected root left child node's bottom interface */
+	if (strcmp(ip_addr_str, "fd00:0:0:4::1") != 0)	/* This is the expected root left child node's bottom interface */
 		FAILF("get_bottom_interface_config() got wrong IP address: %s\n", ip_addr_str);
 	if (ip_addr_result.prefix != 64)	/* Should get /64 for root node's bottom interface netmask */
 		FAILF("get_bottom_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
@@ -1029,7 +1029,7 @@ TEST(node_tests, test_get_bottom_interface_config) {
 	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
 		FAILF("get_bottom_interface_config() modified ip_type field\n");
-	if (strcmp(ip_addr_str, "fd00:0:0:c::") != 0)	/* This is the expected root right child node's bottom interface */
+	if (strcmp(ip_addr_str, "fd00:0:0:c::1") != 0)	/* This is the expected root right child node's bottom interface */
 		FAILF("get_bottom_interface_config() got wrong IP address: %s\n", ip_addr_str);
 	if (ip_addr_result.prefix != 64)	/* Should get /64 for root node's bottom interface netmask */
 		FAILF("get_bottom_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
@@ -1039,7 +1039,7 @@ TEST(node_tests, test_get_bottom_interface_config) {
 	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
 		FAILF("get_bottom_interface_config() modified ip_type field\n");
-	if (strcmp(ip_addr_str, "fd00:0:0:1::") != 0)	/* This is the expected tree's left-most leaf's bottom interface */
+	if (strcmp(ip_addr_str, "fd00:0:0:1::1") != 0)	/* This is the expected tree's left-most leaf's bottom interface */
 		FAILF("get_bottom_interface_config() got wrong IP address: %s\n", ip_addr_str);
 	if (ip_addr_result.prefix != 64)	/* Should get /64 for root node's bottom interface netmask */
 		FAILF("get_bottom_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
@@ -1049,7 +1049,7 @@ TEST(node_tests, test_get_bottom_interface_config) {
 	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
 		FAILF("get_bottom_interface_config() modified ip_type field\n");
-	if (strcmp(ip_addr_str, "fd00:0:0:f::") != 0)	/*This is the expected tree's right-most leaf's bottom interface */
+	if (strcmp(ip_addr_str, "fd00:0:0:f::1") != 0)	/*This is the expected tree's right-most leaf's bottom interface */
 		FAILF("get_bottom_interface_config() got wrong IP address: %s\n", ip_addr_str);
 	if (ip_addr_result.prefix != 64)	/* Should get /64 for root node's bottom interface netmask */
 		FAILF("get_bottom_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
@@ -1063,7 +1063,7 @@ TEST(node_tests, test_get_bottom_interface_config) {
 		FAILF("get_bottom_interface_config() modified the input tree argument\n");
 	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
 		FAILF("get_bottom_interface_config() modified ip_type field\n");
-	if (strcmp(ip_addr_str, "fd00::8:0:0") != 0)	/* This is the expected root node's bottom interface */
+	if (strcmp(ip_addr_str, "fd00::8:0:1") != 0)	/* This is the expected root node's bottom interface */
 		FAILF("get_bottom_interface_config() got wrong IP address: %s\n", ip_addr_str);
 	if (ip_addr_result.prefix != 96)	/* Should get /64 for root node's bottom interface netmask */
 		FAILF("get_bottom_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
@@ -1073,7 +1073,7 @@ TEST(node_tests, test_get_bottom_interface_config) {
 	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
 		FAILF("get_bottom_interface_config() modified ip_type field\n");
-	if (strcmp(ip_addr_str, "fd00::4:0:0") != 0)	/* This is the expected root left child node's bottom interface */
+	if (strcmp(ip_addr_str, "fd00::4:0:1") != 0)	/* This is the expected root left child node's bottom interface */
 		FAILF("get_bottom_interface_config() got wrong IP address: %s\n", ip_addr_str);
 	if (ip_addr_result.prefix != 96)	/* Should get /64 for root node's bottom interface netmask */
 		FAILF("get_bottom_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
@@ -1083,7 +1083,7 @@ TEST(node_tests, test_get_bottom_interface_config) {
 	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
 		FAILF("get_bottom_interface_config() modified ip_type field\n");
-	if (strcmp(ip_addr_str, "fd00::c:0:0") != 0)	/* This is the expected root right child node's bottom interface */
+	if (strcmp(ip_addr_str, "fd00::c:0:1") != 0)	/* This is the expected root right child node's bottom interface */
 		FAILF("get_bottom_interface_config() got wrong IP address: %s\n", ip_addr_str);
 	if (ip_addr_result.prefix != 96)	/* Should get /64 for root node's bottom interface netmask */
 		FAILF("get_bottom_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
@@ -1093,7 +1093,7 @@ TEST(node_tests, test_get_bottom_interface_config) {
 	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
 		FAILF("get_bottom_interface_config() modified ip_type field\n");
-	if (strcmp(ip_addr_str, "fd00::1:0:0") != 0)	/* This is the expected tree's left-most leaf's bottom interface */
+	if (strcmp(ip_addr_str, "fd00::1:0:1") != 0)	/* This is the expected tree's left-most leaf's bottom interface */
 		FAILF("get_bottom_interface_config() got wrong IP address: %s\n", ip_addr_str);
 	if (ip_addr_result.prefix != 96)	/* Should get /96 for root node's bottom interface netmask */
 		FAILF("get_bottom_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
@@ -1103,7 +1103,7 @@ TEST(node_tests, test_get_bottom_interface_config) {
 	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
 		FAILF("get_bottom_interface_config() modified ip_type field\n");
-	if (strcmp(ip_addr_str, "fd00::f:0:0") != 0)	/*This is the expected tree's right-most leaf's bottom interface */
+	if (strcmp(ip_addr_str, "fd00::f:0:1") != 0)	/*This is the expected tree's right-most leaf's bottom interface */
 		FAILF("get_bottom_interface_config() got wrong IP address: %s\n", ip_addr_str);
 	if (ip_addr_result.prefix != 96)	/* Should get /96 for root node's bottom interface netmask */
 		FAILF("get_bottom_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
