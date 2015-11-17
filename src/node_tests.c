@@ -712,20 +712,20 @@ TEST(node_tests, test_get_top_interface_config) {
 	self_ip_routing_tree_t tree;
 	if_ip_addr_t ip_addr_result;
 	char ip_addr_str[INET6_ADDRSTRLEN+1];
+	prefix_t current_hostA;
 
 #ifdef IPV6_SUPPORT
 	tree.ip_type = IPV6;
 	tree.Rmax = 4;
-	/* First perform test without any local network attached to nodes (hostA=0) */
-	tree.hostA = 0;
 #ifndef HAS_INT128
 	U128_SET_ZERO(tree.prefix);
 	tree.prefix.uint128_a8[0] = 0xfd;	/* Prefix is fd00::/124 */
 #else
 	tree.prefix = (uint128_t)0xfd << 120;	/* Prefix is fd00::/124 */
 #endif
-
-	/* First perform test without any local network attached to nodes (hostA=0) */
+	
+	tree.hostA = current_hostA = 0; /* First perform test without any local network attached to nodes (hostA=0) */
+	
 	test_node = get_root_node_id(&tree);	/* Will get 8 */
 	ip_addr_result = get_top_interface_config(&tree, test_node);
 	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
@@ -778,36 +778,37 @@ TEST(node_tests, test_get_top_interface_config) {
 	if (ip_addr_result.prefix != 128)	/* Should get /128 for root node's top interface netmask */
 		FAILF("get_top_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
 
-	/* Test with routable local networks (hostA!=0) */
-	tree.hostA = 64;	/* Each node has a /64 network attached */
+	/* Now, test with routable local networks (hostA!=0) */
+	for (current_hostA = 1; current_hostA < 128; current_hostA++) {	/* Perform the check for all hostA values between 0 and 127... we should get the same result */
+		tree.hostA = current_hostA;
 
-#warning Test for bottom if config IPv6 network with hostA!=0 is not implemented
-	test_node = get_root_node_id(&tree);	/* Will get 8 */
-	ip_addr_result = get_top_interface_config(&tree, test_node);
-	if (tree.ip_type != IPV6 || tree.Rmax != 4 || tree.hostA != 64)
-		FAILF("get_top_interface_config() modified the input tree argument\n");
-	if (ip_addr_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
-		FAILF("get_top_interface_config() should return no configuration\n");
-
-	test_node = get_left_child_node_id(&tree, get_root_node_id(&tree));	/* Will get 4 */
-	ip_addr_result = get_top_interface_config(&tree, test_node);
-	if (ip_addr_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
-		FAILF("get_top_interface_config() should return no configuration\n");
-
-	test_node = get_right_child_node_id(&tree, get_root_node_id(&tree));	/* Will get 12 */
-	ip_addr_result = get_top_interface_config(&tree, test_node);
-	if (ip_addr_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
-		FAILF("get_top_interface_config() should return no configuration\n");
-
-	test_node = uint8_t_to_uint128_t(1);	/* Take left-most leaf of tree (ID 1) */
-	ip_addr_result = get_top_interface_config(&tree, test_node);
-	if (ip_addr_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
-		FAILF("get_top_interface_config() should return no configuration\n");
-
-	test_node = uint8_t_to_uint128_t(15);	/* Take right-most leaf of tree (ID 15) */
-	ip_addr_result = get_top_interface_config(&tree, test_node);
-	if (ip_addr_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
-		FAILF("get_top_interface_config() should return no configuration\n");
+		test_node = get_root_node_id(&tree);	/* Will get 8 */
+		ip_addr_result = get_top_interface_config(&tree, test_node);
+		if (tree.ip_type != IPV6 || tree.Rmax != 4 || tree.hostA != current_hostA)
+			FAILF("get_top_interface_config() modified the input tree argument\n");
+		if (ip_addr_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
+			FAILF("get_top_interface_config() should return no configuration\n");
+	
+		test_node = get_left_child_node_id(&tree, get_root_node_id(&tree));	/* Will get 4 */
+		ip_addr_result = get_top_interface_config(&tree, test_node);
+		if (ip_addr_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
+			FAILF("get_top_interface_config() should return no configuration\n");
+	
+		test_node = get_right_child_node_id(&tree, get_root_node_id(&tree));	/* Will get 12 */
+		ip_addr_result = get_top_interface_config(&tree, test_node);
+		if (ip_addr_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
+			FAILF("get_top_interface_config() should return no configuration\n");
+	
+		test_node = uint8_t_to_uint128_t(1);	/* Take left-most leaf of tree (ID 1) */
+		ip_addr_result = get_top_interface_config(&tree, test_node);
+		if (ip_addr_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
+			FAILF("get_top_interface_config() should return no configuration\n");
+	
+		test_node = uint8_t_to_uint128_t(15);	/* Take right-most leaf of tree (ID 15) */
+		ip_addr_result = get_top_interface_config(&tree, test_node);
+		if (ip_addr_result.ip_type != NONE)	/* on IPv6 trees with hostA=0, there is no bottom route */
+			FAILF("get_top_interface_config() should return no configuration\n");
+	}
 	
 #endif	// IPV6_SUPPORT
 
