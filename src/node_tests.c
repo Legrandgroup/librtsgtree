@@ -725,6 +725,7 @@ TEST(node_tests, test_get_top_interface_config) {
 	tree.prefix = (uint128_t)0xfd << 120;	/* Prefix is fd00::/124 */
 #endif
 
+	/* First perform test without any local network attached to nodes (hostA=0) */
 	test_node = get_root_node_id(&tree);	/* Will get 8 */
 	ip_addr_result = get_top_interface_config(&tree, test_node);
 
@@ -800,6 +801,7 @@ TEST(node_tests, test_get_top_interface_config) {
 	/* Test with routable local networks (hostA!=0) */
 	tree.hostA = 64;	/* Each node has a /64 network attached */
 
+#warning Test for bottom if config IPv6 network with hostA!=0 is not implemented
 	test_node = get_root_node_id(&tree);	/* Will get 8 */
 	ip_addr_result = get_top_interface_config(&tree, test_node);
 	if (tree.ip_type != IPV6 || tree.Rmax != 4 || tree.hostA != 64)
@@ -977,6 +979,7 @@ TEST(node_tests, test_get_bottom_interface_config) {
 #ifdef IPV6_SUPPORT
 	tree.ip_type = IPV6;
 	tree.Rmax = 4;
+	/* First perform test without any local network attached to nodes (hostA=0) */
 	tree.hostA = 0;
 #ifndef HAS_INT128
 	U128_SET_ZERO(tree.prefix);
@@ -985,18 +988,39 @@ TEST(node_tests, test_get_bottom_interface_config) {
 	tree.prefix = (uint128_t)0xfd << 120;   /* Prefix is fd00::/124 */
 #endif
 
+	/* First perform test without any local network attached to nodes (hostA=0) */
 	test_node = get_root_node_id(&tree);	/* Will get 8 */
 	ip_addr_result = get_bottom_interface_config(&tree, test_node);
-
-	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
-
 	if (tree.ip_type != IPV6 || tree.Rmax != 4 || tree.hostA != 0)
 		FAILF("get_bottom_interface_config() modified the input tree argument\n");
-	if (strcmp(ip_addr_str, "fd00::1") != 0)	/* IP type should be set to unspecified, IPv6 trees do require setting addresses to interfaces to children */
-		FAILF("get_bottom_interface_config() modified ip_type field\n");
-	
-	/* FIXME: test bottom interface config for hostA!=0 */
-#warning Test for get_bottom_interface_config() on IPv6 tree with hostA!=0 is not implemented yet
+	if (ip_addr_result.ip_type != NONE)	/* IP type should be set to none, IPv6 trees with hostA=0 have no bottom interface */
+		FAILF("get_bottom_interface_config() should return no config\n");
+
+	test_node = get_left_child_node_id(&tree, get_root_node_id(&tree));	/* Will get 4 */
+	ip_addr_result = get_bottom_interface_config(&tree, test_node);
+	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
+	if (ip_addr_result.ip_type != NONE)	/* IP type should be set to none, IPv6 trees with hostA=0 have no bottom interface */
+		FAILF("get_bottom_interface_config() should return no config\n");
+
+	test_node = get_right_child_node_id(&tree, get_root_node_id(&tree));	/* Will get 12 */
+	ip_addr_result = get_bottom_interface_config(&tree, test_node);
+	if (ip_addr_result.ip_type != NONE)	/* IP type should be set to none, IPv6 trees with hostA=0 have no bottom interface */
+		FAILF("get_bottom_interface_config() should return no config\n");
+
+	test_node = uint8_t_to_uint128_t(1);	/* Take left-most leaf of tree (ID 1) */
+	ip_addr_result = get_bottom_interface_config(&tree, test_node);
+	if (ip_addr_result.ip_type != NONE)	/* IP type should be set to none, IPv6 trees with hostA=0 have no bottom interface */
+		FAILF("get_bottom_interface_config() should return no config\n");
+
+	test_node = uint8_t_to_uint128_t(15);	/* Take right-most leaf of tree (ID 15) */
+	ip_addr_result = get_bottom_interface_config(&tree, test_node);
+	if (ip_addr_result.ip_type != NONE)	/* IP type should be set to none, IPv6 trees with hostA=0 have no bottom interface */
+		FAILF("get_bottom_interface_config() should return no config\n");
+
+	/* Test with routable local networks (hostA!=0) */
+	tree.hostA = 64;	/* Each node has a /64 network attached */
+
+#warning Test for bottom if config IPv6 network with hostA!=0 is not implemented
 	
 #endif	// IPV6_SUPPORT
 
