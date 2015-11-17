@@ -263,6 +263,19 @@ if_ip_addr_t get_reference_interface_config(const self_ip_routing_tree_t* tree, 
 			assert(0);	/* Force fail */
 }
 
+/**
+ * \brief Private function returning a ip_route_t value meaning "no valid route"
+ *
+ * \return "no valid route" value, with ip_type = NONE
+ */
+inline ip_route_t no_interface_route() {
+	ip_route_t result;
+
+	memset(&result, 0, sizeof(result));	/* Fill IP address with 0 */
+	result.ip_type = NONE;
+	return result;
+}
+
 ip_route_t get_top_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node) {
 	ip_route_t result;
 	rank_t     node_rank;
@@ -307,19 +320,6 @@ ip_route_t get_top_interface_route(const self_ip_routing_tree_t* tree, const nod
  * Pointer to either get_left_child_node_id() or get_right_child_node_id()
  */
 typedef ip_route_t (*get_child_func_t)(const self_ip_routing_tree_t* tree, const node_id_t node);
-
-/**
- * \brief Private function returning a ip_route_t value meaning "no valid route"
- *
- * \return "no valid route" value, with ip_type = NONE
- */
-inline ip_route_t no_interface_route() {
-	ip_route_t result;
-
-	memset(&result, 0, sizeof(result));	/* Fill IP address with 0 */
-	result.ip_type = NONE;
-	return result;
-}
 
 /**
  * \brief Private function that allows to implement get_left_interface_route() and get_right_interface_route() with a unique source code
