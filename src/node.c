@@ -427,9 +427,8 @@ ip_route_t get_child_interface_route(const self_ip_routing_tree_t* tree, const n
 			                               ),
 			                  &(result.in_addr.__ipv6_in6_addr)
 			                 );
-			assert(get_tree_prefix_len(tree) > tree->hostA);
-			assert(get_tree_prefix_len(tree) - tree->hostA + node_rank <= 128);
-			result.prefix = get_tree_prefix_len(tree) - tree->hostA + node_rank;
+			assert(128 - get_tree_prefix_len(tree) >= node_rank);   /* Make sure +node_rank will not overflow above 128 bits prefix */
+			result.prefix = get_tree_prefix_len(tree) + node_rank;
 			return result;
 		}
 	}
