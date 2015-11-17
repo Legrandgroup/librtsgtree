@@ -516,7 +516,10 @@ ip_route_t get_bottom_interface_route(const self_ip_routing_tree_t* tree, const 
 
 	result.ip_type = tree->ip_type;
 	if (tree->ip_type == IPV6 && tree->hostA != 0) {
-		result = get_reference_interface_config(tree, node);	/* We add a route to the parent node's reference interface */
+		/* We obviously have the route to the local network
+		 * Note that usually OSes will create this route for locally connected subnets automatically)...
+		 * so returning this specific route should not be necessary in most situations... actually, caller should not have to call get_bottom_interface_route() at all */
+		uint128_t_to_ipv6(get_reference_ipv6_network(tree, (uint128_t)node), &(result.in_addr.__ipv6_in6_addr));
 		result.prefix = 128 - tree->hostA;	/* But we only create a route for this host */
 		return result;
 	}

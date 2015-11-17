@@ -361,7 +361,8 @@ ip_route_t get_right_interface_route(const self_ip_routing_tree_t* tree, const n
  * Warning: this function will fail if the tree is not IPv6 and if tree->hostA == 0
  * If it is NONE, it means there is no expected route for this interface
  * If is is not NONE, it will match \p tree .ip_type, the returned ip_route_t will contain the range and prefix for the route via this interface.
- * It is up to the caller to determine which next hop should be used on this interface to reach the resulting subnet
+ * Note: Usually OSes will automatically create routes for locally connected subnets automatically...
+ * So what is returned by this fucntion should not be necessary in most situations... actually, caller should not have to call get_bottom_interface_route() at all
  *
  * \param tree The tree inside which we perform the calculation
  * \param node The node ID of which we want to calculate the route
