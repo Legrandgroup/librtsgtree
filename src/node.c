@@ -150,8 +150,13 @@ if_ip_addr_t get_top_interface_config(const self_ip_routing_tree_t* tree, const 
 	result.ip_type = tree->ip_type;
 #ifdef IPV6_SUPPORT
 	if (tree->ip_type == IPV6) {
-		uint128_t_to_ipv6(get_reference_interface_ipv6_addr(tree, (uint128_t)node), &(result.in_addr.__ipv6_in6_addr));
-		result.prefix = get_hosts_prefix_len(tree);
+		if (tree->hostA == 0) {
+			uint128_t_to_ipv6(get_reference_interface_ipv6_addr(tree, (uint128_t)node), &(result.in_addr.__ipv6_in6_addr));
+			result.prefix = get_hosts_prefix_len(tree);
+		}
+		else {	/* hostA != 0, there should be no top interface config */
+			return no_interface_config();	/* Top interface has no IP address in IPv6 trees with hostA!=0 (reference interface is bottom interface in that case) */
+		}
 	}
 	else
 #endif
