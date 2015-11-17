@@ -12,9 +12,13 @@ define HELP
  libsgtree project makefile help
  ------------------------------------
 
- In order to test with cpputest, run the following command:
+ In order to perform unit tests with cpputest, run the following command:
  CFLAGS="-DUSE_CPPUTEST `pkg-config --cflags cpputest`" LIBS="`pkg-config --libs cpputest`" CPPUTEST_STATIC_LIB=/path/to/libCppUTest.a make CC=g++ <target>
- Please use `make <target>' where <target> is one of:
+ 
+ In ordert to compile on native 128-bit platforms, prepend make with the following environment variables (eg for little endian):
+ CFLAGS="-DHAS_INT128 -DIS_LITTLE_ENDIAN"
+ 
+ Usage: `make <target>' where <target> is one of:
 
 
   --- build commands
