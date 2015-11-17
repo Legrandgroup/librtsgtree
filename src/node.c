@@ -346,7 +346,12 @@ ip_route_t get_top_interface_route(const self_ip_routing_tree_t* tree, const nod
 			return no_interface_route();
 		}
 		else {
-			result = get_reference_interface_config(tree, get_parent_node_id(tree, node));	/* We add a route to the parent node's reference interface */
+			uint128_t_to_ipv6(
+			                  get_reference_ipv6_network(tree,
+			                                             get_parent_node_id(tree, (uint128_t)node)
+			                                            ),
+			                  &(result.in_addr.__ipv6_in6_addr)
+			                 );	/* We add a route to the parent node's reference network or interface */
 			result.prefix = 128 - tree->hostA;	/* But we only create a route for this host */
 		}
 	}
