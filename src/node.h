@@ -88,18 +88,23 @@ static inline node_id_t Rmax_to_max_node_id(const rank_t Rmax) {
  * \param[out] output A struct in6_addr for which s6_addr will be filled-in based on \p input (note: other fields are unchanged)
 **/
 static inline void uint128_t_to_ipv6(const uint128_t input, struct in6_addr* output) {
-#ifndef HAS_INT128
-	assert(sizeof(output->s6_addr) == sizeof(input.uint128_a8));
+#ifdef HAS_INT128
+	uint128_t inputn;	/* Local storage for the network order version of input */
+#endif
 
+	assert(sizeof(output->s6_addr) == sizeof(
+#ifndef HAS_INT128
+	                                         input.uint128_a8
+#else
+											 inputn
+#endif	// HAS_INT128
+	                                        ));
+
+#ifndef HAS_INT128
 	/* With uint128_t defined in uint128.h, we are already in network order... we can perform a direct copy */
 	memcpy((void *)(output->s6_addr), (void *)(input.uint128_a8), sizeof(input.uint128_a8));
 #else
-	uint128_t inputn;	/* Network order version of input */
-
-	assert(sizeof(output->s6_addr) == sizeof(inputn));
-
 	inputn = uint128_t_hton(input);	/* With native int128, we should first convert from platform endianness to network order before copying */
-
 	memcpy((void *)(output->s6_addr), (void *)(&inputn), sizeof(inputn));
 #endif
 }
