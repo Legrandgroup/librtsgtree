@@ -237,6 +237,8 @@ node_id_t get_right_child_node_id(const self_ip_routing_tree_t* tree, const node
  * \brief Get the IP configuration for the top network interface of a node
  *
  * Note: tree.ip_type, tree.Rmax, tree.hostA and tree.prefix must be provisioned correctly in argument \p tree to get a correct result
+ * Warning: You have to check that the returned ip_type is not NONE.
+ * If it is NONE, it means there is no expected IP configuration for this interface
  *
  * \param tree The tree inside which we perform the calculation
  * \param node The node ID of which we want to calculate the network interface characteristics
@@ -250,12 +252,14 @@ if_ip_addr_t get_top_interface_config(const self_ip_routing_tree_t* tree, const 
  * \brief Get the IP configuration for the bottom network interface of a node
  *
  * Note: tree.ip_type, tree.Rmax, tree.hostA and tree.prefix must be provisioned correctly in argument \p tree to get a correct result
- * Warning: this function will fail if the tree is not IPv6 and if tree->hostA == 0
+ * Warning: This function will fail if the tree is not IPv6
+ * Warning: You have to check that the returned ip_type is not NONE.
+ * If it is NONE, it means there is no expected IP configuration for this interface
  *
  * \param tree The tree inside which we perform the calculation
  * \param node The node ID of which we want to calculate the network interface characteristics
  *
- * \return The IP addressing of the bottom network interface for \p node (it might be ::/128 (unspecified address) if no bottom interface addressing is expected on the node
+ * \return The IP addressing of the bottom network interface for \p node
 **/
 if_ip_addr_t get_bottom_interface_config(const self_ip_routing_tree_t* tree, const node_id_t node);
 #endif
@@ -270,7 +274,7 @@ if_ip_addr_t get_bottom_interface_config(const self_ip_routing_tree_t* tree, con
  * \param tree The tree inside which we perform the calculation
  * \param node The node ID of which we want to calculate the network interface characteristics
  *
- * \return The IP addressing of the left network interface for \p node
+ * \return The IP addressing of the left network interface for \p node (it might be ::/128 (unspecified address) if no left interface addressing is expected on the node)
 **/
 if_ip_addr_t get_left_interface_config(const self_ip_routing_tree_t* tree, const node_id_t node);
 
