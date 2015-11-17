@@ -171,11 +171,10 @@ if_ip_addr_t get_bottom_interface_config(const self_ip_routing_tree_t* tree, con
 		uint128_t_to_ipv6(get_reference_interface_ipv6_addr(tree, (uint128_t)node), &(result.in_addr.__ipv6_in6_addr));
 		result.prefix = get_hosts_prefix_len(tree);
 	}
-	else {	/* hostA == 0, there should be no bottom interface */
-		result.ip_type = tree->ip_type;
-		/* Set IPv6 address to ::/128 (unspecified) */
+	else {	/* hostA == 0, there should be no bottom interface config */
 		memset(&(result.in_addr.__ipv6_in6_addr), sizeof(result.in_addr.__ipv6_in6_addr), 0);
 		result.prefix = 128;
+		result.ip_type = NONE;	/* Bottom interface has no IP address in IPv6 trees with hostA==0 (reference interface is top interface in that case) */
 	}
 
 	return result;
