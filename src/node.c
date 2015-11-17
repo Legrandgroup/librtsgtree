@@ -127,6 +127,19 @@ uint128_t get_reference_interface_ipv6_addr(const self_ip_routing_tree_t* tree, 
 }
 #endif	// IPV6_SUPPORT
 
+/**
+ * \brief Private function returning a if_ip_addr_t value meaning "unspecified IP address"
+ *
+ * \return "no valid route" value, with ip_type = NONE
+ */
+inline ip_route_t no_interface_config() {
+	if_ip_addr_t result;
+
+	memset(&result, 0, sizeof(result));	/* Fill IP address with 0 */
+	result.ip_type = NONE;
+	return result;
+}
+
 if_ip_addr_t get_top_interface_config(const self_ip_routing_tree_t* tree, const node_id_t node) {
 	if_ip_addr_t result;
 
