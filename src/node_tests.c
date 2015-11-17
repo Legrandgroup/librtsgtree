@@ -733,7 +733,7 @@ TEST(node_tests, test_get_top_interface_config) {
 		FAILF("get_top_interface_config() modified the input tree argument\n");
 	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
 		FAILF("get_top_interface_config() modified ip_type field\n");
-	if (strcmp(ip_addr_str, "fd00::8") != 0)	/* Should get fd00::8 for root node's top interface */
+	if (strcmp(ip_addr_str, "fd00::8") != 0)	/* This is the expected root node's top interface */
 		FAILF("get_top_interface_config() got wrong IP address: %s\n", ip_addr_str);
 	if (ip_addr_result.prefix != 128)	/* Should get /128 for root node's top interface netmask */
 		FAILF("get_top_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
@@ -743,7 +743,7 @@ TEST(node_tests, test_get_top_interface_config) {
 	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
 		FAILF("get_top_interface_config() modified ip_type field\n");
-	if (strcmp(ip_addr_str, "fd00::4") != 0)	/* Should get fd00::4 for root left child node's top interface */
+	if (strcmp(ip_addr_str, "fd00::4") != 0)	/* This is the expected root left child node's top interface */
 		FAILF("get_top_interface_config() got wrong IP address: %s\n", ip_addr_str);
 	if (ip_addr_result.prefix != 128)	/* Should get /128 for root node's top interface netmask */
 		FAILF("get_top_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
@@ -753,7 +753,7 @@ TEST(node_tests, test_get_top_interface_config) {
 	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
 		FAILF("get_top_interface_config() modified ip_type field\n");
-	if (strcmp(ip_addr_str, "fd00::c") != 0)	/* Should get fd00::c for root right child node's top interface */
+	if (strcmp(ip_addr_str, "fd00::c") != 0)	/* This is the expected root right child node's top interface */
 		FAILF("get_top_interface_config() got wrong IP address: %s\n", ip_addr_str);
 	if (ip_addr_result.prefix != 128)	/* Should get /128 for root node's top interface netmask */
 		FAILF("get_top_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
@@ -763,7 +763,7 @@ TEST(node_tests, test_get_top_interface_config) {
 	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
 		FAILF("get_top_interface_config() modified ip_type field\n");
-	if (strcmp(ip_addr_str, "fd00::1") != 0)	/* Should get fd00::1 for tree's left-most leaf's top interface */
+	if (strcmp(ip_addr_str, "fd00::1") != 0)	/* This is the expected tree's left-most leaf's top interface */
 		FAILF("get_top_interface_config() got wrong IP address: %s\n", ip_addr_str);
 	if (ip_addr_result.prefix != 128)	/* Should get /128 for root node's top interface netmask */
 		FAILF("get_top_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
@@ -773,7 +773,7 @@ TEST(node_tests, test_get_top_interface_config) {
 	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
 		FAILF("get_top_interface_config() modified ip_type field\n");
-	if (strcmp(ip_addr_str, "fd00::f") != 0)	/* Should get fd00::f for tree's right-most leaf's top interface */
+	if (strcmp(ip_addr_str, "fd00::f") != 0)	/* This is the expected tree's right-most leaf's top interface */
 		FAILF("get_top_interface_config() got wrong IP address: %s\n", ip_addr_str);
 	if (ip_addr_result.prefix != 128)	/* Should get /128 for root node's top interface netmask */
 		FAILF("get_top_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
