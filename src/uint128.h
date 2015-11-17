@@ -203,6 +203,9 @@ static inline uint128_t uint128_t_max() {
  * \param power The power of 2 to use
  * \return 2 ^ \p power as a 128-bit wide unsigned int
 **/
+#ifdef HAS_INT128
+static
+#endif
 uint128_t power2_to_uint128_t(uint8_t power);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
@@ -219,6 +222,9 @@ static inline uint128_t power2_to_uint128_t(uint8_t power) {
  *
  * \return The resulting uint128_t once bit-shifted
 **/
+#ifdef HAS_INT128
+static
+#endif
 uint128_t uint128_t_right_shift(const uint128_t input);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
@@ -235,6 +241,9 @@ static inline uint128_t uint128_t_right_shift(const uint128_t input) {
  *
  * \return The resulting uint128_t once bit-shifted
 **/
+#ifdef HAS_INT128
+static
+#endif
 uint128_t uint128_t_right_shift_n(const uint128_t input, uint8_t n);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
@@ -254,6 +263,9 @@ static inline uint128_t uint128_t_right_shift_n(const uint128_t input, uint8_t n
  *
  * \return The resulting uint128_t once bit-shifted
 **/
+#ifdef HAS_INT128
+static
+#endif
 uint128_t uint128_t_left_shift(const uint128_t input);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
@@ -270,6 +282,9 @@ static inline uint128_t uint128_t_left_shift(const uint128_t input) {
  *
  * \return The resulting uint128_t once bit-shifted
 **/
+#ifdef HAS_INT128
+static
+#endif
 uint128_t uint128_t_left_shift_n(const uint128_t input, uint8_t n);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
@@ -289,6 +304,9 @@ static inline uint128_t uint128_t_left_shift_n(const uint128_t input, uint8_t n)
  *
  * \return The result of \p input + 1 in a uint128_t
 **/
+#ifdef HAS_INT128
+static
+#endif
 uint128_t uint128_t_inc(const uint128_t input);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
@@ -305,6 +323,9 @@ static inline uint128_t uint128_t_inc(const uint128_t input) {
  *
  * \return The result of \p input - 1 in a uint128_t
 **/
+#ifdef HAS_INT128
+static
+#endif
 uint128_t uint128_t_dec(const uint128_t input);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
@@ -324,6 +345,9 @@ static inline uint128_t uint128_t_dec(const uint128_t input) {
  *
  * \return The result of (from - subtraction) as an uint128_t
 **/
+#ifdef HAS_INT128
+static
+#endif
 uint128_t uint128_t_sub(const uint128_t from, uint128_t subtraction);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
@@ -343,6 +367,9 @@ static inline uint128_t uint128_t_sub(const uint128_t from, uint128_t subtractio
  *
  * \return The result of (first + second) as an uint128_t
 **/
+#ifdef HAS_INT128
+static
+#endif
 uint128_t uint128_t_add(const uint128_t first, uint128_t second);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
@@ -360,6 +387,9 @@ static inline uint128_t uint128_t_add(const uint128_t first, uint128_t second) {
  *
  * \return The result of (first | second) as an uint128_t
 **/
+#ifdef HAS_INT128
+static
+#endif
 uint128_t uint128_t_or(const uint128_t first, uint128_t second);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
@@ -377,6 +407,9 @@ static inline uint128_t uint128_t_or(const uint128_t first, uint128_t second) {
  *
  * \return The result of (first & second) as an uint128_t
 **/
+#ifdef HAS_INT128
+static
+#endif
 uint128_t uint128_t_and(const uint128_t first, uint128_t second);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
@@ -393,6 +426,9 @@ static inline uint128_t uint128_t_and(const uint128_t first, uint128_t second) {
  *
  * \return the resulting uint128_t
 **/
+#ifdef HAS_INT128
+static
+#endif
 uint128_t uint8_t_to_uint128_t(uint8_t from);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
@@ -409,6 +445,9 @@ static inline uint128_t uint8_t_to_uint128_t(uint8_t from) {
  *
  * \return the resulting uint128_t
 **/
+#ifdef HAS_INT128
+static
+#endif
 uint128_t uint16_t_to_uint128_t(uint16_t from);
 
 // For native int128, we inline this function so it is defined here and not in the .c file
