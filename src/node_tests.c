@@ -961,7 +961,6 @@ TEST(node_tests, test_get_bottom_interface_config) {
 	tree.ip_type = IPV6;
 	tree.Rmax = 4;
 	/* First perform test without any local network attached to nodes (hostA=0) */
-	tree.hostA = 0;
 #ifndef HAS_INT128
 	U128_SET_ZERO(tree.prefix);
 	tree.prefix.uint128_a8[0] = 0xfd;	/* Prefix is fd00::/124 */
@@ -969,9 +968,11 @@ TEST(node_tests, test_get_bottom_interface_config) {
 	tree.prefix = (uint128_t)0xfd << 120;   /* Prefix is fd00::/124 */
 #endif
 
-	/* First perform test without any local network attached to nodes (hostA=0) */
+	tree.hostA = 0;	/* First perform test without any local network attached to nodes (hostA=0) */
+	
 	test_node = get_root_node_id(&tree);	/* Will get 8 */
 	ip_addr_result = get_bottom_interface_config(&tree, test_node);
+	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
 	if (tree.ip_type != IPV6 || tree.Rmax != 4 || tree.hostA != 0)
 		FAILF("get_bottom_interface_config() modified the input tree argument\n");
 	if (ip_addr_result.ip_type != NONE)	/* IP type should be set to none, IPv6 trees with hostA=0 have no bottom interface */
@@ -1000,9 +1001,58 @@ TEST(node_tests, test_get_bottom_interface_config) {
 
 	/* Test with routable local networks (hostA!=0) */
 	tree.hostA = 64;	/* Each node has a /64 network attached */
-
-#warning Test for bottom if config IPv6 network with hostA!=0 is not implemented
 	
+	test_node = get_root_node_id(&tree);	/* Will get 8 */
+	ip_addr_result = get_bottom_interface_config(&tree, test_node);
+	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
+	if (tree.ip_type != IPV6 || tree.Rmax != 4 || tree.hostA != 64)
+		FAILF("get_bottom_interface_config() modified the input tree argument\n");
+	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
+		FAILF("get_bottom_interface_config() modified ip_type field\n");
+	if (strcmp(ip_addr_str, "fd00:0:0:8::") != 0)	/* This is the expected root node's bottom interface */
+		FAILF("get_bottom_interface_config() got wrong IP address: %s\n", ip_addr_str);
+	if (ip_addr_result.prefix != 64)	/* Should get /64 for root node's bottom interface netmask */
+		FAILF("get_bottom_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
+
+	test_node = get_left_child_node_id(&tree, get_root_node_id(&tree));	/* Will get 4 */
+	ip_addr_result = get_bottom_interface_config(&tree, test_node);
+	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
+	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
+		FAILF("get_bottom_interface_config() modified ip_type field\n");
+	if (strcmp(ip_addr_str, "fd00:0:0:4::") != 0)	/* This is the expected root left child node's bottom interface */
+		FAILF("get_bottom_interface_config() got wrong IP address: %s\n", ip_addr_str);
+	if (ip_addr_result.prefix != 64)	/* Should get /64 for root node's bottom interface netmask */
+		FAILF("get_bottom_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
+	
+	test_node = get_right_child_node_id(&tree, get_root_node_id(&tree));	/* Will get 12 */
+	ip_addr_result = get_bottom_interface_config(&tree, test_node);
+	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
+	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
+		FAILF("get_bottom_interface_config() modified ip_type field\n");
+	if (strcmp(ip_addr_str, "fd00:0:0:c::") != 0)	/* This is the expected root right child node's bottom interface */
+		FAILF("get_bottom_interface_config() got wrong IP address: %s\n", ip_addr_str);
+	if (ip_addr_result.prefix != 64)	/* Should get /64 for root node's bottom interface netmask */
+		FAILF("get_bottom_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
+
+	test_node = uint8_t_to_uint128_t(1);	/* Take left-most leaf of tree (ID 1) */
+	ip_addr_result = get_bottom_interface_config(&tree, test_node);
+	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
+	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
+		FAILF("get_bottom_interface_config() modified ip_type field\n");
+	if (strcmp(ip_addr_str, "fd00:0:0:1::") != 0)	/* This is the expected tree's left-most leaf's bottom interface */
+		FAILF("get_bottom_interface_config() got wrong IP address: %s\n", ip_addr_str);
+	if (ip_addr_result.prefix != 64)	/* Should get /64 for root node's bottom interface netmask */
+		FAILF("get_bottom_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
+
+	test_node = uint8_t_to_uint128_t(15);	/* Take right-most leaf of tree (ID 15) */
+	ip_addr_result = get_bottom_interface_config(&tree, test_node);
+	inet_ntop(AF_INET6, &(ip_addr_result.in_addr.__ipv6_in6_addr), ip_addr_str, INET6_ADDRSTRLEN);
+	if (ip_addr_result.ip_type != IPV6)	/* ip_type should have been propagated as is to result */
+		FAILF("get_bottom_interface_config() modified ip_type field\n");
+	if (strcmp(ip_addr_str, "fd00:0:0:f::") != 0)	/*This is the expected tree's right-most leaf's bottom interface */
+		FAILF("get_bottom_interface_config() got wrong IP address: %s\n", ip_addr_str);
+	if (ip_addr_result.prefix != 64)	/* Should get /64 for root node's bottom interface netmask */
+		FAILF("get_bottom_interface_config() got wrong netmask: %d\n", ip_addr_result.prefix);
 #endif	// IPV6_SUPPORT
 
 #ifdef IPV4_SUPPORT
