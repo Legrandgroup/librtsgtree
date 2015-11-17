@@ -131,6 +131,8 @@ uint128_t get_reference_ipv6_network(const self_ip_routing_tree_t* tree, const n
 	uint128_t result;
 
 	assert(tree);
+	assert(tree->ip_type == IPV6);
+
 	result = uint128_t_left_shift_n((uint128_t)node, tree->hostA);
 	return uint128_t_or(result,
 	                    uint128_t_and(tree->prefix, ipv6_prefix_to_uint128_t_mask(get_hosts_prefix_len(tree)))
@@ -151,10 +153,18 @@ uint128_t get_reference_interface_ipv6_addr(const self_ip_routing_tree_t* tree, 
 	uint128_t result;
 
 	assert(tree);
-	/* Set (using or) the host part to 1 on the network IPv6 address. Indeed, reference IPv6 address is the first host of the reference network */
-	return uint128_t_or(get_reference_ipv6_network(tree, node),
-	                    power2_to_uint128_t(0)	/* This is uint128_t(1) */
-	                   );
+	assert(tree->ip_type == IPV6);
+
+	if (tree->hostA == 0) {
+		return get_reference_ipv6_network(tree, node);
+	}
+	else {
+		assert(tree->hostA >= 2);	/* IPv6 networks with local networks attached to nodes need at least 2 bits for host numbering */
+		/* Set (using or) the host part to 1 on the network IPv6 address. Indeed, reference IPv6 address is the first host of the reference network */
+		return uint128_t_or(get_reference_ipv6_network(tree, node),
+		                    power2_to_uint128_t(0)	/* This is uint128_t(1) */
+		                   );
+	}
 }
 #endif	// IPV6_SUPPORT
 
