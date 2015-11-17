@@ -152,7 +152,7 @@ static inline prefix_t get_tree_ip_addr_bit_sz(const self_ip_routing_tree_t* tre
  *
  * \param tree The tree to work on
  *
- * \result The prefix length (between 128 or 32 (tree depth is 0) and 0
+ * \result The prefix length (between the IP address max size (128 for IPv6, or 32 for IPv4) if the tree depth is 0, and 0 if the tree depth is maximum)
  */
 prefix_t get_tree_prefix_len(const self_ip_routing_tree_t* tree);
 
