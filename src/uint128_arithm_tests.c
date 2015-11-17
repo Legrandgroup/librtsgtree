@@ -1617,7 +1617,7 @@ TEST(uint128_tests, test_uint128_t_hton) {
 #ifndef HAS_INT128
 	uint128_repr_ptr = test_u128.uint128_a8;
 #else
-	uint128_repr_ptr = &test_u128;
+	uint128_repr_ptr = (void*)&test_u128;
 #endif
 	if ((uint128_repr_ptr[0] == 0xf0) &&
 	    (uint128_repr_ptr[1] = 0x1e) &&
