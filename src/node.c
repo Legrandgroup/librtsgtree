@@ -118,26 +118,6 @@ node_id_t get_right_child_node_id(const self_ip_routing_tree_t* tree, const node
 
 #ifdef IPV6_SUPPORT
 /**
- * \brief Get the reference IPv6 address and netmask for a specific \p node (it is the IPv6 address and prefix used to reach this node in the tree)
- *
- * Note: tree.ip_type, tree.Rmax, tree.hostA and tree.prefix must be provisioned correctly in argument \p tree to get a correct result
- *
- * \param tree The tree inside which we perform the calculation
- * \param node The node ID of which we want to calculate the network interface characteristics
- *
- * \return The IPv6 addressing of the reference network interface for \p node
-**/
-uint128_t get_reference_interface_ipv6_addr(const self_ip_routing_tree_t* tree, const node_id_t node) {
-	uint128_t result;
-
-	assert(tree);
-	result = uint128_t_left_shift_n((uint128_t)node, tree->hostA);
-	result = uint128_t_or(result,
-	                      uint128_t_and(tree->prefix, ipv6_prefix_to_uint128_t_mask(get_hosts_prefix_len(tree))));
-	return result;
-}
-
-/**
  * \brief Get the locally-attached IPv6 network and netmask for a specific \p node (it is the IPv6 address and prefix used to reach nodes on the local LAN of this node in the tree)
  *
  * Note: tree.ip_type, tree.Rmax, tree.hostA and tree.prefix must be provisioned correctly in argument \p tree to get a correct result
@@ -153,7 +133,28 @@ uint128_t get_reference_ipv6_network(const self_ip_routing_tree_t* tree, const n
 	assert(tree);
 	result = uint128_t_left_shift_n((uint128_t)node, tree->hostA);
 	return uint128_t_or(result,
-	                   uint128_t_and(tree->prefix, ipv6_prefix_to_uint128_t_mask(get_hosts_prefix_len(tree))));
+	                    uint128_t_and(tree->prefix, ipv6_prefix_to_uint128_t_mask(get_hosts_prefix_len(tree)))
+	                   );
+}
+
+/**
+ * \brief Get the reference IPv6 address and netmask for a specific \p node (it is the IPv6 address and prefix used to reach this node in the tree)
+ *
+ * Note: tree.ip_type, tree.Rmax, tree.hostA and tree.prefix must be provisioned correctly in argument \p tree to get a correct result
+ *
+ * \param tree The tree inside which we perform the calculation
+ * \param node The node ID of which we want to calculate the network interface characteristics
+ *
+ * \return The IPv6 addressing of the reference network interface for \p node
+**/
+uint128_t get_reference_interface_ipv6_addr(const self_ip_routing_tree_t* tree, const node_id_t node) {
+	uint128_t result;
+
+	assert(tree);
+	/* Set (using or) the host part to 1 on the network IPv6 address. Indeed, reference IPv6 address is the first host of the reference network */
+	return uint128_t_or(get_reference_ipv6_network(tree, node),
+	                    power2_to_uint128_t(0)	/* This is uint128_t(1) */
+	                   );
 }
 #endif	// IPV6_SUPPORT
 
