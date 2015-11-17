@@ -191,7 +191,7 @@ if_ip_addr_t get_left_interface_config(const self_ip_routing_tree_t* tree, const
 	result.ip_type = tree->ip_type;
 #ifdef IPV6_SUPPORT
 	if (tree->ip_type == IPV6) {
-		uint128_t_to_ipv6(uint128_t_zero(), &(result.in_addr.__ipv6_in6_addr));
+		memset(&(result.in_addr.__ipv6_in6_addr), sizeof(result.in_addr.__ipv6_in6_addr), 0);
 		result.prefix = 128;
 		result.ip_type = NONE;	/* Left interface has no IP address in IPv6 trees (only link-local fe80::/64 addresses are used on interfaces with children) */
 	}
@@ -221,7 +221,7 @@ if_ip_addr_t get_right_interface_config(const self_ip_routing_tree_t* tree, cons
 	result.ip_type = tree->ip_type;
 #ifdef IPV6_SUPPORT
 	if (tree->ip_type == IPV6) {
-		uint128_t_to_ipv6(uint128_t_zero(), &(result.in_addr.__ipv6_in6_addr));
+		memset(&(result.in_addr.__ipv6_in6_addr), sizeof(result.in_addr.__ipv6_in6_addr), 0);
 		result.prefix = 128;
 		result.ip_type = NONE;	/* Right interface has no IP address in IPv6 trees (only link-local fe80::/64 addresses are used on interfaces with children) */
 	}
