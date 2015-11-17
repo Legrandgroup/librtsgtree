@@ -966,7 +966,7 @@ TEST(node_tests, test_get_right_interface_config) {
 	printf("%s: tests passed\n", __func__);
 }
 
-/* Unit test for get_right_interface_config()
+/* Unit test for get_bottom_interface_config()
  */
 TEST(node_tests, test_get_bottom_interface_config) {
 	node_id_t test_node;
