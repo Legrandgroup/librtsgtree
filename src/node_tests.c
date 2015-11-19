@@ -1606,17 +1606,17 @@ TEST(node_tests, test_get_left_right_top_bottom_interface_route) {
 
 #else
 	tree.prefix = (uint128_t)0xfd;
-	tree.prefix |= tree.prefix << 8 | (uint128_t)0x00;
-	tree.prefix |= tree.prefix << 8 | (uint128_t)0x01;
-	tree.prefix |= tree.prefix << 8 | (uint128_t)0x23;
-	tree.prefix |= tree.prefix << 8 | (uint128_t)0x45;
-	tree.prefix |= tree.prefix << 8 | (uint128_t)0x67;
-	tree.prefix |= tree.prefix << 8 | (uint128_t)0x89;
-	tree.prefix |= tree.prefix << 8 | (uint128_t)0xab;
-	tree.prefix |= tree.prefix << 8 | (uint128_t)0xcd;
-	tree.prefix |= tree.prefix << 8 | (uint128_t)0xef;
-	tree.prefix |= tree.prefix << 8 | (uint128_t)0xa5;
-	tree.prefix |= tree.prefix << 8 | (uint128_t)0x5a;
+	tree.prefix <<= 8; tree.prefix |= (uint128_t)0x00;
+	tree.prefix <<= 8; tree.prefix |= (uint128_t)0x01;
+	tree.prefix <<= 8; tree.prefix |= (uint128_t)0x23;
+	tree.prefix <<= 8; tree.prefix |= (uint128_t)0x45;
+	tree.prefix <<= 8; tree.prefix |= (uint128_t)0x67;
+	tree.prefix <<= 8; tree.prefix |= (uint128_t)0x89;
+	tree.prefix <<= 8; tree.prefix |= (uint128_t)0xab;
+	tree.prefix <<= 8; tree.prefix |= (uint128_t)0xcd;
+	tree.prefix <<= 8; tree.prefix |= (uint128_t)0xef;
+	tree.prefix <<= 8; tree.prefix |= (uint128_t)0xa5;
+	tree.prefix <<= 8; tree.prefix |= (uint128_t)0x5a;
 	tree.prefix <<= 32;	/* Skip 16 + 16 bits that are not part of prefix */
 #endif
 	if (get_tree_prefix_len(&tree) != 128 - 16 - 16)
@@ -1633,7 +1633,7 @@ TEST(node_tests, test_get_left_right_top_bottom_interface_route) {
 #ifndef HAS_INT128
 			tree.prefix.uint128_a8[polluted_byte] = 0xff;
 #else	// HAS_INT128
-			tree.prefix |= ((uint128_t)0xff << ((15-polluted_byte)*8);
+			tree.prefix |= (uint128_t)0xff << ((15-polluted_byte)*8);
 #endif	// HAS_INT128
 		}
 
