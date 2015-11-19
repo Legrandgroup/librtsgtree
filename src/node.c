@@ -456,6 +456,7 @@ ip_route_t get_left_interface_route(const self_ip_routing_tree_t* tree, const no
 	assert_valid_node_id_for_tree(node, *tree);	/* Make sure node contains a valid value for this tree */
 
 	node_rank = node_id_to_rank(tree, node);
+	assert(node_rank);
 
 #ifdef IPV6_SUPPORT
 	if (tree->ip_type == IPV6) {
