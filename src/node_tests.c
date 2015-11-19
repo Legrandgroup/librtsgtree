@@ -410,8 +410,6 @@ TEST(node_tests, test_node_id_to_rank) {
  */
 TEST(node_tests, test_get_parent_node_id) {
 	node_id_t test_node;
-	char result[33];
-	char* expected_result;
 	self_ip_routing_tree_t tree;
 
 #ifdef IPV6_SUPPORT
@@ -531,8 +529,6 @@ TEST(node_tests, test_get_parent_node_id) {
  */
 TEST(node_tests, test_get_left_child_node_id) {
 	node_id_t test_node;
-	char result[33];
-	char* expected_result;
 	self_ip_routing_tree_t tree;
 
 #ifdef IPV6_SUPPORT
@@ -620,8 +616,6 @@ TEST(node_tests, test_get_left_child_node_id) {
  */
 TEST(node_tests, test_get_right_child_node_id) {
 	node_id_t test_node;
-	char result[33];
-	char* expected_result;
 	self_ip_routing_tree_t tree;
 
 #ifdef IPV6_SUPPORT

@@ -56,8 +56,6 @@ node_id_t get_parent_node_id(const self_ip_routing_tree_t* tree, const node_id_t
 	node_id_t result;
 	prefix_t mask_prefix;
 	
-	uint128_t parent_node_mask;
-
 	//Formula: to get our parent ID
 	//Take our ID, set the last (Rmax-Rp+1) bits to 0, and set the previous bit to 1
 	
@@ -150,7 +148,6 @@ uint128_t get_reference_ipv6_network(const self_ip_routing_tree_t* tree, const n
  * \return The IPv6 addressing of the reference network interface for \p node
 **/
 uint128_t get_reference_interface_ipv6_addr(const self_ip_routing_tree_t* tree, const node_id_t node) {
-	uint128_t result;
 
 	assert(tree);
 	assert(tree->ip_type == IPV6);
@@ -478,6 +475,8 @@ ip_route_t get_left_interface_route(const self_ip_routing_tree_t* tree, const no
 		//TODO: support IPv4 trees for routes
 	}
 #endif
+	assert(0);
+	return no_interface_route();	/* Should never reach here... this is to mute compiler and static analysis warnings */
 }
 
 ip_route_t get_right_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node) {
@@ -508,12 +507,13 @@ ip_route_t get_right_interface_route(const self_ip_routing_tree_t* tree, const n
 		//TODO: support IPv4 trees for routes
 	}
 #endif
+	assert(0);
+	return no_interface_route();	/* Should never reach here... this is to mute compiler and static analysis warnings */
 }
 
 #ifdef IPV6_SUPPORT
 ip_route_t get_bottom_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node) {
 	ip_route_t result;
-	rank_t     node_rank;
 
 	assert(tree);
 	assert(tree->ip_type);

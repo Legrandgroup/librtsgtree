@@ -1589,7 +1589,6 @@ TEST(uint128_tests, test_uint128_t_hton) {
 
 	uint128_t test_u128;
 	uint8_t *uint128_repr_ptr;
-	int result = 0;
 
 #ifndef HAS_INT128
 	test_u128.uint128_a8[0] = 0xf0;
