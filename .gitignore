@@ -1,4 +1,3 @@
-librtsgt.a
-src/*.o
-test
-
+/src/*.o
+/librtsgtree.a
+/test_runner
