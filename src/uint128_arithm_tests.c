@@ -1585,7 +1585,7 @@ TEST(uint128_tests, test_uint128_t_cmp) {
 	if (!(uint128_t_cmp(test1_u128, test2_u128) < 0))	/* Expect 2^7<2^8 */
 		FAILF("uint128_t_cmp() failed on bit 7 to 8 boundary\n");
 
-	if (!(uint128_t_cmp(test2_u128, test1_u128) < 0))	/* Expect 2^8>2^7 */
+	if (!(uint128_t_cmp(test2_u128, test1_u128) > 0))	/* Expect 2^8>2^7 */
 		FAILF("uint128_t_cmp() failed on bit 7 to 8 boundary\n");
 
 	test1_u128 = power2_to_uint128_t(15);
@@ -1593,7 +1593,7 @@ TEST(uint128_tests, test_uint128_t_cmp) {
 	if (!(uint128_t_cmp(test1_u128, test2_u128) < 0))	/* Expect 2^15<2^16 */
 		FAILF("uint128_t_cmp() failed on bit 15 to 16 boundary\n");
 
-	if (!(uint128_t_cmp(test2_u128, test1_u128) < 0))	/* Expect 2^16>2^15 */
+	if (!(uint128_t_cmp(test2_u128, test1_u128) > 0))	/* Expect 2^16>2^15 */
 		FAILF("uint128_t_cmp() failed on bit 15 to 16 boundary\n");
 
 	test1_u128 = power2_to_uint128_t(31);
@@ -1601,7 +1601,7 @@ TEST(uint128_tests, test_uint128_t_cmp) {
 	if (!(uint128_t_cmp(test1_u128, test2_u128) < 0))	/* Expect 2^31<2^32 */
 		FAILF("uint128_t_cmp() failed on bit 31 to 32 boundary\n");
 
-	if (!(uint128_t_cmp(test2_u128, test1_u128) < 0))	/* Expect 2^32>2^31 */
+	if (!(uint128_t_cmp(test2_u128, test1_u128) > 0))	/* Expect 2^32>2^31 */
 		FAILF("uint128_t_cmp() failed on bit 31 to 32 boundary\n");
 
 	test1_u128 = power2_to_uint128_t(63);
@@ -1609,7 +1609,7 @@ TEST(uint128_tests, test_uint128_t_cmp) {
 	if (!(uint128_t_cmp(test1_u128, test2_u128) < 0))	/* Expect 2^63<2^64 */
 		FAILF("uint128_t_cmp() failed on bit 63 to 64 boundary\n");
 
-	if (!(uint128_t_cmp(test2_u128, test1_u128) < 0))	/* Expect 2^64>2^63 */
+	if (!(uint128_t_cmp(test2_u128, test1_u128) > 0))	/* Expect 2^64>2^63 */
 		FAILF("uint128_t_cmp() failed on bit 63 to 64 boundary\n");
 
 	test1_u128 = power2_to_uint128_t(0);
@@ -1617,7 +1617,7 @@ TEST(uint128_tests, test_uint128_t_cmp) {
 	if (!(uint128_t_cmp(test1_u128, test2_u128) < 0))	/* Expect 2^0<2^127 */
 		FAILF("uint128_t_cmp() failed\n");
 
-	if (!(uint128_t_cmp(test2_u128, test1_u128) < 0))	/* Expect 2^127>2^0 */
+	if (!(uint128_t_cmp(test2_u128, test1_u128) > 0))	/* Expect 2^127>2^0 */
 		FAILF("uint128_t_cmp() failed\n");
 
 	printf("%s: tests passed\n", __func__);
