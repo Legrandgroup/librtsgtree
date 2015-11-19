@@ -516,7 +516,7 @@ uint128_t msb_1bits_to_uint128_t(uint8_t n);
  *
  * \return -1 if \p first is strictly lower than \p second, 0 is they are equal, and 1 if \p first is strictly higher than \p second
 **/
-int uint128_t_cmp(const uint128_t first, uint128_t second);
+int uint128_t_cmp(const uint128_t first, const uint128_t second);
 
 /**
  * \brief Convert a uint128_t from host order (with associated host-specific endianness) to network order (big endian)
