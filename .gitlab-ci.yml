@@ -1,0 +1,17 @@
+image: gcc:4.9
+
+stages:
+  - build
+  - test
+
+job-cleanup:
+  stage: cleanup
+  script: "make clean-all"
+
+job-build:
+  stage: build
+  script: "make librtsgtree"
+
+job-run-unit-tests:
+  stage: test
+  script: "make check"
