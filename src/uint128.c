@@ -374,7 +374,7 @@ uint128_t msb_1bits_to_uint128_t(uint8_t n) {
 
 #ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
 int uint128_t_cmp(const uint128_t first, const uint128_t second) {
-	  register int8_t byte_index;
+	  register uint8_t byte_index;
 
 	  for (byte_index = 0; byte_index<sizeof(first.uint128_a8); byte_index++) {
 		  if (first.uint128_a8[byte_index] > second.uint128_a8[byte_index])
