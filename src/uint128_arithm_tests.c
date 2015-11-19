@@ -65,7 +65,7 @@ TEST(uint128_tests, test_zero_max_uint128_t) {
 	if (!U128_IS_MAX(test_u128))
 		FAILF("uint128_t_max() Failed\n");
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for uint128_t_get_byte_no()
@@ -128,7 +128,7 @@ TEST(uint128_tests, test_uint128_t_get_byte_no) {
 	if ((byte = uint128_t_get_byte_no(test_u128, 0)) != 0x0f)
 		FAILF("uint128_t_get_byte_no() failed extracting byte #0: got %02x\n", byte);
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for uint128_t_to_binstr()
@@ -259,7 +259,7 @@ TEST(uint128_tests, test_uint128_t_to_binstr) {
 		if (strcmp(result, expected_result+nb_bits_missing) != 0)
 			FAILF("uint128_t_to_binstr() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result+nb_bits_missing);
 	}
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for uint128_t_to_hexstr()
@@ -327,7 +327,7 @@ TEST(uint128_tests, test_uint128_t_to_hexstr) {
 		if (strcmp(result, expected_result+nb_bytes_missing*2) != 0)	// nb_bytes_missing*2 because there are two hex digits output per byte
 			FAILF("uint128_t_to_hexstr() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result+nb_bytes_missing*2);
 	}
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for power2_to_uint128_t()
@@ -357,7 +357,7 @@ TEST(uint128_tests, test_power2_to_uint128_t) {
 	if (result[128] != '\0')
 		FAILF("power2_to_uint128_t() did not get a NULL termination at pos 128\n");
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for uint128_t_right_shift()
@@ -438,7 +438,7 @@ TEST(uint128_tests, test_uint128_t_right_shift) {
 				FAILF("uint128_t_right_shift() failed at pos %d, got:\n\"%c\", expected:\n\"%c\"\n", string_pos, result[string_pos], expected);
 		}
 	}
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for uint128_t_right_shift_n()
@@ -516,7 +516,7 @@ TEST(uint128_tests, test_uint128_t_right_shift_n) {
 	if (strcmp(result, expected_result) != 0)
 		FAILF("uint128_t_right_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for uint128_t_left_shift()
@@ -598,7 +598,7 @@ TEST(uint128_tests, test_uint128_t_left_shift) {
 		}
 	}
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for uint128_t_left_shift_n()
@@ -675,7 +675,7 @@ TEST(uint128_tests, test_uint128_t_left_shift_n) {
 	if (strcmp(result, expected_result) != 0)
 		FAILF("uint128_t_left_shift_n() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for mixed uint128_t_left_shift() and uint128_t_right_shift()
@@ -758,7 +758,7 @@ TEST(uint128_tests, test_uint128_t_mix_shift) {
 				FAILF("uint128_t_right_shift() failed on result2 at pos %d, got:\n\"%c\", expected:\n\"%c\"\n", string_pos, result1[string_pos], expected);
 		}
 	}
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for uint128_t_inc()
@@ -802,7 +802,7 @@ TEST(uint128_tests, test_uint128_t_inc) {
 	if (strcmp(result, expected_result) != 0)
 		FAILF("uint128_t_inc() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for uint128_t_dec()
@@ -845,7 +845,7 @@ TEST(uint128_tests, test_uint128_t_dec) {
 	if (strcmp(result, expected_result) != 0)
 		FAILF("uint128_t_dec() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for uint16_t_to_uint128_t()
@@ -1117,7 +1117,7 @@ TEST(uint128_tests, test_uint128_t_sub) {
 	if (strcmp(result, expected_result) != 0)
 		FAILF("uint128_t_sub() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for uint128_t_add()
@@ -1254,7 +1254,7 @@ TEST(uint128_tests, test_uint128_t_add) {
 	if (strcmp(result, expected_result) != 0)
 		FAILF("uint128_t_add() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 TEST(uint128_tests, test_uint128_t_mixed_add_sub_inc_dec) {
@@ -1319,7 +1319,7 @@ TEST(uint128_tests, test_uint128_t_mixed_add_sub_inc_dec) {
 			FAILF("test failed\n");
 	}
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for uint128_t_or()
@@ -1401,7 +1401,7 @@ TEST(uint128_tests, test_uint128_t_or) {
 	if (!(uint128_t_cmp(result_u128, uint128_t_max()) == 0))
 		FAILF("uint128_t_or() failed\n");
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for uint128_t_and()
@@ -1483,7 +1483,7 @@ TEST(uint128_tests, test_uint128_t_and) {
 	if (!U128_IS_ZERO(result_u128))
 		FAILF("uint128_t_and() failed\n");
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for uint128_t_right_0bit_count()
@@ -1508,7 +1508,7 @@ TEST(uint128_tests, test_uint128_t_right_0bit_count) {
 			FAILF("uint128_t_right_0bit_count() failed, got: %u, expected: %u\n", result, bit_count);
 	}
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for msb_1bits_to_uint128_t()
@@ -1538,7 +1538,7 @@ TEST(uint128_tests, test_msb_1bits_to_uint128_t) {
 			FAILF("msb_1bits_to_uint128_t() failed. Expected only zero bits under the last bit set for %u MSB\n", requested_msb_bits);
 	}
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for uint128_t_cmp()
@@ -1620,7 +1620,7 @@ TEST(uint128_tests, test_uint128_t_cmp) {
 	if (!(uint128_t_cmp(test2_u128, test1_u128) > 0))	/* Expect 2^127>2^0 */
 		FAILF("uint128_t_cmp() failed\n");
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for uint128_t_hton()
@@ -1678,7 +1678,7 @@ TEST(uint128_tests, test_uint128_t_hton) {
 	else
 		FAILF("uint128_t_hton() failed\n");
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 #ifndef USE_CPPUTEST

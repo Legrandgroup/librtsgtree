@@ -49,7 +49,7 @@ TEST(node_tests, test_Rmax_to_max_node_id) {
 //	test_node.uint128_a8[0] = 0xff;	/* uint128_t(-1) */
 //	if (uint128_t_cmp(Rmax_to_max_node_id(128), test_node) != 0)
 //		FAILF("Rmax_to_max_node_id() failed\n");
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 #ifdef IPV6_SUPPORT
@@ -116,7 +116,7 @@ TEST(node_tests, test_uint128_t_to_ipv6) {
 	if (strcmp(result, expected_result) != 0)
 		FAILF("uint128_t_to_ipv6() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 #endif	// IPV6_SUPPORT
 
@@ -150,7 +150,7 @@ TEST(node_tests, test_get_tree_prefix_len) {
 		FAILF("get_tree_prefix_len() failed\n");
 #endif	// IPV4_SUPPORT
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for get_hosts_prefix_len()
@@ -184,7 +184,7 @@ TEST(node_tests, test_get_hosts_prefix_len) {
 		FAILF("get_hosts_prefix_len() failed\n");
 #endif	// IPV4_SUPPORT
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 #ifdef IPV6_SUPPORT
@@ -225,7 +225,7 @@ TEST(node_tests, test_ipv6_prefix_to_uint128_t_mask) {
 	if (strcmp(result, expected_result) != 0)
 		FAILF("ipv6_prefix_to_uint128_t_mask() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 #endif	// IPV6_SUPPORT
 
@@ -259,7 +259,7 @@ TEST(node_tests, test_get_root_node_id) {
 		FAILF("get_root_node_id() failed, got:\n\"%s\", expected:\n\"%s\"\n", result, expected_result);
 #endif	// IPV4_SUPPORT
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for node_id_to_rank()
@@ -403,7 +403,7 @@ TEST(node_tests, test_node_id_to_rank) {
 		FAILF("node_id_to_rank() failed for invalid node ID 0\n");
 #endif	// IPV4_SUPPORT
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for get_parent_node_id()
@@ -522,7 +522,7 @@ TEST(node_tests, test_get_parent_node_id) {
 	check_result_is_uint128(get_parent_node_id(&tree, uint16_t_to_uint128_t(63)), uint16_t_to_uint128_t(62), __LINE__);
 #endif // IPV4_SUPPORT
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for get_left_child_node_id()
@@ -609,7 +609,7 @@ TEST(node_tests, test_get_left_child_node_id) {
 	check_result_is_uint128(test_node = get_left_child_node_id(&tree, test_node), uint128_t_zero(), __LINE__);
 #endif	// IPV4_SUPPORT
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for get_right_child_node_id()
@@ -696,7 +696,7 @@ TEST(node_tests, test_get_right_child_node_id) {
 	check_result_is_uint128(test_node = get_right_child_node_id(&tree, test_node), uint128_t_zero(), __LINE__);
 #endif	// IPV4_SUPPORT
 	
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for get_top_interface_config()
@@ -827,7 +827,7 @@ TEST(node_tests, test_get_top_interface_config) {
 	//	FAILF("get_top_interface_config() modified ip_type field\n");
 #endif	// IPV4_SUPPORT
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for get_left_interface_config()
@@ -883,7 +883,7 @@ TEST(node_tests, test_get_left_interface_config) {
 	//	FAILF("get_left_interface_config() modified ip_type field\n");
 #endif	// IPV4_SUPPORT
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for get_right_interface_config()
@@ -940,7 +940,7 @@ TEST(node_tests, test_get_right_interface_config) {
 
 #endif	// IPV4_SUPPORT
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /* Unit test for get_bottom_interface_config()
@@ -1127,7 +1127,7 @@ TEST(node_tests, test_get_bottom_interface_config) {
 
 #endif	// IPV4_SUPPORT
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 /**
@@ -1756,7 +1756,7 @@ TEST(node_tests, test_get_left_right_top_bottom_interface_route) {
 	//}
 #endif	// IPV4_SUPPORT
 
-	printf("%s: tests passed\n", __func__);
+	NOTIFYPASS();
 }
 
 #ifndef USE_CPPUTEST
