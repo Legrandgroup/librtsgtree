@@ -1661,7 +1661,7 @@ TEST(node_tests, test_get_left_right_top_bottom_interface_route) {
 		ip_route_to_str(ip_route_result = get_bottom_interface_route(&tree, test_node), ipv6_route_str);
 		if (ip_route_result.ip_type != IPV6)	/* ip_type should have been propagated as is to ip_route_result */
 			FAILF("At byte pass %d: get_bottom_interface_route() modified ip_type field\n");
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:8000::/112") != 0)
+		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:8000:0/112") != 0)
 			FAILF("At byte pass %d: get_bottom_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
 
 		ip_route_to_str(get_left_interface_route(&tree, uint16_t_to_uint128_t(0x4000)), ipv6_route_str);
@@ -1669,31 +1669,31 @@ TEST(node_tests, test_get_left_right_top_bottom_interface_route) {
 			FAILF("At byte pass %d: get_left_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
 
 		ip_route_to_str(get_right_interface_route(&tree, uint16_t_to_uint128_t(0x4000)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:4000::/98") != 0)
+		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:4000:0/98") != 0)
 			FAILF("At byte pass %d: get_right_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
 
 		ip_route_to_str(get_top_interface_route(&tree, uint16_t_to_uint128_t(0x4000)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:8000::/112") != 0)
+		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:8000:0/112") != 0)
 			FAILF("At byte pass %d: get_top_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
 
 		ip_route_to_str(get_bottom_interface_route(&tree, uint16_t_to_uint128_t(0x4000)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:4000::/112") != 0)
+		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:4000:0/112") != 0)
 			FAILF("At byte pass %d: get_bottom_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
 
 		ip_route_to_str(get_left_interface_route(&tree, uint16_t_to_uint128_t(0xc000)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:8000/98") != 0)
+		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:8000:0/98") != 0)
 			FAILF("At byte pass %d: get_left_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
 
 		ip_route_to_str(get_right_interface_route(&tree, uint16_t_to_uint128_t(0xc000)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:c000/98") != 0)
+		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:c000:0/98") != 0)
 			FAILF("At byte pass %d: get_right_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
 
 		ip_route_to_str(get_top_interface_route(&tree, uint16_t_to_uint128_t(0xc000)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:8000/112") != 0)
+		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:8000:0/112") != 0)
 			FAILF("At byte pass %d: get_top_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
 
 		ip_route_to_str(get_bottom_interface_route(&tree, uint16_t_to_uint128_t(0xc000)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:c000::/112") != 0)
+		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:c000:0/112") != 0)
 			FAILF("At byte pass %d: get_bottom_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
 
 		ip_route_result = get_left_interface_route(&tree, uint16_t_to_uint128_t(1));
@@ -1705,11 +1705,11 @@ TEST(node_tests, test_get_left_right_top_bottom_interface_route) {
 			FAILF("At byte pass %d: get_right_interface_route() should return no route\n");
 
 		ip_route_to_str(get_top_interface_route(&tree, uint16_t_to_uint128_t(1)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:2::/112") != 0)
+		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:2:0/112") != 0)
 			FAILF("At byte pass %d: get_top_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
 
 		ip_route_to_str(get_bottom_interface_route(&tree, uint16_t_to_uint128_t(1)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:1::/112") != 0)
+		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:1:0/112") != 0)
 			FAILF("At byte pass %d: get_bottom_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
 
 		ip_route_result = get_left_interface_route(&tree, uint16_t_to_uint128_t(0xffff));
@@ -1721,97 +1721,11 @@ TEST(node_tests, test_get_left_right_top_bottom_interface_route) {
 			FAILF("At byte pass %d: get_right_interface_route() should return no route\n");
 
 		ip_route_to_str(get_top_interface_route(&tree, uint16_t_to_uint128_t(0xffff)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:fffe::/112") != 0)
+		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:fffe:0/112") != 0)
 			FAILF("At byte pass %d: get_top_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
 
 		ip_route_to_str(get_bottom_interface_route(&tree, uint16_t_to_uint128_t(0xffff)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:ffff::/112") != 0)
-			FAILF("At byte pass %d: get_bottom_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
-
-		ip_route_to_str(ip_route_result = get_left_interface_route(&tree, test_node), ipv6_route_str);
-		if (ip_route_result.ip_type != IPV6)	/* ip_type should have been propagated as is to ip_route_result */
-			FAILF("At byte pass %d: get_left_interface_route() modified ip_type field\n");
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a::/97") != 0)
-			FAILF("At byte pass %d: get_left_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
-
-		ip_route_to_str(ip_route_result = get_right_interface_route(&tree, test_node), ipv6_route_str);
-		if (ip_route_result.ip_type != IPV6)	/* ip_type should have been propagated as is to ip_route_result */
-			FAILF("At byte pass %d: get_right_interface_route() modified ip_type field\n");
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:8000:0/97") != 0)
-			FAILF("At byte pass %d: get_right_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
-
-		ip_route_result = get_top_interface_route(&tree, test_node);
-		if (ip_route_result.ip_type != NONE)	/* root node has no top route */
-			FAILF("At byte pass %d: get_top_interface_route() should return no route\n");
-
-		ip_route_to_str(ip_route_result = get_bottom_interface_route(&tree, test_node), ipv6_route_str);
-		if (ip_route_result.ip_type != IPV6)	/* ip_type should have been propagated as is to ip_route_result */
-			FAILF("At byte pass %d: get_bottom_interface_route() modified ip_type field\n");
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:8000::/112") != 0)
-			FAILF("At byte pass %d: get_bottom_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
-
-		ip_route_to_str(get_left_interface_route(&tree, uint16_t_to_uint128_t(0x4000)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a::/98") != 0)
-			FAILF("At byte pass %d: get_left_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
-
-		ip_route_to_str(get_right_interface_route(&tree, uint16_t_to_uint128_t(0x4000)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:4000::/98") != 0)
-			FAILF("At byte pass %d: get_right_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
-
-		ip_route_to_str(get_top_interface_route(&tree, uint16_t_to_uint128_t(0x4000)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:8000::/112") != 0)
-			FAILF("At byte pass %d: get_top_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
-
-		ip_route_to_str(get_bottom_interface_route(&tree, uint16_t_to_uint128_t(0x4000)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:4000::/112") != 0)
-			FAILF("At byte pass %d: get_bottom_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
-
-		ip_route_to_str(get_left_interface_route(&tree, uint16_t_to_uint128_t(0xc000)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:8000/98") != 0)
-			FAILF("At byte pass %d: get_left_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
-
-		ip_route_to_str(get_right_interface_route(&tree, uint16_t_to_uint128_t(0xc000)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:c000/98") != 0)
-			FAILF("At byte pass %d: get_right_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
-
-		ip_route_to_str(get_top_interface_route(&tree, uint16_t_to_uint128_t(0xc000)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:8000/112") != 0)
-			FAILF("At byte pass %d: get_top_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
-
-		ip_route_to_str(get_bottom_interface_route(&tree, uint16_t_to_uint128_t(0xc000)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:c000::/112") != 0)
-			FAILF("At byte pass %d: get_bottom_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
-
-		ip_route_result = get_left_interface_route(&tree, uint16_t_to_uint128_t(1));
-		if (ip_route_result.ip_type != NONE)
-			FAILF("At byte pass %d: get_left_interface_route() should return no route\n");
-
-		ip_route_result = get_right_interface_route(&tree, uint16_t_to_uint128_t(1));
-		if (ip_route_result.ip_type != NONE)
-			FAILF("At byte pass %d: get_right_interface_route() should return no route\n");
-
-		ip_route_to_str(get_top_interface_route(&tree, uint16_t_to_uint128_t(1)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:2::/112") != 0)
-			FAILF("At byte pass %d: get_top_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
-
-		ip_route_to_str(get_bottom_interface_route(&tree, uint16_t_to_uint128_t(1)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:1::/112") != 0)
-			FAILF("At byte pass %d: get_bottom_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
-
-		ip_route_result = get_left_interface_route(&tree, uint16_t_to_uint128_t(0xffff));
-		if (ip_route_result.ip_type != NONE)
-			FAILF("At byte pass %d: get_left_interface_route() should return no route\n");
-
-		ip_route_result = get_right_interface_route(&tree, uint16_t_to_uint128_t(0xffff));
-		if (ip_route_result.ip_type != NONE)
-			FAILF("At byte pass %d: get_right_interface_route() should return no route\n");
-
-		ip_route_to_str(get_top_interface_route(&tree, uint16_t_to_uint128_t(0xffff)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:fffe::/112") != 0)
-			FAILF("At byte pass %d: get_top_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
-
-		ip_route_to_str(get_bottom_interface_route(&tree, uint16_t_to_uint128_t(0xffff)), ipv6_route_str);
-		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:ffff::/112") != 0)
+		if (strcmp(ipv6_route_str, "fd00:123:4567:89ab:cdef:a55a:ffff:0/112") != 0)
 			FAILF("At byte pass %d: get_bottom_interface_route() got wrong IP address: %s\n", polluted_byte, ipv6_route_str);
 
 		if (polluted_byte == -1)
