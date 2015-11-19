@@ -96,9 +96,9 @@ clean:
 clean-all: clean
 	@find $(HOME_DIR)/src -name "*.o" -exec rm -f {} \;
 
-test-result: test
+check: test_runner
 	./$<
 
-test: $(OBJS) $(TEST_OBJS)
+test_runner: $(OBJS) $(TEST_OBJS)
 	@echo Linking $@
 	$(SILENCE)$(CC) $(LIBS) $(CFLAGS) $(LINKER_FLAGS) -o $@ $^
