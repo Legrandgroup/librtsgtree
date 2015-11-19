@@ -1489,7 +1489,7 @@ TEST(node_tests, test_get_left_right_top_bottom_interface_route) {
 		FAILF("get_bottom_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 
 	tree.hostA = 40;	/* Just a few additional checks when each node has a /88 network attached (40 bits allocated for local networks hosts) */
-	/* Here we only test, the root node, its two children, and the two extreme leaves (first (ID=1) and last (ID=15)) */
+	/* Here we only test the root node, its two children, and the two extreme leaves (first (ID=1) and last (ID=15)) */
 
 	test_node = get_root_node_id(&tree);	/* Will get 8 */
 	ip_route_to_str(ip_route_result = get_left_interface_route(&tree, test_node), ipv6_route_str);
@@ -1576,6 +1576,154 @@ TEST(node_tests, test_get_left_right_top_bottom_interface_route) {
 
 	ip_route_to_str(get_bottom_interface_route(&tree, uint8_t_to_uint128_t(15)), ipv6_route_str);
 	if (strcmp(ipv6_route_str, "fd00::f00:0:0/88") != 0)
+		FAILF("get_bottom_interface_route() got wrong IP address: %s\n", ipv6_route_str);
+
+	tree.hostA = 16;	/* And yet a few more checks when each node has a /102 network attached (16 bits allocated for local networks hosts) */
+
+	/* Here, we increase the Rmax to 16 (tree depth, max for node ID is thus 65535 (see Rmax_to_max_node_id()), which will
+	 * increase the node addressing space of the tree compared to previous tests
+	 */
+	tree.Rmax = 16;
+
+	/* We also give a more specific prefix, using all tree-specific bits (128 - 16 - 16): fd00:0123:4567:89ab:cdef:a55a/96
+	 * This prefix will be used for the test tree. In order to check that prefix does not have side effect on addresses, we actually
+	 * set to one more bits (outside of the accepted tree common prefix), so we will set tree prefix to:
+	 * fd00:0123:4567:89ab:cdef:a55a: ff00:ff00 (bits 8 to 15 and bits 24 to 31 are set (0xff), but should be discarded */
+
+#ifndef HAS_INT128
+	U128_SET_ZERO(tree.prefix);
+	tree.prefix.uint128_a8[0] = 0xfd;
+	tree.prefix.uint128_a8[1] = 0x00;
+	tree.prefix.uint128_a8[2] = 0x01;
+	tree.prefix.uint128_a8[3] = 0x23;
+	tree.prefix.uint128_a8[4] = 0x45;
+	tree.prefix.uint128_a8[5] = 0x67;
+	tree.prefix.uint128_a8[6] = 0x89;
+	tree.prefix.uint128_a8[7] = 0xab;
+	tree.prefix.uint128_a8[8] = 0xcd;
+	tree.prefix.uint128_a8[9] = 0xef;
+	tree.prefix.uint128_a8[10] = 0xa5;
+	tree.prefix.uint128_a8[11] = 0x5a;
+	/* Note:
+	 * Bytes 12 & 13  will be used for nodes in tree addressing (node ID) (16 bits... Rmax=16)
+	 * and byte 14 & 15 for local network host addressing (16 bits... hostA=16)
+	 * But we are nasty here and also pollute bytes 12 and 14 to test tree prefix overflow side effects as explained above
+	 */
+	tree.prefix.uint128_a8[12] = 0xff;
+	tree.prefix.uint128_a8[14] = 0xff;
+
+#else
+	tree.prefix = (uint128_t)0xfd;
+	tree.prefix |= tree.prefix << 8 | (uint128_t)0x00;
+	tree.prefix |= tree.prefix << 8 | (uint128_t)0x01;
+	tree.prefix |= tree.prefix << 8 | (uint128_t)0x23;
+	tree.prefix |= tree.prefix << 8 | (uint128_t)0x45;
+	tree.prefix |= tree.prefix << 8 | (uint128_t)0x67;
+	tree.prefix |= tree.prefix << 8 | (uint128_t)0x89;
+	tree.prefix |= tree.prefix << 8 | (uint128_t)0xab;
+	tree.prefix |= tree.prefix << 8 | (uint128_t)0xcd;
+	tree.prefix |= tree.prefix << 8 | (uint128_t)0xef;
+	tree.prefix |= tree.prefix << 8 | (uint128_t)0xa5;
+	tree.prefix |= tree.prefix << 8 | (uint128_t)0x5a;
+	tree.prefix |= tree.prefix << 8 | (uint128_t)0xff;	/* Pollution on byte 12 */
+	tree.prefix <<= 8;	/* Skip byte 13 */
+	tree.prefix |= tree.prefix << 8 | (uint128_t)0xff;	/* Pollution on byte 14 */
+	tree.prefix <<= 8;	/* Skip byte 15 */
+#endif
+	if (get_tree_prefix_len(&tree) != 128 - 16 - 16)
+		FAILF("get_tree_prefix_len() return value error on IPv6 tree with hostA=16, Rmax=16\n");
+
+	/* As for above, we only test the root node, its two children, and the two extreme leaves (first (ID=1) and last (ID=65535)) */
+
+	test_node = get_root_node_id(&tree);	/* Will get 2^15 = 32768 */
+
+	if (uint128_t_cmp(test_node, power2_to_uint128_t(15)) != 0)	/* Make sure we get 32768 */
+		FAILF("get_root_node_id() should return 32768\n");
+
+	ip_route_to_str(ip_route_result = get_left_interface_route(&tree, test_node), ipv6_route_str);
+	if (ip_route_result.ip_type != IPV6)	/* ip_type should have been propagated as is to ip_route_result */
+		FAILF("get_left_interface_route() modified ip_type field\n");
+	if (strcmp(ipv6_route_str, "fd00:0123:4567:89ab:cdef:a55a::/97") != 0)
+		FAILF("get_left_interface_route() got wrong IP address: %s\n", ipv6_route_str);
+
+	ip_route_to_str(ip_route_result = get_right_interface_route(&tree, test_node), ipv6_route_str);
+	if (ip_route_result.ip_type != IPV6)	/* ip_type should have been propagated as is to ip_route_result */
+		FAILF("get_right_interface_route() modified ip_type field\n");
+	if (strcmp(ipv6_route_str, "fd00:0123:4567:89ab:cdef:a55a::/97") != 0)
+		FAILF("get_right_interface_route() got wrong IP address: %s\n", ipv6_route_str);
+
+	ip_route_result = get_top_interface_route(&tree, test_node);
+	if (ip_route_result.ip_type != NONE)	/* root node has no top route */
+		FAILF("get_top_interface_route() should return no route\n");
+
+	ip_route_to_str(ip_route_result = get_bottom_interface_route(&tree, test_node), ipv6_route_str);
+	if (ip_route_result.ip_type != IPV6)	/* ip_type should have been propagated as is to ip_route_result */
+		FAILF("get_bottom_interface_route() modified ip_type field\n");
+	if (strcmp(ipv6_route_str, "fd00:0123:4567:89ab:cdef:a55a:8000::/112") != 0)
+		FAILF("get_bottom_interface_route() got wrong IP address: %s\n", ipv6_route_str);
+
+	ip_route_to_str(get_left_interface_route(&tree, uint16_t_to_uint128_t(0x4000)), ipv6_route_str);
+	if (strcmp(ipv6_route_str, "fd00:0123:4567:89ab:cdef:a55a::/98") != 0)
+		FAILF("get_left_interface_route() got wrong IP address: %s\n", ipv6_route_str);
+
+	ip_route_to_str(get_right_interface_route(&tree, uint16_t_to_uint128_t(0x4000)), ipv6_route_str);
+	if (strcmp(ipv6_route_str, "fd00:0123:4567:89ab:cdef:a55a:4000::/98") != 0)
+		FAILF("get_right_interface_route() got wrong IP address: %s\n", ipv6_route_str);
+
+	ip_route_to_str(get_top_interface_route(&tree, uint16_t_to_uint128_t(0x4000)), ipv6_route_str);
+	if (strcmp(ipv6_route_str, "fd00:0123:4567:89ab:cdef:a55a:8000::/112") != 0)
+		FAILF("get_top_interface_route() got wrong IP address: %s\n", ipv6_route_str);
+
+	ip_route_to_str(get_bottom_interface_route(&tree, uint16_t_to_uint128_t(0x4000)), ipv6_route_str);
+	if (strcmp(ipv6_route_str, "fd00:0123:4567:89ab:cdef:a55a:4000::/112") != 0)
+		FAILF("get_bottom_interface_route() got wrong IP address: %s\n", ipv6_route_str);
+
+	ip_route_to_str(get_left_interface_route(&tree, uint16_t_to_uint128_t(0xc000)), ipv6_route_str);
+	if (strcmp(ipv6_route_str, "fd00:0123:4567:89ab:cdef:a55a:8000/98") != 0)
+		FAILF("get_left_interface_route() got wrong IP address: %s\n", ipv6_route_str);
+
+	ip_route_to_str(get_right_interface_route(&tree, uint16_t_to_uint128_t(0xc000)), ipv6_route_str);
+	if (strcmp(ipv6_route_str, "fd00:0123:4567:89ab:cdef:a55a:c000/98") != 0)
+		FAILF("get_right_interface_route() got wrong IP address: %s\n", ipv6_route_str);
+
+	ip_route_to_str(get_top_interface_route(&tree, uint16_t_to_uint128_t(0xc000)), ipv6_route_str);
+	if (strcmp(ipv6_route_str, "fd00:0123:4567:89ab:cdef:a55a:8000/112") != 0)
+		FAILF("get_top_interface_route() got wrong IP address: %s\n", ipv6_route_str);
+
+	ip_route_to_str(get_bottom_interface_route(&tree, uint16_t_to_uint128_t(0xc000)), ipv6_route_str);
+	if (strcmp(ipv6_route_str, "fd00:0123:4567:89ab:cdef:a55a:c000::/112") != 0)
+		FAILF("get_bottom_interface_route() got wrong IP address: %s\n", ipv6_route_str);
+
+	ip_route_result = get_left_interface_route(&tree, uint16_t_to_uint128_t(1));
+	if (ip_route_result.ip_type != NONE)
+		FAILF("get_left_interface_route() should return no route\n");
+
+	ip_route_result = get_right_interface_route(&tree, uint16_t_to_uint128_t(1));
+	if (ip_route_result.ip_type != NONE)
+		FAILF("get_right_interface_route() should return no route\n");
+
+	ip_route_to_str(get_top_interface_route(&tree, uint16_t_to_uint128_t(1)), ipv6_route_str);
+	if (strcmp(ipv6_route_str, "fd00:0123:4567:89ab:cdef:a55a:2::/112") != 0)
+		FAILF("get_top_interface_route() got wrong IP address: %s\n", ipv6_route_str);
+
+	ip_route_to_str(get_bottom_interface_route(&tree, uint16_t_to_uint128_t(1)), ipv6_route_str);
+	if (strcmp(ipv6_route_str, "fd00:0123:4567:89ab:cdef:a55a:1::/112") != 0)
+		FAILF("get_bottom_interface_route() got wrong IP address: %s\n", ipv6_route_str);
+
+	ip_route_result = get_left_interface_route(&tree, uint16_t_to_uint128_t(0xffff));
+	if (ip_route_result.ip_type != NONE)
+		FAILF("get_left_interface_route() should return no route\n");
+
+	ip_route_result = get_right_interface_route(&tree, uint16_t_to_uint128_t(0xffff));
+	if (ip_route_result.ip_type != NONE)
+		FAILF("get_right_interface_route() should return no route\n");
+
+	ip_route_to_str(get_top_interface_route(&tree, uint16_t_to_uint128_t(0xffff)), ipv6_route_str);
+	if (strcmp(ipv6_route_str, "fd00:0123:4567:89ab:cdef:a55a:fffe::/112") != 0)
+		FAILF("get_top_interface_route() got wrong IP address: %s\n", ipv6_route_str);
+
+	ip_route_to_str(get_bottom_interface_route(&tree, uint16_t_to_uint128_t(0xffff)), ipv6_route_str);
+	if (strcmp(ipv6_route_str, "fd00:0123:4567:89ab:cdef:a55a:ffff::/112") != 0)
 		FAILF("get_bottom_interface_route() got wrong IP address: %s\n", ipv6_route_str);
 
 #endif	// IPV6_SUPPORT
