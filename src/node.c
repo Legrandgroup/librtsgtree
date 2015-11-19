@@ -384,11 +384,10 @@ typedef ip_route_t (*get_child_func_t)(const self_ip_routing_tree_t* tree, const
  * \param tree The tree inside which we perform the calculation
  * \param node The node ID of which we want to calculate the route
  * \param node_rank The rank for \p node in \p tree
- * \param child_node The node ID of the child (left or right) for which we cant to calculate the route
+ * \param child_node The node ID of the child (left or right) for which we want to calculate the route
  */
 ip_route_t get_child_interface_route(const self_ip_routing_tree_t* tree, const node_id_t node, const rank_t node_rank, const node_id_t child_node) {
 	ip_route_t result;
-	//uint128_t result_u128; // Temporary for debug
 	//char result_txt[33];	// Temporary for debug
 
 	assert(tree);
@@ -401,7 +400,7 @@ ip_route_t get_child_interface_route(const self_ip_routing_tree_t* tree, const n
 		assert(node_rank != tree->Rmax);	/* node_rank == tree->Rmax case must be handled by caller */
 		if (node_rank+1 == tree->Rmax) {	/* We are on the penultimate rank */
 			uint128_t_to_ipv6(
-			                  get_reference_ipv6_network(tree, child_node),	/* get_child_func_t being either get_left_child_node_id() or get_right_child_node_id() */
+			                  get_reference_ipv6_network(tree, child_node),	/* child_node being either node's left or right child (this depends on caller) */
 			                  &(result.in_addr.__ipv6_in6_addr)
 			                 );
 			assert(tree->hostA < 128);
@@ -417,14 +416,14 @@ ip_route_t get_child_interface_route(const self_ip_routing_tree_t* tree, const n
 			//uint128_t_to_hexstr(ipv6_prefix_to_uint128_t_mask(get_tree_prefix_len(tree) + node_rank), 16, result_txt);
 			//printf("%s (mask for %d+%d prefix)\n=\n", result_txt, get_tree_prefix_len(tree), node_rank);
 			//uint128_t_to_hexstr(uint128_t_and(
-			//                                  get_reference_interface_ipv6_addr(tree, child_node),	/* get_child_func_t being either get_left_child_node_id() or get_right_child_node_id() */
+			//                                  get_reference_ipv6_network(tree, child_node),	/* child_node being either node's left or right child (this depends on caller) */
 			//                                  ipv6_prefix_to_uint128_t_mask(get_tree_prefix_len(tree) + node_rank)
 			//                                 ), 16, result_txt);
 			//printf("%s (resulting route with prefix %d)\n", result_txt, get_tree_prefix_len(tree) + node_rank);
 
 			uint128_t_to_ipv6(
 			                  uint128_t_and(
-			                                get_reference_ipv6_network(tree, child_node),	/* get_child_func_t being either get_left_child_node_id() or get_right_child_node_id() */
+			                                get_reference_ipv6_network(tree, child_node),	/* child_node being either node's left or right child (this depends on caller) */
 			                                ipv6_prefix_to_uint128_t_mask(get_tree_prefix_len(tree) + node_rank)
 			                               ),
 			                  &(result.in_addr.__ipv6_in6_addr)
