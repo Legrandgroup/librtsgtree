@@ -73,7 +73,7 @@ TEST_SRCS +=$(SRC_PATH)/node_tests.c \
             $(SRC_PATH)/uint128_arithm_tests.c \
             $(SRC_PATH)/test_librtsgtree.c \
 
-all: $(PROJECT_NAME) test Makefile
+all: $(PROJECT_NAME) test-result Makefile
 
 OBJS = $(patsubst %.c, %.o, $(SRCS))
 TEST_OBJS = $(patsubst %.c, %.o, $(TEST_SRCS)) $(CPPUTEST_STATIC_LIB)
@@ -96,7 +96,9 @@ clean:
 clean-all: clean
 	@find $(HOME_DIR)/src -name "*.o" -exec rm -f {} \;
 
+test-result: test
+	./$<
+
 test: $(OBJS) $(TEST_OBJS)
 	@echo Linking $@
 	$(SILENCE)$(CC) $(LIBS) $(CFLAGS) $(LINKER_FLAGS) -o $@ $^
-	./$@
