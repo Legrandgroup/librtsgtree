@@ -25,23 +25,26 @@
 #endif // HAS_INT128
 
 #ifndef HAS_INT128	// For platforms that do not support native 128-bit integers arithmetic
-#define HAS_UINT8
+#define HAS_UINT8	//!< directive used for platforms that have uint8_t types (hopefully most)
 // #define HAS_UINT16
 // #define HAS_UINT16BE
 // #define HAS_UINT32BE
+/**
+ * \brief A type container for 128-bit wide unsigned integers
+**/
 typedef struct {
 	union {
-		uint16_t __split_16bits[8];
-		uint8_t  __split_8bits[16];
-	} __uint128_u;
+		uint16_t __split_16bits[8];	//!< The value stored by this 128-bit integer accessed as an array of 16-bit elements
+		uint8_t  __split_8bits[16];	//!< The value stored by this 128-bit integer accessed as an array of bytes
+	} __uint128_u;	//!< A union to select the splitting the content of the 128-bits when accessing its internal parts
 } uint128_t;
 
-/* \def uint128_a8
+/** \def uint128_a8
  * Allows access to the 128 bits of a uint128_t
  * The access is done via an array, byte per byte, in network order (index 0 is the MSB, index 15 is the LSB)
  */
 #define uint128_a8  __uint128_u.__split_8bits
-/* \def uint128_a16
+/** \def uint128_a16
  * Allows access to the 128 bits of a uint128_t
  * The access is done via an array 16-bit word per 16-bit word, in network order (index 0 is the MSB, index 15 is the LSB).
  * 16-bit words are stored in network order in order (use htons) for code to be platform independent
@@ -239,7 +242,8 @@ static inline uint128_t uint128_t_right_shift(const uint128_t input) {
  * \brief Right shift a uint128_t of \p n bits
  *
  * \param input The uint128_t to shift
- *
+  * \param n How many bits to shift
+*
  * \return The resulting uint128_t once bit-shifted
 **/
 #ifdef HAS_INT128
@@ -280,6 +284,7 @@ static inline uint128_t uint128_t_left_shift(const uint128_t input) {
  * \brief Left shift a uint128_t of \p n bits
  *
  * \param input The uint128_t to shift
+ * \param n How many bits to shift
  *
  * \return The resulting uint128_t once bit-shifted
 **/
@@ -463,7 +468,7 @@ static inline uint128_t uint16_t_to_uint128_t(uint16_t from) {
  *
  * The buffer \p output will be filled with the 16-character long representation of the 16-bit word
  *
- * \param(in] input The 16-bit word to dump
+ * \param[in] input The 16-bit word to dump
  * \param[in] bits_no The number of LSB to dump (value accepted 0 to 16)
  * \param[out] output A pointer to a 33-byte array where the resulting string will be stored
 **/

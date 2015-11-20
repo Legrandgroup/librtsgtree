@@ -1,6 +1,6 @@
 /**
  * \file node.h
- * \brief Manipulation of self-routing trees and nodes
+ * \brief Manipulation of self-routing binary trees and associated nodes
  */
 
 #ifndef __NODE_H__
@@ -17,10 +17,10 @@
 #include <string.h>	// For memcpy()
 #include <assert.h>	// For assert()
 
-typedef uint8_t rank_t;
-typedef uint8_t prefix_t;
+typedef uint8_t rank_t;	//!< The rank of a node inside a tree (ie proximity to the root, the root node having rank of 1)
+typedef uint8_t prefix_t;	//!< A network prefix (in the CIDR terminology (ie the value 64 represent a /64 network)
 
-typedef uint128_t node_id_t;
+typedef uint128_t node_id_t;	//!< A node inside a self-routing binary tree
 
 /**
  * \brief IP protocol type (IPV4/IPV6)
@@ -39,10 +39,10 @@ typedef enum {
  * \brief Specification of a self creating IP routing tree
 **/
 typedef struct {
-	ip_protocol_t  ip_type; /*!< Type of IP addresses represented by the tree (IPv4, IPv6) */
-	uint128_t      prefix;	/*!< Prefix for the tree's subnet */
-	rank_t         Rmax; /*!< Maximum depth of the tree */
-	prefix_t       hostA; /*!< Host address size in bits */
+	ip_protocol_t  ip_type;	//!< Type of IP addresses represented by the tree (IPv4, IPv6)
+	uint128_t      prefix;	//!< Prefix for the tree's subnet
+	rank_t         Rmax;	//!< Maximum depth of the tree
+	prefix_t       hostA;	//!< Host address size in bits
 } self_ip_routing_tree_t;
 
 /**
@@ -381,7 +381,7 @@ ip_route_t get_bottom_interface_route(const self_ip_routing_tree_t* tree, const 
 /**
  * \def assert_valid_node_id_for_tree(n, t)
  *
- * \brief Makes sure the node id \p n is valid for the tree \t (does not exceed the maximum node ID, and is not 0)
+ * \brief Makes sure the node id \p n is valid for the tree \p t (does not exceed the maximum node ID, and is not 0)
  *
  * \param n A node_id_t variable to test
  * \param t A self_ip_routing_tree_t variable containing the tree description
