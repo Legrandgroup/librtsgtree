@@ -26,5 +26,5 @@ job-test-native-uint128-be:
   script: "make clean-all librtsgtree check"
 
 job-gen-doc:
-  stage: test
+  stage: doc
   script: "make doxygen-doc"
