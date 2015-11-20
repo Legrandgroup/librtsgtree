@@ -13,17 +13,17 @@ job-test-homemade-uint128:
   stage: test
   script: "make clean-all librtsgtree check"
 
-job-test-native-uint128-le:
-  stage: test
-  tags:
-    - little-endian
-  script: "CFLAGS: '-DHAS_INT128 -DIS_LITTLE_ENDIAN' make clean-all librtsgtree check"
+#job-test-native-uint128-le:
+#  stage: test
+#  tags:
+#    - little-endian
+#  script: "CFLAGS: '-DHAS_INT128 -DIS_LITTLE_ENDIAN' make clean-all librtsgtree check"
 
-job-test-native-uint128-be:
-  stage: test
-  tags:
-    - big-endian
-  script: "CFLAGS: '-DHAS_INT128 -DIS_BIG_ENDIAN' make clean-all librtsgtree check"
+#job-test-native-uint128-be:
+#  stage: test
+#  tags:
+#    - big-endian
+#  script: "CFLAGS: '-DHAS_INT128 -DIS_BIG_ENDIAN' make clean-all librtsgtree check"
 
 job-gen-doc:
   stage: doc
