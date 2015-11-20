@@ -1,5 +1,6 @@
 /**
- * file uint128.h
+ * \file uint128.h
+ * \brief Manipulation of 128-bit integers on platforms that do not support native 128-bit arithmetic
  */
 
 #ifndef __UINT128_H__

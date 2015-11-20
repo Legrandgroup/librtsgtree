@@ -1,5 +1,6 @@
 /**
- * file node.h
+ * \file node.h
+ * \brief Manipulation of self-routing trees and nodes
  */
 
 #ifndef __NODE_H__
