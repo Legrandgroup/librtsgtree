@@ -3,11 +3,28 @@ image: gcc:4.9
 stages:
   - build
   - test
+  - doc
 
-job-build:
+job-build-homemade-uint128:
   stage: build
   script: "make clean-all librtsgtree"
 
-job-run-unit-tests:
+job-test-homemade-uint128:
   stage: test
-  script: "make check"
+  script: "make clean-all librtsgtree check"
+
+job-test-native-uint128-le:
+  stage: test
+  tags: little-endian
+  variables: CFLAGS: "-DHAS_INT128 -DIS_LITTLE_ENDIAN"
+  script: "make clean-all librtsgtree check"
+
+job-test-native-uint128-be:
+  stage: test
+  tags: big-endian
+  variables: CFLAGS: "-DHAS_INT128 -DIS_BIG_ENDIAN"
+  script: "make clean-all librtsgtree check"
+
+job-gen-doc:
+  stage: test
+  script: "make doxygen-doc"
