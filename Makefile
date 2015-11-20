@@ -87,6 +87,9 @@ $(PROJECT_NAME) : $(OBJS)
 	@echo Linking $@
 	$(SILENCE)$(AR) cr $(PROJECT_NAME).a $^
 
+doxygen-doc: doxygen.conf
+	@doxygen doxygen.conf 2> doxygen-stderr.txt
+
 rebuild: clean-all all
 
 clean:
