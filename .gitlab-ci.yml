@@ -4,13 +4,9 @@ stages:
   - build
   - test
 
-job-cleanup:
-  stage: cleanup
-  script: "make clean-all"
-
 job-build:
   stage: build
-  script: "make librtsgtree"
+  script: "make clean-all librtsgtree"
 
 job-run-unit-tests:
   stage: test
