@@ -89,7 +89,9 @@ $(PROJECT_NAME) : $(OBJS)
 
 doxygen-doc: doxygen.conf
 	@doxygen doxygen.conf 2> doxygen-stderr.txt
-	@echo "---" && echo "Doxygen logs related to code parsed (saved in doxygen-stderr.txt):" && cat doxygen-stderr.txt
+	@if test -s doxygen-stderr.txt; then \
+		echo "---" && echo "Doxygen logs related to code parsed (saved in doxygen-stderr.txt):" && cat doxygen-stderr.txt; \
+	fi
 
 rebuild: clean-all all
 
