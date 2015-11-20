@@ -73,7 +73,7 @@ TEST_SRCS +=$(SRC_PATH)/node_tests.c \
             $(SRC_PATH)/uint128_arithm_tests.c \
             $(SRC_PATH)/test_librtsgtree.c \
 
-all: $(PROJECT_NAME) test-result Makefile
+all: Makefile $(PROJECT_NAME) check
 
 OBJS = $(patsubst %.c, %.o, $(SRCS))
 TEST_OBJS = $(patsubst %.c, %.o, $(TEST_SRCS)) $(CPPUTEST_STATIC_LIB)
