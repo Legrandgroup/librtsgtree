@@ -22,10 +22,6 @@ typedef uint8_t prefix_t;	//!< A network prefix (in the CIDR terminology (ie the
 
 typedef uint128_t node_id_t;	//!< A node inside a self-routing binary tree
 
-typedef uint8_t ipv6prefix_t;
-
-static uint8_t pasdocumente;
-
 /**
  * \brief IP protocol type (IPV4/IPV6)
 **/
@@ -62,7 +58,7 @@ typedef struct {
 #endif
 	} in_addr;	/*!< The IPv4 or IPv6 address stored inside this entry */
 	ip_protocol_t  ip_type; /*!< Type of IP addresses described inside this entry (IPv4, IPv6) */
-	prefix_t       prefix;
+	prefix_t       prefix; /*!< The prefix length (CIDR for IPv4) or netmask */
 } if_ip_addr_t;
 
 /**
