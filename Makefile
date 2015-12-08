@@ -97,7 +97,7 @@ rebuild: clean-all all
 
 clean:
 	@rm -f $(PROJECT_NAME).a
-	@rm -f test
+	@rm -f test_runner
 
 clean-all: clean
 	@find $(HOME_DIR)/src -name "*.o" -exec rm -f {} \;
