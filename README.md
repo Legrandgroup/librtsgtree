@@ -356,3 +356,233 @@ Such a tree will allow addressing 6 nodes at least (most unbalanced tree, nodes 
 
 ## Using the maximum IPv4 private range 10.0.0.0/8
 
+By choosing addresses in range 10.0.0.0/30 (private network [RFC1918](https://tools.ietf.org/html/rfc1918)) a 22-depth (R<sub>max</sub> = 22) tree is possible.
+
+Such a tree will allow addressing 22 nodes at least (most unbalanced tree, nodes placed only in a daisy chain) or B=2^22-1=4194303 nodes at most (balanced tree).
+
+Subnet and hosts addresses are :
+
+10.0.0.0 (10.0.0.0 reserved for network, 10.0.0.3 reserved for broadcast, 10.0.0.1 and 10.0.0.2 for hosts)
+
+10.0.0.4 (10.0.0.4 reserved for network, 10.0.0.7 reserved for broadcast, 10.0.0.5 and 10.0.0.6 for hosts)
+
+10.0.0.8
+
+...
+
+10.0.0.(4n)
+
+...
+
+10.0.0.252
+
+10.0.1.0
+
+...
+
+10.0.1.252
+
+  ...
+10.0.255.252
+
+...
+10.255.255.252
+
+# IPv6 addressing and routing in a binary tree
+
+We apply once more the integer example above, but this time to IPv6 addresses.
+
+There are a few differences with the IPv4 case above, mainly because there are link-local addresses assigned to each extremity of point-to-point links, and we can use this addressing for routes' next hops.
+
+The specificities of IPv6 are that:
+
+* Nodes will be routing devices, but also addressable endpoints (same as IPv4)
+* Network segments Sn between two nodes will not have any IPv6 subnet, we will use link local.
+* In this scenario, we either only need to reach routing nodes (in that case A=0, so addresses are only allocated for nodes), or to reach routing nodes plus local networks attached to routing nodes (A>0)
+* Each network segment Sn will thus consist of a point-to-point link with two hosts (the two extremity nodes), automatically configured with link local IP addresses fe80::/8 at extremities.
+* Also, nodes all have multiple link local addresses, but only one site-global IPv6 address, this reference IPv6 address used for communication should be allocated:
+        if A=0, to the top interface (the one used for the path to the root), as this is the only interface that must be up to be able to communicate with the outside.
+        if A>0, to the first IPv6 address of the local network interface range (bottom interface)
+
+If we will only want to address the nodes of the tree using site-local IPv6 addresses, we will use A=0 (first IPv6 tree example below)
+
+If we want also to address subnets reachable behind each node of the tree using site-local IPv6 addresses, we will use A>0. This is really only required if there are other IPv6 addressable hosts behind each node of the tree (second IPv6 tree example below)
+
+## IPv6 range to binary tree size
+
+We have a whole IPv6 range allocated for the tree, represented by the range's prefix length P.
+
+The individual addresses available with this prefix are encoded with (in IPv6) 128-P bits.
+
+We won't use our IPv6 prefix for interconnecting segments' subnets, so host are encoded using the full IPv6 range, that is /P
+
+For the IPv6 case, interconnecting subnets are thus inexistant (we will not allocate any range for these subnets).
+
+Either we directly address the top interface of nodes (A=0) or we address nodes using their bottom interface (A>0)
+
+We will build a tree with Rmax = 128 - P - A
+
+For example, on a /48 network (P=48), we have 128-48=80 bits for addressing, or 2^80 possible nodes if A=0, or 2^16 possible nodes if A=64 (we allocate a /64 prefix reachable behind each node)
+
+## Routing applied to IPv6 binary trees
+
+The data can be exchanged within the binary tree from any node to any other.
+
+Nodes can generate their routing table automatically, given their node number <i>n</i> and rank R<i>n</i>
+
+Indeed:
+
+* <i>n</i> allows us to know the associated top subnet S<i>n</i>
+* <i>n</i> and R<i>n</i> allow us to calculate child node numbers LC(<i>n</i>) and RC(<i>n</i>)
+* LC(<i>n</i>) and RC(<i>n</i>) allow us to know the associated subnets
+
+### Left and right routes (to children)
+
+We will setup a first routing rule to each child and its subchildren.
+
+1) Case when our children are not at the very bottom of the tree (R<Rmax-1)
+
+The algorithm is the same as the IPv4 case
+
+We take LC(<i>n</i>), or RC(<i>n</i>) represent it in binary.
+
+We then keep only the R<i>n</i> (rank) most significant bits by applying a "bitwise and" mask, this will be the base network for left and right child routes.
+
+The prefix for left and right child rules being P + R
+
+2) Case when our children are the leaves of the tree (R=Rmax-1)
+
+We only have one host to address on left and one on right interfaces, so we will directly calculate the child's IPv6 address and add a route to this child using:
+
+* a host route (/128) if A = 0
+* or a local subnet route (/A) if A > 0
+
+### Route up
+
+The next rule allows us to reach our parent host Nn (*this is only for non-root nodes, the root node only has a default gateway with next hop to the entry node using its fe80::/64 link-local address*).
+
+The prefix for the top rule will be /128-A... we will address only our parent (if A=0) or our parent's local subnet (if A>0)
+
+A last rule will be a default gateway via our parent, to reach the part of the tree that is not below us.
+
+## Example using IPv6 site-local range fd00::/124 addressing only tree nodes (A=0)
+
+In this example, we are using a /124 range:
+
+P = 124
+
+In this example, there are no IPv6 local network attached to nodes, we can only address tree nodes, thus hosts/nodes are directly numbered inside the /124 range:
+
+A = 0
+
+Therefore our maximum depth is:
+
+Rmax = 128 - 124 = 4
+
+We thus have 4 bits for nodes numbering.
+
+B = 2^4 - 1 = 15
+
+### Root subnet
+
+Root node ID:
+
+n = 2^(4-1) = 8 = 1000b
+
+Root is thus N8
+
+Its uplink network is S8.
+
+> Each node can actually get its node ID via parent characteristics (such as the parent ppp hostname configuration received via ppp's LCP).
+> 
+> For example, let's say the parent hostname always sends the following hostname via ppp's LCP:
+> 
+> </i>*-[LR]n</i>
+> 
+> With:
+> 
+> * '*' containing the parent hostname
+> * [LR] being letter L or R if we are handling the left of right node respectively
+> * <i>n</i> being the node ID of the parent
+> 
+> For example: "slavebox-R8" sent by node N8 (which has hostname "slavebox") to its right child
+> 
+> If no *-[RL]n pattern is found in the parent hostname by the child, the child will assume it is the root node, and compute its node ID using the 2^(Rmax - 1) formula.
+> 
+> * Let's say we receive "slavebox-R8" as per the example above, we compute our own node ID:
+>   <i>n</i> = RC(8) = 12 = 00001100b
+>   Once we know our node ID (12), we also can also calculate our rank calculation from node ID. In 00001100b, there are 2 right bits set to 0, so b = 2:
+>   R(12) = Rmax - 2
+> * Let's say we receive "smartbox" as the parent hostname, we will elect ourselves as the root ID (parent hostname does not match pattern *-[LR]n).
+>   We thus use the root node ID calculation:
+>   <i>n</i> = 2^(Rmax-1)
+
+As explained above, by convention, N8 will assign the site-local IPv6 address for the node on the top network interface (the interface to S8):
+
+N8 will have IPv6 address fd00::8/128 on S8, and this will be the reference IPv6 address for N8
+
+### Root's left child
+
+LC(<i>p</i>) = <i>p</i> - 2^(Rmax - 1 - R<i>p</i>)
+
+LC(8) = 8 - 2^(4 - 1 - 1) = 4 = 0100b
+
+N8's left child is N4
+
+On the ppp link to N4, we will announce ourselves to the child via the hostname:
+
+"slavebox-L8"
+
+### Root's right child
+
+RC(<i>p</i>) = <i>p</i> + 2^(Rmax - 1 - R<i>p</i>)
+
+RC(8) = 8 + 2^(4 - 1 - 1) = 12 = 1100b
+
+N8's right child is N12
+
+On the ppp link to N12, we will announce ourselves to the child via the hostname:
+
+"slavebox-R8"
+
+### Root node's routing table
+
+We apply the routing rule calculation described above on the root node of our example tree.
+
+Root node has ID <i>n</i>=8
+
+Node children's route prefix: P + R = 124 + 1 = 125
+
+Most significant bits mask for node's (left and right) children routes (rank R = 1):
+
+1000b
+
+#### Left interface routes
+
+Left child: LC(8) = 4 = 0100b
+
+0100b & 1000b = 0000b = 0x0
+
+Node's route with left child as next hop via left interface:
+
+* fd00::0/125
+
+#### Right interface routes
+
+Right child: RC(8) = 12 = 1100b
+
+1100b & 1000b = 1000b = 0x8
+
+Node's route with right child as next hop via right interface:
+
+* fd00::8/125
+
+#### Top interface route
+
+Node's route via parent as next hop via top interface:
+
+* default route
+
+We don't have a route to the parent node's site-local address, but this is the exception for root nodes.
+
+All other nodes will have (in addition to the default route) a host route to their parent
