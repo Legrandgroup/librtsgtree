@@ -328,3 +328,11 @@ Node's route via parent as next hop via top interface:
 
 * 192.168.0.128/30
 * default route
+
+### Visual representation
+
+Let's now illustrate both addressing and routing for the 192.168.0.0/24 subnet taken as example above.
+
+Such a tree will allow addressing 6 nodes at least (most unbalanced tree, nodes placed only in a daisy chain) or B=2^6-1=63 nodes at most (balanced tree).
+
+![Visual example for IPv4 balanced tree routing](/img/example_ipv4_routing.png?raw=true "Visual example for IPv4 balanced tree routing")
