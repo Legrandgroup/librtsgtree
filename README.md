@@ -126,7 +126,7 @@ The right child of N6 being: RC(6) = 6 + 2^(3-1-2) = 7
 
 # IPv4 addressing and routing in a binary tree
 
-[The integer example above](#Integer-case) is now applied to IPv4 addresses.
+[The integer example above](#integer-case) is now applied to IPv4 addresses.
 
 The specificities of IPv4 are that:
 
@@ -150,7 +150,7 @@ For example, on a /8 network, we have 32-8=24 bits for addressing, or 2^24 possi
 We will use /30 interconnecting segments (subnets), so host are encoded using A=2 bits within each /30 network.
 Icon
 
-> Small subnets (/31) for point to point links is discussed in RFC3021, in a effort to save IP addresses, in that case each interconnection network would use A=1 bit
+> Small subnets (/31) for point to point links is discussed in [RFC3021](https://tools.ietf.org/html/rfc3021), in a effort to save IP addresses, in that case each interconnection network would use A=1 bit
 > 
 > /31 subnets would give us an extra rank in the tree (with a /8 (P=8), we would be able to fit a tree with R<sub>max</sub> = 32 - P - A = 23). But because it may require adaptation of the operating system, it is safer to stick to /30 network, at least initially, reserving extreme addresses for network address and broadcast address, as it is done conventionally. This ensures that any implementation (linux kernel, lwip, etc..) will behave as expected.
 
@@ -234,7 +234,7 @@ Its uplink network is S32.
 > 
 > (11000000 10101000 00000000 10000010b & 11111100b)>>2 = 100000b = 32
 > 
-> From the node ID, we also can also calculate our rank calculation from node ID. In 100000b, there are 5 right bits set to 0, so b = 5:
+> From the node ID, we also can also calculate our [rank calculation from node ID](#rank-determination). In 100000b, there are 5 right bits set to 0, so b = 5:
 > 
 > R(32) = R<sub>max</sub> - 5 = 1
 
