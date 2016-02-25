@@ -39,7 +39,7 @@ We illustrate below the small binary tree made of these 7 nodes, interconnected 
    1     3 5     7
 ```
 
-On this figure, interconnecting networks segments are noted S*n*, and nodes (addressable and routing) are noted N*n*
+On this figure, interconnecting networks segments are noted S<i>n</i>, and nodes (addressable and routing) are noted N<i>n</i>
 
 Node numbering follows the uplink segment numbering (N*n* always has segment S*n* as uplink)
 
@@ -89,11 +89,10 @@ We count the right most 0 bits from the right of our node ID p, this count will 
 R*p* = R(p) = R<sub>max</sub> - b
 
 So let say we have b = 2 bits set to 0 (third least significant bit is 1), R(p) = R<sub>max</sub> - 2
-Icon
 
-If there is no bit set to 1, we assume b=R<sub>max</sub> (higher values for b should not be used, they would lead to a negative rank)
-
-In practice, we are not using the subnetwork with all values set to 0 (there is no node N0), so the case with b = R<sub>max</sub> should never occur.
+>If there is no bit set to 1, we assume b = R<sub>max</sub> (higher values for b should not be used, they would lead to a negative rank)
+>
+>In practice, we are not using the subnetwork with all values set to 0 (there is no node N0), so the case with b = R<sub>max</sub> should never occur.
 
 
 #### Left children
@@ -124,3 +123,213 @@ The right child of N4 will have an ID: RC(4) = 4 + 2^(3-1-1) = 6, thus this will
 The left child of N6 being: LC(6) = 6 - 2^(3-1-2) = 5
 
 The right child of N6 being: RC(6) = 6 + 2^(3-1-2) = 7
+
+# IPv4 addressing and routing in a binary tree
+
+The integer example above is now applied to IPv4 addresses.
+
+The specificities of IPv4 are that:
+
+* Nodes will be routing devices, but also addressable endpoints.
+* Network segments Sn between two nodes will have their own IPv4 subnet.
+* In this example, we only need to reach routing nodes, so addresses are only allocated for nodes.
+* Each network segment Sn will thus consist of a point-to-point link with two hosts (the two extremity nodes), these network segments will use /30 subnets.
+* By convention, within each /30 subnet, top hosts (path to the root) will take the low IP address inside the subnet, bottom hosts (children) will take the high IP address.
+* Also, nodes all have multiple addresses, but their *reference IPv4 address* used for communication should be the top one (the one used for the path to the root), as this is the only interface that must be up to be able to communicate with the outside.
+
+## IPv4 range to binary tree size
+
+We have a whole IPv4 range allocated for the tree, represented by the range's prefix length P.
+
+A /8 network would give P=8
+
+The individual addresses available with this prefix are encoded with (in IPv4) 32-P bits.
+
+For example, on a /8 network, we have 32-8=24 bits for addressing, or 2^24 possible combinations
+
+We will use /30 interconnecting segments (subnets), so host are encoded using A=2 bits within each /30 network.
+Icon
+
+> Small subnets (/31) for point to point links is discussed in RFC3021, in a effort to save IP addresses, in that case each interconnection network would use A=1 bit
+> 
+> /31 subnets would give us an extra rank in the tree (with a /8 (P=8), we would be able to fit a tree with Rmax = 32 - P - A = 23). But because it may require adaptation of the operating system, it is safer to stick to /30 network, at least initially, reserving extreme addresses for network address and broadcast address, as it is done conventionally. This ensures that any implementation (linux kernel, lwip, etc..) will behave as expected.
+
+Using /30 subnets, for a total /8 (P=8) IP network Rmax = 32 - P - A = 22
+
+## Routing applied to IPv4 binary trees
+
+The data can be exchanged within the binary tree from any node to any other.
+
+Nodes can generate their routing table automatically, given their node number n and rank Rn
+
+Indeed:
+
+* n allows us to know the associated top subnet Sn
+* n and Rn allow us to calculate child node numbers LC(n) and RC(n)
+* LC(n) and RC(n) allow us to know the associated subnets
+
+### Left and right routes (to children)
+
+We will setup a first routing rule to each child and its subchildren.
+
+We take LC(n), or RC(n) represent it in binary and left shift by A = 2 (to take into account the host bits required for interconnecting links addressing).
+
+We then keep only the Rn (rank) most significant bits by applying a "bitwise and" mask, this will be the base network for left and right child routes.
+
+The prefix for left and right child rules being P + R
+
+### Route up
+
+The next rule allows us to reach our parent subnet Sn, we will use n to compute the top network (use n, represent it in binary and left shift by A = 2 (to take host bits into account)).
+
+The prefix for the top rule will be 32 - A (/30)
+
+A last rule will be a default gateway via our parent to reach the part of the tree that is not below us.
+
+## Example using IPv4 private range 192.168.0.0/24
+
+In this example, we are using a /24 range:
+
+P = 24
+
+Interconnection networks are /30 subnets:
+
+A = 2
+
+Therefore our maximum depth is:
+
+Rmax = 32 - 24 - 2 = 6
+
+We thus have 6 bits for nodes numbering.
+
+B = 2^6 - 1 = 63
+
+### Root subnet
+
+Root node ID:
+
+n = 2^(6-1) = 32 = 100000b
+
+Root is thus N32
+
+Its uplink network is S32.
+
+
+Each node can actually guess its node ID based on the size of the tree (Rmax, that would be harcoded on all devices), and on the top interface subnetwork characteristics (that are provided when using ppp IPv4 configuration via ppp's LCP).
+
+A node can thus build all its configuration when the ppp link is brought up on the top interface:
+
+From the uplink network subnet, we apply a "bitwise and" mask with ((2^Rmax-1 << A), the result will be right shifted of A bits to get the Rmax bits of the network ID (Sn) and thus get the node ID (n)
+
+In our case, the root node will get IPv4 address 192.168.0.130/30 via ppp.
+
+It knows Rmax = 6, and we use /30 interconnecting subnets by convention (A = 2) thus the mask would be:
+
+2^6 - 1 << 2 = 11111100b
+
+We represent the IPv4 address 192.168.0.130 as binary:
+
+uint32(192.168.0.130) = ((192 * 256) + 168) * 65536) + 130 = 11000000 10101000 00000000 10000010b
+
+We apply the mask, then right shift:
+
+(11000000 10101000 00000000 10000010b & 11111100b)>>2 = 100000b = 32
+
+From the node ID, we also can also calculate our rank calculation from node ID. In 100000b, there are 5 right bits set to 0, so b = 5:
+
+R(32) = Rmax - 5 = 1
+
+ 
+
+ 
+
+S32 subnet prefix is built using the network ID (32) left shifted to give room for the 2 last bits (host ID)
+
+100000 00b
+
+We apply a "binary or" of this ID with the network prefix 192.168.0.0/24 and we will get the IPv4 range for S32:
+
+192.168.0.128/30
+
+As explained above, by convention, within this /30 subnet, N32 being the bottom host of S32, it will take the high IPv4:
+
+N32 will have IPv4 address 192.168.0.130/30 on S32, and this will be the reference IPv4 address for N32
+
+### Root's left child
+
+LC(p) = p - 2^(Rmax - 1 - Rp)
+
+LC(32) = 32 - 2^(6 - 1 - 1) = 16 = 010000b
+
+N32's left child is N16
+
+And the subnet between N32 and N16 is S16
+
+S16 subnet prefix is built using the network ID (16) left shifted to give room for the 2 last bits (host ID)
+
+010000 00b
+
+We apply a "binary or" of this ID with the network prefix 192.168.0.0/24 and we will get the IPv4 range for S16:
+
+192.168.0.64/30
+
+### Root's right child
+
+RC(p) = p + 2^(Rmax - 1 - Rp)
+
+RC(32) = 32 + 2^(6 - 1 - 1) = 48 = 110000b
+
+N32's right child is N48
+
+And the subnet between N32 and N48 is S48
+
+S48 subnet prefix is built using the network ID (48) left shifted to give room for the 2 last bits (host ID)
+
+110000 00b
+
+We apply a "binary or" of this ID with the network prefix 192.168.0.0/24 and we will get the IPv4 range for S48:
+
+192.168.0.192/30
+
+### Root node's routing table
+
+We apply the routing rule calculation described above on the root node of our example tree.
+
+Root node has ID n=32
+
+Node children's route prefix: P + R = 24 + 1 = 25
+
+Most significant bits mask for node's (left and right) children routes (rank R = 1):
+
+100000b
+
+#### Left interface routes
+
+Left child: LC(32) = 16 = 010000b
+
+(010000b & 100000b) << 2 = 00000000b = 0
+
+Node's route with left child as next hop via left interface:
+
+    192.168.0.0/25
+
+#### Right interface routes
+
+Right child: RC(32) = 48 = 110000b
+
+(110000b & 100000b) << 2 = 10000000b = 128
+
+Node's route with right child as next hop via right interface:
+
+    192.168.0.128/25
+
+#### Top interface route
+
+Top route: n = 32 = 100000b
+
+(100000 << 2) = 10000000b = 128
+
+Node's route via parent as next hop via top interface:
+
+    192.168.0.128/30
+    default route
