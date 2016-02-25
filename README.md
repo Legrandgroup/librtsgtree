@@ -126,7 +126,7 @@ The right child of N6 being: RC(6) = 6 + 2^(3-1-2) = 7
 
 # IPv4 addressing and routing in a binary tree
 
-[The integer example above](#Integer case) is now applied to IPv4 addresses.
+[The integer example above](#Integer-case) is now applied to IPv4 addresses.
 
 The specificities of IPv4 are that:
 
