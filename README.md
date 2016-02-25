@@ -597,6 +597,104 @@ Such a tree will allow addressing 4 nodes at least (most unbalanced tree, nodes 
 
 ![Visual example for IPv6 balanced tree routing](/img/example_ipv6_routing.png?raw=true "Visual example for IPv6 balanced tree routing")
 
+## Example using IPv6 site-local range fd00::/60 addressing tree nodes and per-node /64 local networks (A=64)
+
+In this example, we address /64 networks per tree node.
+
+We will use a /60 range:
+
+P = 60
+
+In this example, there are /64 IPv6 local network attached to each node.
+
+A = 64
+
+Therefore our maximum depth is:
+
+R<sub>max</sub> = 128 - 60 - 64 = 4
+
+We thus have 4 bits for nodes numbering.
+
+B = 2^4 - 1 = 15
+
+### Root subnet
+
+Root node ID:
+
+<i>n</i> = 2^(4-1) = 8 = 1000b
+
+Root is thus N8
+
+Its uplink network is S8.
+
+> The same note described in the A=0 case applies here for top-down characteristics propagation via hostnames
+
+As explained above, and on the contrary to the A=0 case, by convention, N8 will assign the IPv6 address for the node to the bottom network interface (local network, taking either the first IPv6 address in stateful mode, or a stateless IPv6 address if the local network is a /64):
+
+N8 will use an IPv6 address in the range fd00:0:0:8/64 on its bottom interface, and this will be the reference IPv6 address for N8
+
+### Root's left child
+
+LC(<i>p</i>) = <i>p</i> - 2^(R<sub>max</sub> - 1 - R<i>p</i>)
+
+We get the same values as in the A=0 case
+
+### Root's right child
+
+RC(<i>p</i>) = <i>p</i> + 2^(R<sub>max</sub> - 1 - R<i>p</i>)
+
+We get the same values as in the A=0 case
+
+### Root node's routing table
+
+We apply the routing rule calculation described above on the root node of our example tree.
+
+Root node has ID n=8
+
+Node children's route prefix: P + R = 60 + 1 = 61
+
+Most significant bits mask for node's (left and right) children routes (rank R = 1):
+
+1000b
+
+#### Left interface routes
+
+Left child: LC(8) = 4 = 0100b
+
+(0100b & 1000b) << 64 =  0x0
+
+Node's route with left child as next hop via left interface:
+
+* fd00:0:0:0::/61
+
+#### Right interface routes
+
+Right child: RC(8) = 12 = 1100b
+
+(1100b & 1000b) << 64 = 0x8 0000 0000 0000 0000
+
+Node's route with right child as next hop via right interface:
+
+* fd00:0:0:8::/61
+
+#### Top interface route
+
+Node's route via parent as next hop via top interface:
+
+* default route
+
+> We don't have a route to the parent node's site-local address, but this is the exception for root nodes.
+>
+> All other nodes will have (in addition to the default route) a host route to their parent
+
+### Visual representation
+
+Let's now illustrate both addressing and routing for the fd00::/60 subnet taken as example above.
+
+Such a tree will allow addressing 4 nodes at least (most unbalanced tree, nodes placed only in a daisy chain) or B=2^4-1=15 nodes at most (balanced tree).
+
+![Visual example for IPv6 balanced tree routing with locally attached /64 networks](/img/example_ipv6_routing_with_local_64_attached_net.png?raw=true "Visual example for IPv6 balanced tree routing with locally attached /64 networks")
+
 Compared to the previous IPv6 visual representation,there are /64 networks attached to each bottom interface of each tree node (we detail the range for this local network, vertically in black, under each node)
 
 ## Using the maximum IPv6 site-local range fd00::/8
