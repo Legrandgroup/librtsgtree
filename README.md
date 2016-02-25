@@ -516,7 +516,7 @@ Its uplink network is S8.
 >   Once we know our node ID (12), we also can also calculate our [rank calculation from node ID](#rank-determination). In 00001100b, there are 2 right bits set to 0, so b = 2:
 >   R(12) = R<sub>max</sub> - 2
 > * Let's say we receive "smartbox" as the parent hostname, we will elect ourselves as the root ID (parent hostname does not match pattern *-[LR]n).
->   We thus use the root node ID calculation:
+>   We thus use the [root node ID calculation](#root-node-properties):
 >   <i>n</i> = 2^(R<sub>max</sub>-1)
 
 As explained above, by convention, N8 will assign the site-local IPv6 address for the node on the top network interface (the interface to S8):
@@ -699,7 +699,7 @@ Compared to the previous IPv6 visual representation,there are /64 networks attac
 
 ## Using the maximum IPv6 site-local range fd00::/8
 
-By choosing addresses in range fd00::/8 (private network RFC4193) a prefix can be randomly generated (see https://en.wikipedia.org/wiki/Unique_local_address#Definition)
+By choosing addresses in range fd00::/8 (private network [RFC4193](https://tools.ietf.org/html/rfc4193)) a prefix can be randomly generated (see https://en.wikipedia.org/wiki/Unique_local_address#Definition)
 
 We have two solutions:
 
