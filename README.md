@@ -360,7 +360,7 @@ By choosing addresses in range 10.0.0.0/30 (private network [RFC1918](https://to
 
 Such a tree will allow addressing 22 nodes at least (most unbalanced tree, nodes placed only in a daisy chain) or B=2^22-1=4194303 nodes at most (balanced tree).
 
-Subnet and hosts addresses are :
+Subnet and hosts addresses are:
 
 10.0.0.0 (10.0.0.0 reserved for network, 10.0.0.3 reserved for broadcast, 10.0.0.1 and 10.0.0.2 for hosts)
 
@@ -382,10 +382,12 @@ Subnet and hosts addresses are :
 
 10.0.1.252
 
-  ...
+...
+
 10.0.255.252
 
 ...
+
 10.255.255.252
 
 # IPv6 addressing and routing in a binary tree
@@ -586,3 +588,12 @@ Node's route via parent as next hop via top interface:
 We don't have a route to the parent node's site-local address, but this is the exception for root nodes.
 
 All other nodes will have (in addition to the default route) a host route to their parent
+
+### Visual representation
+
+Let's now illustrate both addressing and routing for the fd00::/124 subnet taken as example above.
+
+Such a tree will allow addressing 4 nodes at least (most unbalanced tree, nodes placed only in a daisy chain) or B=2^4-1=15 nodes at most (balanced tree).
+
+![Visual example for IPv6 balanced tree routing](/img/example_ipv6_routing.png?raw=true "Visual example for IPv6 balanced tree routing")
+
