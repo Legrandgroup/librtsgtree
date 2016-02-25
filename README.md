@@ -17,7 +17,7 @@ The addressing described here is done so that the routing rules can be generated
 
 ## Integer case
 
-Let's build a tree with 7 nodes N1, N2, N3, N4, N5, N6, N7 (the number of nodes will be represented by a value B, that must be a power of 2 **minus 1**: B=2^Rmax - 1)
+Let's build a tree with 7 nodes N1, N2, N3, N4, N5, N6, N7 (the number of nodes will be represented by a value B, that must be a power of 2 **minus 1**: B=2^R<sub>max</sub> - 1)
 
 We illustrate below the small binary tree made of these 7 nodes, interconnected with 7 network segments (the top-most segment being the entry into our tree)
 
@@ -154,7 +154,7 @@ Icon
 > 
 > /31 subnets would give us an extra rank in the tree (with a /8 (P=8), we would be able to fit a tree with R<sub>max</sub> = 32 - P - A = 23). But because it may require adaptation of the operating system, it is safer to stick to /30 network, at least initially, reserving extreme addresses for network address and broadcast address, as it is done conventionally. This ensures that any implementation (linux kernel, lwip, etc..) will behave as expected.
 
-Using /30 subnets, for a total /8 (P=8) IP network Rmax = 32 - P - A = 22
+Using /30 subnets, for a total /8 (P=8) IP network R<sub>max</sub> = 32 - P - A = 22
 
 ## Routing applied to IPv4 binary trees
 
@@ -214,11 +214,11 @@ Root is thus N32
 
 Its uplink network is S32.
 
-> Each node can actually guess its node ID based on the size of the tree (Rmax, that would be harcoded on all devices), and on the top interface subnetwork characteristics (that are provided when using ppp IPv4 configuration via ppp's LCP).
+> Each node can actually guess its node ID based on the size of the tree (R<sub>max</sub>, that would be harcoded on all devices), and on the top interface subnetwork characteristics (that are provided when using ppp IPv4 configuration via ppp's LCP).
 > 
 > A node can thus build all its configuration when the ppp link is brought up on the top interface:
 > 
-> From the uplink network subnet, we apply a "bitwise and" mask with ((2^R<sub>max</sub> - 1 << A), the result will be right shifted of A bits to get the Rmax bits of the network ID (S<i>n</i>) and thus get the node ID (<i>n</i>)
+> From the uplink network subnet, we apply a "bitwise and" mask with ((2^R<sub>max</sub> - 1 << A), the result will be right shifted of A bits to get the R<sub>max</sub> bits of the network ID (S<i>n</i>) and thus get the node ID (<i>n</i>)
 > 
 > In our case, the root node will get IPv4 address 192.168.0.130/30 via ppp.
 > 
@@ -422,7 +422,7 @@ For the IPv6 case, interconnecting subnets are thus inexistant (we will not allo
 
 Either we directly address the top interface of nodes (A=0) or we address nodes using their bottom interface (A>0)
 
-We will build a tree with Rmax = 128 - P - A
+We will build a tree with R<sub>max</sub> = 128 - P - A
 
 For example, on a /48 network (P=48), we have 128-48=80 bits for addressing, or 2^80 possible nodes if A=0, or 2^16 possible nodes if A=64 (we allocate a /64 prefix reachable behind each node)
 
@@ -442,7 +442,7 @@ Indeed:
 
 We will setup a first routing rule to each child and its subchildren.
 
-1) Case when our children are not at the very bottom of the tree (R<Rmax-1)
+1) Case when our children are not at the very bottom of the tree (R<R<sub>max</sub>-1)
 
 The algorithm is the same as the IPv4 case
 
@@ -452,7 +452,7 @@ We then keep only the R<i>n</i> (rank) most significant bits by applying a "bitw
 
 The prefix for left and right child rules being P + R
 
-2) Case when our children are the leaves of the tree (R=Rmax-1)
+2) Case when our children are the leaves of the tree (R=R<sub>max</sub>-1)
 
 We only have one host to address on left and one on right interfaces, so we will directly calculate the child's IPv6 address and add a route to this child using:
 
@@ -479,7 +479,7 @@ A = 0
 
 Therefore our maximum depth is:
 
-Rmax = 128 - 124 = 4
+R<sub>max</sub> = 128 - 124 = 4
 
 We thus have 4 bits for nodes numbering.
 
@@ -509,15 +509,15 @@ Its uplink network is S8.
 > 
 > For example: "slavebox-R8" sent by node N8 (which has hostname "slavebox") to its right child
 > 
-> If no *-[RL]n pattern is found in the parent hostname by the child, the child will assume it is the root node, and compute its node ID using the 2^(Rmax - 1) formula.
+> If no *-[RL]n pattern is found in the parent hostname by the child, the child will assume it is the root node, and compute its node ID using the 2^(R<sub>max</sub> - 1) formula.
 > 
 > * Let's say we receive "slavebox-R8" as per the example above, we compute our own node ID:
 >   <i>n</i> = RC(8) = 12 = 00001100b
 >   Once we know our node ID (12), we also can also calculate our rank calculation from node ID. In 00001100b, there are 2 right bits set to 0, so b = 2:
->   R(12) = Rmax - 2
+>   R(12) = R<sub>max</sub> - 2
 > * Let's say we receive "smartbox" as the parent hostname, we will elect ourselves as the root ID (parent hostname does not match pattern *-[LR]n).
 >   We thus use the root node ID calculation:
->   <i>n</i> = 2^(Rmax-1)
+>   <i>n</i> = 2^(R<sub>max</sub>-1)
 
 As explained above, by convention, N8 will assign the site-local IPv6 address for the node on the top network interface (the interface to S8):
 
@@ -525,7 +525,7 @@ N8 will have IPv6 address fd00::8/128 on S8, and this will be the reference IPv6
 
 ### Root's left child
 
-LC(<i>p</i>) = <i>p</i> - 2^(Rmax - 1 - R<i>p</i>)
+LC(<i>p</i>) = <i>p</i> - 2^(R<sub>max</sub> - 1 - R<i>p</i>)
 
 LC(8) = 8 - 2^(4 - 1 - 1) = 4 = 0100b
 
@@ -537,7 +537,7 @@ On the ppp link to N4, we will announce ourselves to the child via the hostname:
 
 ### Root's right child
 
-RC(<i>p</i>) = <i>p</i> + 2^(Rmax - 1 - R<i>p</i>)
+RC(<i>p</i>) = <i>p</i> + 2^(R<sub>max</sub> - 1 - R<i>p</i>)
 
 RC(8) = 8 + 2^(4 - 1 - 1) = 12 = 1100b
 
