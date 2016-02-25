@@ -56,14 +56,12 @@ Let's call:
 * A: for IPv4 trees this is the number of host bits of the network segments (not used for the integer case, but used later on for IPv4 routing)
   for IPv6 trees, this is the number of bits allocated for local networks attached to each node
 
-<fieldset>
-Warning:
-A has thus different meanings between IPv4 trees and IPv6 trees.
-In IPv4, it is a provision of bits to address interconnecting network segments inside the addressing space of the tree
-In IPv6, we don't need to use the addressing space of the tree, we use link-local IPv6, however, we can then also benefit from local network attached to tree nodes. Each node thus route to a local network which is allocated a prefix of /A (A=64 recommended)
-
-In the small example above, B = 7 = ( 2^3 ) - 1, thus R<sub>max</sub> = 3 (the bottom rank is rank 3)
-</fieldset>
+> Warning:
+> A has thus different meanings between IPv4 trees and IPv6 trees.
+> In IPv4, it is a provision of bits to address interconnecting network segments inside the addressing space of the tree
+> In IPv6, we don't need to use the addressing space of the tree, we use link-local IPv6, however, we can then also benefit from local network attached to tree nodes. Each node thus route to a local network which is allocated a prefix of /A (A=64 recommended)
+>
+> In the small example above, B = 7 = ( 2^3 ) - 1, thus R<sub>max</sub> = 3 (the bottom rank is rank 3)
 
 ### Root node properties
 
@@ -77,3 +75,52 @@ The root can thus self-generate its ID by knowing B (or R<sub>max</sub>).
 
 
 Once the root is determined, we can number all subnodes in the tree.
+
+### Determination of children nodes properties
+
+Based on the value of its parent node number *p*, and parent node rank R*p*, and whether its is the left of right child of its parent node, every node can then define its own properties (ID and network segment)
+
+#### Rank determination
+
+Practically, R*p* can even be calculated if we know *p* and R<sub>max</sub>:
+
+We count the right most 0 bits from the right of our node ID p, this count will be called b
+
+R*p* = R(p) = R<sub>max</sub> - b
+
+So let say we have b = 2 bits set to 0 (third least significant bit is 1), R(p) = R<sub>max</sub> - 2
+Icon
+
+If there is no bit set to 1, we assume b=R<sub>max</sub> (higher values for b should not be used, they would lead to a negative rank)
+
+In practice, we are not using the subnetwork with all values set to 0 (there is no node N0), so the case with b = R<sub>max</sub> should never occur.
+
+
+#### Left children
+
+As a left child, a node will get its node number:
+
+*n* = LC(p) = *p* - 2^(R<sub>max</sub> - 1 - R*p*)
+
+#### Right children
+
+As a left child, a node will get its node number:
+
+*n* = RC(p) = *p* + 2^(R<sub>max</sub> - 1 - R*p*)
+
+### Example
+
+For example, for the left child of N4 (the root node in our example):
+
+* *p* = 4
+* R*p* = 1
+
+LC(4) = 4 - 2^(3-1-1) = 4 - 2 = 2
+
+Left child for N4 is thus N2
+
+The right child of N4 will have an ID: RC(4) = 4 + 2^(3-1-1) = 6, thus this will be node N6
+
+The left child of N6 being: LC(6) = 6 - 2^(3-1-2) = 5
+
+The right child of N6 being: RC(6) = 6 + 2^(3-1-2) = 7
