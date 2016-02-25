@@ -337,10 +337,10 @@ Such a tree will allow addressing 6 nodes at least (most unbalanced tree, nodes 
 
 ![Visual example for IPv4 balanced tree routing](/img/example_ipv4_routing.png?raw=true "Visual example for IPv4 balanced tree routing")
 
-* Nodes are represented by a blue circle containing N<i>n</i> (with <i>n</i> being the node ID)
+* Nodes are represented by a blue circle containing N<i>n</i> (with <i>n</i> being the node ID)<br>
   ![A node](/img/node.png?raw=true "A node")
 
-* Interconnecting segments S<i>n</i> (/30 subnets) are represented within blue rectangles
+* Interconnecting segments S<i>n</i> (/30 subnets) are represented within blue rectangles<br>
   At the bottom of the segment, the network ID part is displayed in binary (the last 2 bits addressing the hosts within the network, and the global /24 bit prefix are both omitted)
   On this binary value, a blue vertical line is delimiting the left bits used for routing by the parent node (0 in the example below)
   At the top, on top nodes, is displayed the last byte of the IPv4 subnetwork in decimal, with a /30 prefix (192.168.0.64/30 for the example below)
