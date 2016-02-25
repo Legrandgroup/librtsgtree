@@ -39,19 +39,19 @@ We illustrate below the small binary tree made of these 7 nodes, interconnected 
    1     3 5     7
 ```
 
-On this figure, interconnecting networks segments are noted Sn, and nodes (addressable and routing) are noted Nn
+On this figure, interconnecting networks segments are noted S*n*, and nodes (addressable and routing) are noted N*n*
 
-Node numbering follows the uplink segment numbering (Nn always has segment Sn as uplink)
+Node numbering follows the uplink segment numbering (N*n* always has segment S*n* as uplink)
 
 Let's call:
 
-* Nn: the identifier of each node n (with 1=n=B), each node having an ID that is unique (inside the tree)
-* Sn: network segment between node Nn and its parent node
-* LC(n): left child network segment for node Nn (and thus also left child node ID)
-* RC(n): right child network segment for node Nn (and thus also right child node ID)
+* N*n*: the identifier of each node *n* (with 1>=*n*>=B), each node having an ID that is unique (inside the tree)
+* S*n*: network segment between node N*n* and its parent node
+* LC(*n*): left child network segment for node N*n* (and thus also left child node ID)
+* RC(*n*): right child network segment for node N*n* (and thus also right child node ID)
 * R<sub>max</sub>: the maximum rank of a node in the tree (aka the tree depth)
-* B: the total number of nodes addressed in the tree (must be a power of 2 minus 1: B=2^Rmax - 1)
-* R: the rank of a node in the tree (root node has R=1, bottom nodes have R=Rmax)
+* B: the total number of nodes addressed in the tree (must be a power of 2 minus 1: B=2^R<sub>max</sub> - 1)
+* R: the rank of a node in the tree (root node has R=1, bottom nodes have R=R<sub>max</sub>)
 * P: the prefix length (not used for the integer case, but used later on for IPv4 and IPv6 routing)
 * A: for IPv4 trees this is the number of host bits of the network segments (not used for the integer case, but used later on for IPv4 routing)
   for IPv6 trees, this is the number of bits allocated for local networks attached to each node
