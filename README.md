@@ -288,7 +288,7 @@ We apply a "binary or" of this ID with the network prefix 192.168.0.0/24 and we 
 
 ### Root node's routing table
 
-We apply the routing rule calculation described above on the root node of our example tree.
+We apply the [routing rule calculation described above](#routing-applied-to-ipv4-binary-trees) on the root node of our example tree.
 
 Root node has ID <i>n</i>=32
 
@@ -444,7 +444,7 @@ We will setup a first routing rule to each child and its subchildren.
 
 1) Case when our children are not at the very bottom of the tree (R<R<sub>max</sub>-1)
 
-The algorithm is the same as the IPv4 case
+The algorithm is the same as [the IPv4 case](#left-and-right-routes-to-children)
 
 We take LC(<i>n</i>), or RC(<i>n</i>) represent it in binary.
 
@@ -513,7 +513,7 @@ Its uplink network is S8.
 > 
 > * Let's say we receive "slavebox-R8" as per the example above, we compute our own node ID:
 >   <i>n</i> = RC(8) = 12 = 00001100b
->   Once we know our node ID (12), we also can also calculate our rank calculation from node ID. In 00001100b, there are 2 right bits set to 0, so b = 2:
+>   Once we know our node ID (12), we also can also calculate our [rank calculation from node ID](#rank-determination). In 00001100b, there are 2 right bits set to 0, so b = 2:
 >   R(12) = R<sub>max</sub> - 2
 > * Let's say we receive "smartbox" as the parent hostname, we will elect ourselves as the root ID (parent hostname does not match pattern *-[LR]n).
 >   We thus use the root node ID calculation:
