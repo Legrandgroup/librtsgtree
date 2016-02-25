@@ -17,7 +17,7 @@ The addressing described here is done so that the routing rules can be generated
 
 ## Integer case
 
-Let's build a tree with 7 nodes N1, N2, N3, N4, N5, N6, N7 (the number of nodes will be represented by a value B, that must be a power of 2 _minus 1_: B=2^Rmax - 1)
+Let's build a tree with 7 nodes N1, N2, N3, N4, N5, N6, N7 (the number of nodes will be represented by a value B, that must be a power of 2 **minus 1**: B=2^Rmax - 1)
 
 We illustrate below the small binary tree made of these 7 nodes, interconnected with 7 network segments (the top-most segment being the entry into our tree)
 
@@ -61,4 +61,4 @@ A has thus different meanings between IPv4 trees and IPv6 trees.
 In IPv4, it is a provision of bits to address interconnecting network segments inside the addressing space of the tree
 In IPv6, we don't need to use the addressing space of the tree, we use link-local IPv6, however, we can then also benefit from local network attached to tree nodes. Each node thus route to a local network which is allocated a prefix of /A (A=64 recommended)
 
-In the small example above, B = 7 = (2^3)-1, thus R<sub>max</sub> = 3 (the bottom rank is rank 3)
+In the small example above, B = 7 = ( 2^3 ) - 1, thus R<sub>max</sub> = 3 (the bottom rank is rank 3)
