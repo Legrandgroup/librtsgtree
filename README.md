@@ -597,3 +597,21 @@ Such a tree will allow addressing 4 nodes at least (most unbalanced tree, nodes 
 
 ![Visual example for IPv6 balanced tree routing](/img/example_ipv6_routing.png?raw=true "Visual example for IPv6 balanced tree routing")
 
+Compared to the previous IPv6 visual representation,there are /64 networks attached to each bottom interface of each tree node (we detail the range for this local network, vertically in black, under each node)
+
+## Using the maximum IPv6 site-local range fd00::/8
+
+By choosing addresses in range fd00::/8 (private network RFC4193) a prefix can be randomly generated (see https://en.wikipedia.org/wiki/Unique_local_address#Definition)
+
+We have two solutions:
+
+* We provide a 64 bit-wide network to each node N of the tree, allowing each of these nodes to map their field bus endpoints with IPv6 /64 stateless autoconfigured addresses.
+  This leaves us with 56 bits to address our tree (128 - 8 - 64)
+* Or we use the entire fd00::/8 prefix
+  This leaves us with the next 120 bits to address our tree (128 - 8)
+
+> If there is a /64 prefix for each slavebox, we can thus directly address any device located on the field bus (Zigbee or other). The feasability of this solution needs to be checked
+> 
+> IPv6 also has the advantage of being able to address routing nodes (slaveboxes interfaces) outside of the global addressing space (using link-local addressing fe80::/64)
+> 
+> In that case, we will probably have to apply case 1 even to parents of leaves when calculating routes down to the last rank.
