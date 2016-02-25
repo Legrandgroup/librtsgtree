@@ -56,9 +56,24 @@ Let's call:
 * A: for IPv4 trees this is the number of host bits of the network segments (not used for the integer case, but used later on for IPv4 routing)
   for IPv6 trees, this is the number of bits allocated for local networks attached to each node
 
+<fieldset>
 Warning:
 A has thus different meanings between IPv4 trees and IPv6 trees.
 In IPv4, it is a provision of bits to address interconnecting network segments inside the addressing space of the tree
 In IPv6, we don't need to use the addressing space of the tree, we use link-local IPv6, however, we can then also benefit from local network attached to tree nodes. Each node thus route to a local network which is allocated a prefix of /A (A=64 recommended)
 
 In the small example above, B = 7 = ( 2^3 ) - 1, thus R<sub>max</sub> = 3 (the bottom rank is rank 3)
+</fieldset>
+
+### Root node properties
+
+We can get the identity of the root node ID:
+
+n = (B+1)/2 = 2^(R<sub>max</sub>-1) = 2^2 = 4
+
+(N4 is the root node and has segment S4 as uplink).
+
+The root can thus self-generate its ID by knowing B (or R<sub>max</sub>).
+
+
+Once the root is determined, we can number all subnodes in the tree.
