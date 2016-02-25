@@ -218,7 +218,7 @@ Its uplink network is S32.
 > 
 > A node can thus build all its configuration when the ppp link is brought up on the top interface:
 > 
-> From the uplink network subnet, we apply a "bitwise and" mask with ((2^R<sub>max</sub>-1 << A), the result will be right shifted of A bits to get the Rmax bits of the network ID (S<i>n</i>) and thus get the node ID (<i>n</i>)
+> From the uplink network subnet, we apply a "bitwise and" mask with ((2^R<sub>max</sub> - 1 << A), the result will be right shifted of A bits to get the Rmax bits of the network ID (S<i>n</i>) and thus get the node ID (<i>n</i>)
 > 
 > In our case, the root node will get IPv4 address 192.168.0.130/30 via ppp.
 > 
@@ -333,6 +333,34 @@ Node's route via parent as next hop via top interface:
 
 Let's now illustrate both addressing and routing for the 192.168.0.0/24 subnet taken as example above.
 
-Such a tree will allow addressing 6 nodes at least (most unbalanced tree, nodes placed only in a daisy chain) or B=2^6-1=63 nodes at most (balanced tree).
+Such a tree will allow addressing 6 nodes at least (most unbalanced tree, nodes placed only in a daisy chain) or B=2^6 - 1=63 nodes at most (balanced tree).
 
 ![Visual example for IPv4 balanced tree routing](/img/example_ipv4_routing.png?raw=true "Visual example for IPv4 balanced tree routing")
+
+* Nodes are represented by a blue circle containing N<i>n</i> (with <i>n</i> being the node ID)
+  
+  ![A node](/img/node.png?raw=true "A node")
+
+* Interconnecting segments S<i>n</i> (/30 subnets) are represented within blue rectangles
+  
+  At the bottom of the segment, the network ID part is displayed in binary (the last 2 bits addressing the hosts within the network, and the global /24 bit prefix are both omitted)
+  
+  On this binary value, a blue vertical line is delimiting the left bits used for routing by the parent node (0 in the example below)
+  
+  At the top, on top nodes, is displayed the last byte of the IPv4 subnetwork in decimal, with a /30 prefix (192.168.0.64/30 for the example below)
+  
+  ![An interconnecting segment](/img/node.png?raw=true "An interconnecting segment")
+
+* Most node have several network interfaces, and thus several IP addresses, they are represented for each interface in both binary and dotted decimal form + prefix.
+  
+  On the top representation, the first 3 bytes between parenthesis correspond to the network prefix, and are displayed in decimal form for lisibility. The remaining bits contain the variable part, with the host part of the /30 network highlighted (host 01b within a network ID of 010000b in the example below)
+  
+  ![A network interface IP address](/img/interface_addr.png?raw=true "A network interface IP address")
+
+* Routing rules are displayed next to each node, for the interface where the packet should be sent.
+  
+  The example below means the node should route all traffic to 192.168.0.0/25 to this interface's next hop (which is the other extremity of the point-to-point link).
+  
+  ![An IP route](/img/route.png?raw=true "An IP route")
+
+
