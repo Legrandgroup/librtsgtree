@@ -4,8 +4,25 @@
 
 A library to handle RouTing in a Self Generated manner for binary trees.
 
-See the details of the algorithm and documentation of this project on the Confluence webpage:
-http://sirius.limousin.fr.grpleg.com/confluence/display/A2/IP+over+RS485+addressing+and+routing
+In order to compile this library, just type:
+```
+make clean all
+```
+
+This will result in a static library called `librtsgtree.a`.
+There is no support for shared library but this could easily be implemented in the Makefile.
+
+Code documentation is formatted using doxygen and can be generated using:
+```
+make doxygen-doc
+```
+
+Unit tests can be run by issueing:
+```
+make check
+```
+
+The lines below describe the algorithm for this project.
 
 # Binary-tree distributed routing
 
