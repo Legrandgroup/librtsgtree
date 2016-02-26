@@ -204,7 +204,7 @@ B = 2^6 - 1 = 63 nodes in this tree
 
 Root node ID:
 
-<i>n</i> = 2^(6-1) = <font color="green">32</font> = 100000b
+<i>n</i> = 2^(6-1) = <span color="green;">32</span> = 100000b
 
 Root is thus N<span style="color:green;">32</span>
 
@@ -481,11 +481,11 @@ B = 2^4 - 1 = 15
 
 Root node ID:
 
-n = 2^(4-1) = <font color="green">8</font> = 1000b
+n = 2^(4-1) = <span color="green;">8</span> = 1000b
 
-Root is thus N<font color="green">8</font>
+Root is thus N<span color="green;">8</span>
 
-Its uplink network is S<font color="green">8</font>.
+Its uplink network is S<span color="green;">8</span>.
 
 > Each node can actually get its node ID via parent characteristics (such as the parent ppp hostname configuration received via ppp's LCP).
 > 
@@ -499,11 +499,11 @@ Its uplink network is S<font color="green">8</font>.
 > * [LR] being letter L or R if we are handling the left of right node respectively
 > * <i>n</i> being the node ID of the parent
 > 
-> For example: "slavebox-R8" sent by node N8 (which has hostname "slavebox") to its right child
+> For example: "node-R8" sent by node N8 (which has hostname "node") to its right child
 > 
 > If no *-[RL]n pattern is found in the parent hostname by the child, the child will assume it is the root node, and compute its node ID using the 2^(R<sub>max</sub> - 1) formula.
 > 
-> * Let's say we receive "slavebox-R8" as per the example above, we compute our own node ID:
+> * Let's say we receive "node-R8" as per the example above, we compute our own node ID:
 >   <i>n</i> = RC(8) = 12 = 00001100b
 >   Once we know our node ID (12), we also can also calculate our [rank calculation from node ID](#rank-determination). In 00001100b, there are 2 right bits set to 0, so b = 2:
 >   R(12) = R<sub>max</sub> - 2
@@ -525,7 +525,7 @@ N8's left child is N4
 
 On the ppp link to N4, we will announce ourselves to the child via the hostname:
 
-"slavebox-L8"
+"node-L8"
 
 ### Root's right child
 
@@ -537,7 +537,7 @@ N8's right child is N12
 
 On the ppp link to N12, we will announce ourselves to the child via the hostname:
 
-"slavebox-R8"
+"node-R8"
 
 ### Root node's routing table
 
@@ -577,9 +577,10 @@ Node's route via parent as next hop via top interface:
 
 * default route
 
-We don't have a route to the parent node's site-local address, but this is the exception for root nodes.
-
-All other nodes will have (in addition to the default route) a host route to their parent
+> Warning:
+> We don't have a route to the parent node's site-local address, but this is the exception for root nodes.
+> 
+> All other nodes will have (in addition to the default route) a host route to their parent
 
 ### Visual representation
 
@@ -619,27 +620,27 @@ Root is thus N8
 
 Its uplink network is S8.
 
-> The same note described in the A=0 case applies here for top-down characteristics propagation via hostnames
+> The same note described in the [A=0 case](#example-using-ipv6-site-local-range-fd00124-addressing-only-tree-nodes-a0) applies here for top-down characteristics propagation via hostnames
 
-As explained above, and on the contrary to the A=0 case, by convention, N8 will assign the IPv6 address for the node to the bottom network interface (local network, taking either the first IPv6 address in stateful mode, or a stateless IPv6 address if the local network is a /64):
+As explained above, and on the contrary to the [A=0 case](#example-using-ipv6-site-local-range-fd00124-addressing-only-tree-nodes-a0), by convention, N8 will assign the IPv6 address for the node to the bottom network interface (local network, taking either the first IPv6 address in stateful mode, or a stateless IPv6 address if the local network is a /64):
 
-N8 will use an IPv6 address in the range fd00:0:0:8/64 on its bottom interface, and this will be the reference IPv6 address for N8
+N8 will use an IPv6 address in the range fd00:0:0:8/64 on its bottom interface, and this will be the *reference IPv6 address* for N8
 
 ### Root's left child
 
 LC(<i>p</i>) = <i>p</i> - 2^(R<sub>max</sub> - 1 - R<i>p</i>)
 
-We get the same values as in the A=0 case
+We get the same values as in the [A=0 case](#example-using-ipv6-site-local-range-fd00124-addressing-only-tree-nodes-a0)
 
 ### Root's right child
 
 RC(<i>p</i>) = <i>p</i> + 2^(R<sub>max</sub> - 1 - R<i>p</i>)
 
-We get the same values as in the A=0 case
+We get the same values as in the [A=0 case](#example-using-ipv6-site-local-range-fd00124-addressing-only-tree-nodes-a0)
 
 ### Root node's routing table
 
-We apply the routing rule calculation described above on the root node of our example tree.
+We apply the [routing rule calculation described above](#routing-applied-to-ipv6-binary-trees) on the root node of our example tree.
 
 Root node has ID n=8
 
@@ -675,6 +676,7 @@ Node's route via parent as next hop via top interface:
 
 * default route
 
+> Warning:
 > We don't have a route to the parent node's site-local address, but this is the exception for root nodes.
 >
 > All other nodes will have (in addition to the default route) a host route to their parent
@@ -683,11 +685,11 @@ Node's route via parent as next hop via top interface:
 
 Let's now illustrate both addressing and routing for the fd00::/60 subnet taken as example above.
 
-Such a tree will allow addressing 4 nodes at least (most unbalanced tree, nodes placed only in a daisy chain) or B=2^4-1=15 nodes at most (balanced tree).
+Such a tree will allow addressing 4 nodes at least (most unbalanced tree, nodes placed only in a daisy chain) or B = 2^4-1 = 15 nodes at most (balanced tree).
 
 ![Visual example for IPv6 balanced tree routing with locally attached /64 networks](/img/example_ipv6_routing_with_local_64_attached_net.png?raw=true "Visual example for IPv6 balanced tree routing with locally attached /64 networks")
 
-Compared to the previous IPv6 visual representation,there are /64 networks attached to each bottom interface of each tree node (we detail the range for this local network, vertically in black, under each node)
+Compared to the previous IPv6 visual representation, there are /64 networks attached to each bottom interface of each tree node (we detail the range for this local network, vertically in black, under each node)
 
 ## Using the maximum IPv6 site-local range fd00::/8
 
@@ -700,8 +702,9 @@ We have two solutions:
 * Or we use the entire fd00::/8 prefix
   This leaves us with the next 120 bits to address our tree (128 - 8)
 
-> If there is a /64 prefix for each slavebox, we can thus directly address any device located on the field bus (Zigbee or other). The feasability of this solution needs to be checked
+> Warning:
+> If there is a /64 prefix for each node, we can thus directly address any device located on the field bus (Zigbee or other). The feasability of this solution needs to be checked
 > 
-> IPv6 also has the advantage of being able to address routing nodes (slaveboxes interfaces) outside of the global addressing space (using link-local addressing fe80::/64)
+> IPv6 also has the advantage of being able to address routing nodes (nodes' own interfaces) outside of the global addressing space (using link-local addressing fe80::/64)
 > 
 > In that case, we will probably have to apply case 1 even to parents of leaves when calculating routes down to the last rank.
