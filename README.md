@@ -44,7 +44,6 @@ On this figure, interconnecting networks segments are noted S<i>n</i>, and nodes
 Node numbering follows the uplink segment numbering (N<i>n</i> always has segment S<i>n</i> as uplink)
 
 Let's call:
-
 * N<i>n</i>: the identifier of each node <i>n</i> (with 1 >= <i>n</i> >= B), each node having an ID that is unique (inside the tree)
 * S<i>n</i>: network segment between node N<i>n</i> and its parent node
 * LC(<i>n</i>): left child network segment for node N<i>n</i> (and thus also left child node ID)
@@ -58,15 +57,19 @@ Let's call:
 
 > Warning:
 > A has thus different meanings between IPv4 trees and IPv6 trees.
+> 
 > In IPv4, it is a provision of bits to address interconnecting network segments inside the addressing space of the tree
+> 
 > In IPv6, we don't need to use the addressing space of the tree, we use link-local IPv6, however, we can then also benefit from local network attached to tree nodes. Each node thus route to a local network which is allocated a prefix of /A (A=64 recommended)
->
+> 
 > In the small example above, B = 7 = ( 2^3 ) - 1, thus R<sub>max</sub> = 3 (the bottom rank is rank 3)
 
 ### Root node properties
 
 We can get the identity of the root node ID:
+
 n = (B+1)/2 = 2^(R<sub>max</sub>-1) = 2^2 = 4
+
 (N4 is the root node and has segment S4 as uplink).
 
 The root can thus self-generate its ID by knowing B (or R<sub>max</sub>).
@@ -80,7 +83,9 @@ Based on the value of its parent node number <i>p</i>, and parent node rank R<i>
 #### Rank determination
 
 Practically, R<i>p</i> can even be calculated if we know <i>p</i> and R<sub>max</sub>:
+
 We count the right most 0 bits from the right of our node ID p, this count will be called b
+
 R<i>p</i> = R(<i>p</i>) = R<sub>max</sub> - b
 
 So let say we have b = 2 bits set to 0 (third least significant bit is 1), R(p) = R<sub>max</sub> - 2
@@ -93,11 +98,13 @@ So let say we have b = 2 bits set to 0 (third least significant bit is 1), R(p) 
 #### Left children
 
 As a left child, a node will get its node number:
+
 <i>n</i> = LC(<i>p</i>) = <i>p</i> - 2^(R<sub>max</sub> - 1 - R<i>p</i>)
 
 #### Right children
 
 As a left child, a node will get its node number:
+
 <i>n</i> = RC(<i>p</i>) = <i>p</i> + 2^(R<sub>max</sub> - 1 - R<i>p</i>)
 
 ### Example
@@ -107,6 +114,7 @@ For example, for the left child of N4 (the root node in our example):
 * R<i>p</i> = 1
 
 LC(4) = 4 - 2^(3-1-1) = 4 - 2 = 2
+
 Left child for N4 is thus N2
 
 The right child of N4 will have an ID: RC(4) = 4 + 2^(3-1-1) = 6, thus this will be node N6
@@ -138,7 +146,6 @@ The individual addresses available with this prefix are encoded with (in IPv4) 3
 For example, on a /8 network, we have 32-8=24 bits for addressing, or 2^24 possible combinations
 
 We will use /30 interconnecting segments (subnets), so host are encoded using A=2 bits within each /30 network.
-Icon
 
 > Small subnets (/31) for point to point links is discussed in [RFC3021](https://tools.ietf.org/html/rfc3021), in a effort to save IP addresses, in that case each interconnection network would use A=1 bit
 > 
@@ -150,7 +157,7 @@ Using /30 subnets, for a total /8 (P=8) IP network R<sub>max</sub> = 32 - P - A 
 
 The data can be exchanged within the binary tree from any node to any other.
 
-Nodes can generate their routing table automatically, given their node number n and rank Rn
+Nodes can generate their routing table automatically, given their node number <i>n</i> and rank R<i>n</i>
 
 Indeed:
 * <i>n</i> allows us to know the associated top subnet S<i>n</i>
@@ -178,12 +185,15 @@ A last rule will be a default gateway via our parent to reach the part of the tr
 ## Example using IPv4 private range 192.168.0.0/24
 
 In this example, we are using a /24 range:
+
 P = 24
 
 Interconnection networks are /30 subnets:
+
 A = 2
 
 Therefore our maximum depth is:
+
 R<sub>max</sub> = 32 - 24 - 2 = 6
 
 We thus have 6 bits for nodes numbering.
@@ -193,6 +203,7 @@ B = 2^6 - 1 = 63 nodes in this tree
 ### Root subnet
 
 Root node ID:
+
 <i>n</i> = 2^(6-1) = <font color="green">32</font> = 100000b
 
 Root is thus N<span style="color:green;">32</span>
@@ -200,30 +211,37 @@ Root is thus N<span style="color:green;">32</span>
 Its uplink network is S<span style="color:green;">32</span>.
 
 > Note:
->
+> 
 > Each node can actually guess its node ID based on the size of the tree (R<sub>max</sub>, that would be harcoded on all devices), and on the top interface subnetwork characteristics (that are provided when using ppp IPv4 configuration via ppp's LCP).
 > 
 > A node can thus build all its configuration when the ppp link is brought up on the top interface:
+> 
 > From the uplink network subnet, we apply a "bitwise and" mask with ((2^R<sub>max</sub> - 1 << A), the result will be right shifted of A bits to get the R<sub>max</sub> bits of the network ID (S<i>n</i>) and thus get the node ID (<i>n</i>)
 > 
 > In our case, the root node will get IPv4 address 192.168.0.130/30 via ppp.
 > 
 > It knows R<sub>max</sub> = 6, and we use /30 interconnecting subnets by convention (A = 2) thus the mask would be:
+> 
 > 2^6 - 1 << 2 = 11111100b
 > 
 > We represent the IPv4 address 192.168.0.130 as binary:
+> 
 > uint32(192.168.0.130) = ((192 * 256) + 168) * 65536) + 130 = 11000000 10101000 00000000 10000010b
 > 
 > We apply the mask, then right shift:
+> 
 > (11000000 10101000 00000000 10000010b & 11111100b)>>2 = 100000b = 32
 > 
 > From the node ID, we also can also calculate our [rank calculation from node ID](#rank-determination). In 100000b, there are 5 right bits set to 0, so b = 5:
+> 
 > R(32) = R<sub>max</sub> - 5 = 1
 
 S32 subnet prefix is built using the network ID (32) left shifted to give room for the 2 last bits (host ID)
+
 100000 00b
 
 We apply a "binary or" of this ID with the network prefix 192.168.0.0/24 and we will get the IPv4 range for S32:
+
 192.168.0.128/30
 
 As explained [above](#ipv4-addressing-and-routing-in-a-binary-tree), by convention, within this /30 subnet, N32 being the bottom host of S32, it will take the high IPv4:
@@ -236,12 +254,15 @@ N32 will have IPv4 address 192.168.0.130/30 on S32, and this will be the *refere
 LC(32) = 32 - 2^(6 - 1 - 1) = 16 = 010000b
 
 N32's left child is N16
+
 And the subnet between N32 and N16 is S16
 
 S16 subnet prefix is built using the network ID (16) left shifted to give room for the 2 last bits (host ID)
+
 010000 00b
 
 We apply a "binary or" of this ID with the network prefix 192.168.0.0/24 and we will get the IPv4 range for S16:
+
 192.168.0.64/30
 
 ### Root's right child
@@ -251,12 +272,15 @@ We apply a "binary or" of this ID with the network prefix 192.168.0.0/24 and we 
 RC(32) = 32 + 2^(6 - 1 - 1) = 48 = 110000b
 
 N32's right child is N48
+
 And the subnet between N32 and N48 is S48
 
 S48 subnet prefix is built using the network ID (48) left shifted to give room for the 2 last bits (host ID)
+
 110000 00b
 
 We apply a "binary or" of this ID with the network prefix 192.168.0.0/24 and we will get the IPv4 range for S48:
+
 192.168.0.192/30
 
 ### Root node's routing table
@@ -268,6 +292,7 @@ Root node has ID <i>n</i>=32
 Node children's route prefix: P + R = 24 + 1 = 25
 
 Most significant bits mask for node's (left and right) children routes (rank R = 1):
+
 100000b
 
 #### Left interface routes
@@ -366,14 +391,13 @@ We apply once more the integer example above, but this time to IPv6 addresses.
 There are a few differences with the IPv4 case above, mainly because there are link-local addresses assigned to each extremity of point-to-point links, and we can use this addressing for routes' next hops.
 
 The specificities of IPv6 are that:
-
 * Nodes will be routing devices, but also addressable endpoints (same as IPv4)
 * Network segments Sn between two nodes will not have any IPv6 subnet, we will use link local.
 * In this scenario, we either only need to reach routing nodes (in that case A=0, so addresses are only allocated for nodes), or to reach routing nodes plus local networks attached to routing nodes (A>0)
 * Each network segment Sn will thus consist of a point-to-point link with two hosts (the two extremity nodes), automatically configured with link local IP addresses fe80::/8 at extremities.
 * Also, nodes all have multiple link local addresses, but only one site-global IPv6 address, this reference IPv6 address used for communication should be allocated:
-        if A=0, to the top interface (the one used for the path to the root), as this is the only interface that must be up to be able to communicate with the outside.
-        if A>0, to the first IPv6 address of the local network interface range (bottom interface)
+  * if A=0, to the top interface (the one used for the path to the root), as this is the only interface that must be up to be able to communicate with the outside.
+  * if A>0, to the first IPv6 address of the local network interface range (bottom interface)
 
 If we will only want to address the nodes of the tree using site-local IPv6 addresses, we will use A=0 (first IPv6 tree example below)
 
@@ -393,7 +417,7 @@ Either we directly address the top interface of nodes (A=0) or we address nodes 
 
 We will build a tree with R<sub>max</sub> = 128 - P - A
 
-For example, on a /48 network (P=48), we have 128-48=80 bits for addressing, or 2^80 possible nodes if A=0, or 2^16 possible nodes if A=64 (we allocate a /64 prefix reachable behind each node)
+For example, on a /48 network (P=48), we have 128 - 48 = 80 bits for addressing, or 2^80 possible nodes if A=0, or 2^16 possible nodes if A=64 (we allocate a /64 prefix reachable behind each node)
 
 ## Routing applied to IPv6 binary trees
 
@@ -402,7 +426,6 @@ The data can be exchanged within the binary tree from any node to any other.
 Nodes can generate their routing table automatically, given their node number <i>n</i> and rank R<i>n</i>
 
 Indeed:
-
 * <i>n</i> allows us to know the associated top subnet S<i>n</i>
 * <i>n</i> and R<i>n</i> allow us to calculate child node numbers LC(<i>n</i>) and RC(<i>n</i>)
 * LC(<i>n</i>) and RC(<i>n</i>) allow us to know the associated subnets
@@ -413,7 +436,7 @@ We will setup a first routing rule to each child and its subchildren.
 
 1) Case when our children are not at the very bottom of the tree (R<R<sub>max</sub>-1)
 
-The algorithm is the same as [the IPv4 case](#left-and-right-routes-to-children)
+The algorithm is the same as [the IPv4 case](#routing-applied-to-ipv4-binary-trees)
 
 We take LC(<i>n</i>), or RC(<i>n</i>) represent it in binary.
 
@@ -458,11 +481,11 @@ B = 2^4 - 1 = 15
 
 Root node ID:
 
-n = 2^(4-1) = 8 = 1000b
+n = 2^(4-1) = <font color="green">8</font> = 1000b
 
-Root is thus N8
+Root is thus N<font color="green">8</font>
 
-Its uplink network is S8.
+Its uplink network is S<font color="green">8</font>.
 
 > Each node can actually get its node ID via parent characteristics (such as the parent ppp hostname configuration received via ppp's LCP).
 > 
@@ -488,7 +511,7 @@ Its uplink network is S8.
 >   We thus use the [root node ID calculation](#root-node-properties):
 >   <i>n</i> = 2^(R<sub>max</sub>-1)
 
-As explained above, by convention, N8 will assign the site-local IPv6 address for the node on the top network interface (the interface to S8):
+As explained [above](#ipv6-addressing-and-routing-in-a-binary-tree), by convention, N8 will assign the site-local IPv6 address for the node on the top network interface (the interface to S8):
 
 N8 will have IPv6 address fd00::8/128 on S8, and this will be the reference IPv6 address for N8
 
