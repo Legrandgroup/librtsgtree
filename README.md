@@ -12,6 +12,8 @@ make clean all
 This will result in a static library called `librtsgtree.a`.
 There is no support for shared library but this could easily be implemented in the Makefile.
 
+If your platform supports native 128-bit integer arithmetic, you can disable the emulation of 128-bit by using the `-DHAS_INT128` compiler directive, together with either `-DIS_LITTLE_ENDIAN` or `-DIS_BIG_ENDIAN` (please see the [Makefile] content for details)
+
 Code documentation is formatted using doxygen and can be generated using:
 ```
 make doxygen-doc
@@ -21,6 +23,8 @@ Unit tests can be run by issueing:
 ```
 make check
 ```
+
+If you want to use cpputest (needs to be installed) rather than the integrated test harness, just add `-DUSE_CPPUTEST` to the compiler directives (please see the [Makefile] content for an example)
 
 The lines below describe the algorithm for this project.
 
