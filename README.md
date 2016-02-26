@@ -193,7 +193,7 @@ B = 2^6 - 1 = 63 nodes in this tree
 ### Root subnet
 
 Root node ID:
-<i>n</i> = 2^(6-1) = <span style="color:green;">32</span> = 100000b
+<i>n</i> = 2^(6-1) = <font color="green">32</font> = 100000b
 
 Root is thus N<span style="color:green;">32</span>
 
@@ -221,51 +221,42 @@ Its uplink network is S<span style="color:green;">32</span>.
 > R(32) = R<sub>max</sub> - 5 = 1
 
 S32 subnet prefix is built using the network ID (32) left shifted to give room for the 2 last bits (host ID)
-
 100000 00b
 
 We apply a "binary or" of this ID with the network prefix 192.168.0.0/24 and we will get the IPv4 range for S32:
-
 192.168.0.128/30
 
-As explained above, by convention, within this /30 subnet, N32 being the bottom host of S32, it will take the high IPv4:
-
-N32 will have IPv4 address 192.168.0.130/30 on S32, and this will be the reference IPv4 address for N32
+As explained [above](#ipv4-addressing-and-routing-in-a-binary-tree), by convention, within this /30 subnet, N32 being the bottom host of S32, it will take the high IPv4:
+N32 will have IPv4 address 192.168.0.130/30 on S32, and this will be the *reference IPv4 address* for N32
 
 ### Root's left child
 
-LC(<i>p</i>) = <i>p</i> - 2^(R<sub>max</sub> - 1 - R<i>p</i>)
+[LC(<i>p</i>) = <i>p</i> - 2^(R<sub>max</sub> - 1 - R<i>p</i>)](#left-children)
 
 LC(32) = 32 - 2^(6 - 1 - 1) = 16 = 010000b
 
 N32's left child is N16
-
 And the subnet between N32 and N16 is S16
 
 S16 subnet prefix is built using the network ID (16) left shifted to give room for the 2 last bits (host ID)
-
 010000 00b
 
 We apply a "binary or" of this ID with the network prefix 192.168.0.0/24 and we will get the IPv4 range for S16:
-
 192.168.0.64/30
 
 ### Root's right child
 
-RC(<i>p</i>) = <i>p</i> + 2^(R<sub>max</sub> - 1 - R<i>p</i>)
+[RC(<i>p</i>) = <i>p</i> + 2^(R<sub>max</sub> - 1 - R<i>p</i>)](#right-children)
 
 RC(32) = 32 + 2^(6 - 1 - 1) = 48 = 110000b
 
 N32's right child is N48
-
 And the subnet between N32 and N48 is S48
 
 S48 subnet prefix is built using the network ID (48) left shifted to give room for the 2 last bits (host ID)
-
 110000 00b
 
 We apply a "binary or" of this ID with the network prefix 192.168.0.0/24 and we will get the IPv4 range for S48:
-
 192.168.0.192/30
 
 ### Root node's routing table
@@ -277,7 +268,6 @@ Root node has ID <i>n</i>=32
 Node children's route prefix: P + R = 24 + 1 = 25
 
 Most significant bits mask for node's (left and right) children routes (rank R = 1):
-
 100000b
 
 #### Left interface routes
@@ -287,7 +277,6 @@ Left child: LC(32) = 16 = 010000b
 (010000b & 100000b) << 2 = 00000000b = 0
 
 Node's route with left child as next hop via left interface:
-
 * 192.168.0.0/25
 
 #### Right interface routes
@@ -297,7 +286,6 @@ Right child: RC(32) = 48 = 110000b
 (110000b & 100000b) << 2 = 10000000b = 128
 
 Node's route with right child as next hop via right interface:
-
 * 192.168.0.128/25
 
 #### Top interface route
@@ -307,7 +295,6 @@ Top route: <i>n</i> = 32 = 100000b
 (100000 << 2) = 10000000b = 128
 
 Node's route via parent as next hop via top interface:
-
 * 192.168.0.128/30
 * default route
 
