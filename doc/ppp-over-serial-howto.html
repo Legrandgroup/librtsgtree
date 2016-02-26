@@ -1,0 +1,525 @@
+<div class="wiki-content">
+ <p>
+  In this page, I will describe the steps I did to recreate a sample setup reproducing devices interconnected with an RS485 link.
+ </p>
+ <p>
+  &nbsp;
+ </p>
+ <p>
+  <style type="text/css">
+   /*
+   <![CDATA[*/
+div.rbtoc1456491906403 {padding: 0px;}
+div.rbtoc1456491906403 ul {list-style: disc;margin-left: 0px;}
+div.rbtoc1456491906403 li {margin-left: 0px;padding-left: 0px;}
+
+/*]]>
+   */
+  </style>
+ </p>
+ <div class="toc-macro rbtoc1456491906403">
+  <ul class="toc-indentation">
+   <li>
+    <a href="#ProofOfConceptIPoverRS485-Hardwaresetup">
+     Hardware setup
+    </a>
+   </li>
+   <li>
+    <a href="#ProofOfConceptIPoverRS485-Checkingtheseriallinkinbothdirections">
+     Checking the serial link in both directions
+    </a>
+   </li>
+   <li>
+    <a href="#ProofOfConceptIPoverRS485-Peer-to-peerconnectionusingIPv4overpppoverserial(RS232)">
+     Peer-to-peer connection using IPv4 over ppp over serial (RS232)
+    </a>
+   </li>
+   <li>
+    <a href="#ProofOfConceptIPoverRS485-Upgradingtoclient/serverconnectionusingIPv4overpppoverserial">
+     Upgrading to client/server connection using IPv4 over ppp over serial
+    </a>
+   </li>
+   <li>
+    <a href="#ProofOfConceptIPoverRS485-Upgradingtoclient/serverconnectionusingIPv6link-localoverpppoverserial">
+     Upgrading to client/server connection using IPv6 link-local over ppp over serial
+    </a>
+   </li>
+   <li>
+    <a href="#ProofOfConceptIPoverRS485-Upgradingtoclient/serverconnectiontodistributeunmanagedIPv6addresses">
+     Upgrading to client/server connection to distribute unmanaged IPv6 addresses
+    </a>
+   </li>
+   <li>
+    <a href="#ProofOfConceptIPoverRS485-Usingauthenticationfromclienttoserver">
+     Using authentication from client to server
+    </a>
+   </li>
+   <li>
+    <a href="#ProofOfConceptIPoverRS485-References">
+     References
+    </a>
+   </li>
+  </ul>
+ </div>
+ <p>
+ </p>
+ <h2 id="ProofOfConceptIPoverRS485-Hardwaresetup">
+  Hardware setup
+ </h2>
+ <p>
+  I will actually use 2 Raspberry PIs to act as slaveboxes, they are interconnected using an RS232 link (logically, this is equivalent to RS485 except the range is much shorter).
+ </p>
+ <p>
+  RPI have no secondary RS232 port available, so I use 2 home-made USB&lt;-&gt;RS232 CP210x-based adapters.
+ </p>
+ <p>
+  The RS232 link is created by connecting:
+ </p>
+ <pre>
+  RPI 1                   serial-to-USB adapter 1       serial-to-USB adapter 2             RPI 2
+
+                                    RX -------------------------- TX
+
+USB port       ------------- CP210x TX -------------------------- RX CP210x ------------- USB port      
+
+(/dev/ttyUSB0)                     GND -------------------------- GND                     (/dev/ttyUSB0)
+</pre>
+  Once this done, we will test that everything is fine.
+ </p>
+ <h2 id="ProofOfConceptIPoverRS485-Checkingtheseriallinkinbothdirections">
+  Checking the serial link in both directions
+ </h2>
+ <p>
+  On both RPIs, install cu :
+ </p>
+ <code class="cpp plain">sudo apt-get install cu</code>
+ <p>
+  Plug each USB to serial adapter to one RPI, check its device (/dev/ttyUSB*) using
+  <code>
+   dmesg
+  </code>
+ </p>
+ <p>
+  Adapt the permissions (cu is a pain concerning device permission checking):
+ </p>
+ <code class="cpp plain">sudo chown root:root /dev/ttyUSB0</code>
+ <p>
+  Run cu:
+ </p>
+ <code class="cpp plain">sudo cu -s 9600 -l /dev/ttyUSB0</code>
+ <p>
+  Now on each RPI, the keys typed in should be displayed on the other RPI's terminal.
+ </p>
+ <h2 id="ProofOfConceptIPoverRS485-Peer-to-peerconnectionusingIPv4overpppoverserial(RS232)">
+  Peer-to-peer connection using IPv4 over ppp over serial (RS232)
+ </h2>
+ <p>
+  Now, we are going to switch to using the serial link for a point-to-point IP link.
+ </p>
+ <p>
+  For this, we will use pppd (under Linux):
+ </p>
+ <p>
+  On one RPI, start pppd:
+ </p>
+ <code class="cpp plain">sudo /usr/sbin/pppd /dev/ttyUSB0 38400 -detach -crtscts local passive 192.168.47.2:192.168.47.1</code>
+ <fieldset>
+  <div class="aui-message hint shadowed information-macro">
+   <div class="message-content">
+    <p>
+     IP addresses in pppd are provided as:
+    </p>
+    <p>
+     <code>
+      <em>&lt;ppp_local_IP_address&gt;</em>:<em>&lt;ppp_remote_IP_address&gt;</em>
+     </code>
+    </p>
+    <p>
+     Thus, we have configured a first RPI that will have IP address 192.168.47.2 and that is expecting the remote end to have IP address 192.168.47.1
+    </p>
+   </div>
+  </div>
+ </fieldset>
+ <p>
+  &nbsp;
+ </p>
+ <p>
+  On the other RPI, also start pppd, swapping the tunnel endpoint IP addresses (local vs remote):
+ </p>
+ <code class="cpp plain">sudo /usr/sbin/pppd /dev/ttyUSB0 38400 -detach -crtscts local passive 192.168.47.1:192.168.47.2</code>
+ </div>
+ <p>
+  Because we have used the command line option -detach, the shell on which the command is run will freeze until the remote connection is established. Once the connection is established, the following output will appear on 192.168.47.1 (and on 192.168.47.2, with IP addresses swapped):
+ </p>
+ <div class="preformatted panel" style="border-width: 1px;">
+  <div class="preformattedContent panelContent">
+   <pre>
+Deflate (15) compression enabled
+local  IP address 192.168.47.1
+remote IP address 192.168.47.2
+   </pre>
+  </div>
+ </div>
+ <p>
+  Now we can run pppd in the background (remove the <code>-detach</code>) and use the <code>persist</code> option to force reconnecting continuously if connection drops or peers disconnects. We will also increase the bitrate to 115200 bauds (after all, we are in a lab setup where the serial link is... 2cm-long!).
+ </p>
+ <p>
+  Finally, we add the <code>lock</code> option to make sure only one pppd daemon can get the serial port at a time.
+ </p>
+ <code class="cpp plain">sudo /usr/sbin/pppd /dev/ttyUSB0 115200 -crtscts local lock passive persist 192.168.47.1:192.168.47.2</code>
+ <p>
+  Connection logs are not dumped on the console anymore, you can check them on <code>/var/log/messages</code>.
+ </p>
+ <p>
+  You can now ping the remote end from each RPI to make sure IP packets I flowing pack and forth inside the ppp link.
+ </p>
+ <p>
+  You will even be able to run ssh from one end to the other end's IP address... even if it is really overkill to use ssh over TCP over IP over ppp over RS232 to get what a tty usually offers!
+ </p>
+ <h2 id="ProofOfConceptIPoverRS485-Upgradingtoclient/serverconnectionusingIPv4overpppoverserial">
+  Upgrading to client/server connection using IPv4 over ppp over serial
+ </h2>
+ <p>
+  We cannot provision IP addresses on each side prior to establish the ppp connection, so we need a way for one end to get its IP address from the other end.
+ </p>
+ <p>
+  In order to do this, we will actually setup the system to act closely like a remote dialup connection (except we are using a physical RS232 link, no modem).
+ </p>
+ <p>
+  Now, we are going to have one RPI (rpi-gold) act as a ppp server, and the other one (rpi-red) as a ppp client.
+ </p>
+ <p>
+  First, we will put all pppd configuration in a configuration file on the server (rather than using command-line parameters).
+ </p>
+ <p>
+  On the server, setupthe general configuration for ppp by edition the file /etc/ppp/options, to put the following lines:
+ </p>
+ <div class="preformatted panel" style="border-width: 1px;">
+  <div class="preformattedContent panelContent">
+   <pre>
+asyncmap 0
+-crtscts
+local
+lock
+passive
+persist
+hide-password
+lcp-echo-interval 30
+lcp-echo-failure 4
+noipx
+   </pre>
+  </div>
+ </div>
+ <p>
+  Always on the server, setup the IP configuration for this user by editing the file <code>/etc/ppp/options.ttyUSB0</code>:
+ </p>
+ <div class="preformatted panel" style="border-width: 1px;">
+  <div class="preformattedContent panelContent">
+   <pre>
+ 192.168.47.1:192.168.47.2
+   </pre>
+  </div>
+ </div>
+ <fieldset>
+  <div class="aui-message hint shadowed information-macro">
+   <div class="message-content">
+    <p>
+     IP addresses in pppd are provided in the same fashion as on the command line:
+    </p>
+    <p>
+     <code><em>&lt;ppp_local_IP_address&gt;</em>:<em>&lt;ppp_remote_IP_address&gt;</em>
+     </code>
+    </p>
+   </div>
+  </div>
+ </fieldset>
+ <p>
+  Now, run the ppp daemon on the server:
+ </p>
+ <code class="cpp plain">sudo /usr/sbin/pppd /dev/ttyUSB0 115200</code>
+ <p>
+  On the client, run the connection command without any IPv4 address option:
+ </p>
+ <code class="cpp plain">sudo /usr/sbin/pppd /dev/ttyUSB0 115200 -detach -crtscts debug local</code>
+ <fieldset>
+  <div class="aui-message hint shadowed information-macro">
+   <div class="message-content">
+    <p>
+     Note that I ran the client in foreground mode (<code>-detach</code>) and I added some debug using (<code>debug</code>)
+    </p>
+   </div>
+  </div>
+ </fieldset>
+ <h2 id="ProofOfConceptIPoverRS485-Upgradingtoclient/serverconnectionusingIPv6link-localoverpppoverserial">
+  Upgrading to client/server connection using IPv6 link-local over ppp over serial
+ </h2>
+ <p>
+  Now that our client/server connection is working well on IPv4, let's switch to IPv5.
+ </p>
+ <p>
+  First, we will need to load IPv6 support on both RPIs:
+ </p>
+ <code class="cpp plain">sudo modprobe ipv6</code>
+ <p>
+  Let's now change our server config file for our serial port (in
+  <code>
+   /etc/ppp/options.ttyUSB0
+  </code>
+  ) as follows:
+ </p>
+ <div class="preformatted panel" style="border-width: 1px;">
+  <div class="preformattedContent panelContent">
+   <pre>
++ipv6
+ipv6cp-use-persistent
+192.168.47.1:192.168.47.2
+   </pre>
+  </div>
+ </div>
+ <p>
+  We can run again the ppp daemon on the server:
+ </p>
+ <code class="cpp plain">sudo /usr/sbin/pppd /dev/ttyUSB0 115200</code>
+ <p>
+  On the client, run the connection command just adding +ipv6 to enable IPv6 on the PPP link:
+ </p>
+ <code class="cpp plain">sudo /usr/sbin/pppd /dev/ttyUSB0 115200 -detach -crtscts debug local +ipv6</code>
+ <p>
+  You should see IPv6 addresses exchanged in LCP packets (in debug logs) and these IPv6 addresses will also appear on ppp0 interfaces.
+ </p>
+ <p>
+  One end can now ping the other.
+ </p>
+ <p>
+  Let's say the server has IPv6 address fe80::ba27:ebff:fe9d:81ac/10), on the client, we can run:
+ </p>
+ <code class="cpp plain">ping6 fe80::ba27:ebff:fe9d:81ac%ppp0</code>
+ <p>
+  On a pseudo-random stream, when running at 115200 bauds, we measure an end-to-end TCP-level throughput of around 10 kByte/s, or 80 000 kbit/s.
+ </p>
+ <p>
+  Bauds to TCP throughput ratio is thus around 70%
+ </p>
+ <p>
+  pppd only supports link-local IPv6 addressing on ppp? network interfaces.
+ </p>
+ <p>
+  If we want to distribute IPv6 addresses from top to bottom, we will thus need to use a DHCPv6 client (or radvd if we accept to allocate 64-bit to the host part of nodes)
+ </p>
+ <h2 id="ProofOfConceptIPoverRS485-Upgradingtoclient/serverconnectiontodistributeunmanagedIPv6addresses">
+  Upgrading to client/server connection to distribute unmanaged IPv6 addresses
+ </h2>
+ <p>
+  Starting from the step above, we will add another IPv6 address when the ppp link is up.
+ </p>
+ <p>
+  Indeed, pppd only supports provisionning IPv6 link-local (fe80::/8) IPv6 addresses on the server in the <code>/etc/ppp/options.ttyUSB0</code> file, but we would like to distribute another IPv6 address.
+ </p>
+ <p>
+  We will add an IPv6 (site-local) (fd00::/8) address to both server and client.
+ </p>
+ <p>
+  The whole configuration is performed on the server. We will start a radvd daemon once the ppp interface is up to provide router adverstisement packets for IPv6.
+ </p>
+ <p>
+  On the server RPI, install radvd:
+ </p>
+ <code class="cpp plain">sudo apt-get install radvd</code>
+ <p>
+  On the server RPI, create a file named <code>/etc/ppp/ipv6-up.d/rs485-radvd</code>, set it executable, and fill it in with the following script:
+ </p>
+ <div class="preformatted panel" style="border-width: 1px;">
+  <div class="preformattedContent panelContent">
+   <pre>
+#!/bin/sh
+test -n "${IFNAME}" || exit 1
+PPP_IPV6_PREFIX="fd00:47"
+ifconfig "${IFNAME}" add "${PPP_IPV6_PREFIX}::1/64"
+RADVD_CONF_FILE="/tmp/radvd-${IFNAME}.conf"
+RADVD_PID_FILE="/var/run/radvd-${IFNAME}-${PPPD_PID}.pid"
+cat &gt; "${RADVD_CONF_FILE}" &lt;&lt; EOF
+interface ${IFNAME}
+{
+  AdvSendAdvert on;
+  AdvManagedFlag off;
+  AdvOtherConfigFlag on;
+  prefix ${PPP_IPV6_PREFIX}::/64
+  {
+    AdvOnLink on;
+    AdvAutonomous on;
+    AdvValidLifetime 120;
+    AdvPreferredLifetime 40;
+  };
+};
+EOF
+/usr/sbin/radvd -C "${RADVD_CONF_FILE}" -p "${RADVD_PID_FILE}" -m syslog
+   </pre>
+  </div>
+ </div>
+ <p>
+  On the server RPI, create a file named <code>/etc/ppp/ipv6-down.d/rs485-radvd</code>, set it executable, and fill it in with:
+ </p>
+ <div class="preformatted panel" style="border-width: 1px;">
+  <div class="preformattedContent panelContent">
+   <pre>
+#!/bin/sh
+test -n "${IFNAME}" || exit 1
+PPP_IPV6_PREFIX="fd00:47"
+ifconfig "${IFNAME}" del "${PPP_IPV6_PREFIX}::1/64"
+RADVD_CONF_FILE="/tmp/radvd-${IFNAME}.conf"
+RADVD_PID_FILE="/var/run/radvd-${IFNAME}-${PPPD_PID}.pid"
+RADVD_PID=`cat "${RADVD_PID_FILE}"`
+test -n "${RADVD_PID}" &amp;&amp; kill "${RADVD_PID}"
+rm -f "${RADVD_CONF_FILE}"
+   </pre>
+  </div>
+ </div>
+ <p>
+  Now reconnect from a client, you should see fd00:47/64 IPv6 addresses allocated to both the server and client ppp network interfaces.
+ </p>
+ <p>
+  IPv6 prefix has been hardcoded above (fd00:47), and the server ppp interface will always get the same IPv6 address (fd00:47::1/64), so on the ppp client, we can now ping the server just by running:
+ </p>
+ <code class="cpp plain">ping6 fd00:47::1</code>
+ <h2 id="ProofOfConceptIPoverRS485-Usingauthenticationfromclienttoserver">
+  Using authentication from client to server
+ </h2>
+ <p>
+  We will setup CHAP for client to server authentication.
+ </p>
+ <p>
+  On the server, edit the configuration file /etc/options.ttyUSB0 to ask peer to authenticate using CHAP:
+ </p>
+ <div class="preformatted panel" style="border-width: 1px;">
+  <div class="preformattedContent panelContent">
+   <pre>
++chap
+chap-max-challenge 3
+chap-interval 300
+   </pre>
+  </div>
+ </div>
+ <p>
+  We are renewing the CHAP authentication every 5 minutes (300s)
+ </p>
+ <p>
+  Now we will need to provision the secret key to the server, for this, edit the file <code>/etc/ppp/chap-secrets</code> as root and fill it in with:
+ </p>
+ <div class="preformatted panel" style="border-width: 1px;">
+  <div class="preformattedContent panelContent">
+   <pre>
+# Secrets for authentication using CHAP
+# client    server    secret            IP addresses
+pi-red    *    "rs485secret"    *
+   </pre>
+  </div>
+ </div>
+ <p>
+  <code>rs485secret</code> is our secret key here.
+ </p>
+ <p>
+  <code>pi-red</code> should match with the hostname of the client
+ </p>
+ <p>
+  On the client, we will also provision the secret key, edit the file <code>/etc/ppp/chap-secrets</code> as root and fill it in with:
+ </p>
+ <div class="preformatted panel" style="border-width: 1px;">
+  <div class="preformattedContent panelContent">
+   <pre>
+# Secrets for authentication using CHAP
+# client    server    secret            IP addresses
+*           pi-gold   "rs485secret"     *
+   </pre>
+  </div>
+ </div>
+ <p>
+  pi-gold should match with the hostname of the server.
+ </p>
+ <p>
+  You can now retry a ppp connection from client to server with the new config.
+ </p>
+ <p>
+  Logs on the server should look like:
+ </p>
+ <div class="preformatted panel" style="border-width: 1px;">
+  <div class="preformattedContent panelContent">
+   <pre>
+$ sudo /usr/sbin/pppd /dev/ttyUSB0 115200 -detach -crtscts debug local +ipv6
+using channel 14
+Using interface ppp0
+Connect: ppp0 &lt;--&gt; /dev/ttyUSB0
+sent [LCP ConfReq id=0x1 &lt;asyncmap 0x0&gt; &lt;magic 0xd6bc944d&gt; &lt;pcomp&gt; &lt;accomp&gt;]
+rcvd [LCP ConfAck id=0x1 &lt;asyncmap 0x0&gt; &lt;magic 0xd6bc944d&gt; &lt;pcomp&gt; &lt;accomp&gt;]
+rcvd [LCP ConfReq id=0x1 &lt;asyncmap 0x0&gt; &lt;auth chap MD5&gt; &lt;magic 0x97aee3c0&gt; &lt;pcomp&gt; &lt;accomp&gt;]
+sent [LCP ConfAck id=0x1 &lt;asyncmap 0x0&gt; &lt;auth chap MD5&gt; &lt;magic 0x97aee3c0&gt; &lt;pcomp&gt; &lt;accomp&gt;]
+sent [LCP EchoReq id=0x0 magic=0xd6bc944d]
+rcvd [LCP EchoReq id=0x0 magic=0x97aee3c0]
+sent [LCP EchoRep id=0x0 magic=0xd6bc944d]
+rcvd [CHAP Challenge id=0x74 &lt;8d7824e0b5e4130f1d33b76bf7bfb8dde3b96b9e7594&gt;, name = "pi-gold"]
+sent [CHAP Response id=0x74 &lt;e5989a917d4d87d2f596632e2438956f&gt;, name = "pi-red"]
+rcvd [LCP EchoRep id=0x0 magic=0x97aee3c0]
+rcvd [CHAP Success id=0x74 "Access granted"]
+CHAP authentication succeeded: Access granted
+CHAP authentication succeeded
+sent [CCP ConfReq id=0x1 &lt;deflate 15&gt; &lt;deflate(old#) 15&gt; &lt;bsd v1 15&gt;]
+sent [IPCP ConfReq id=0x1 &lt;compress VJ 0f 01&gt; &lt;addr 0.0.0.0&gt;]
+sent [IPV6CP ConfReq id=0x1 &lt;addr fe80::f0be:679d:88b0:3b9c&gt;]
+rcvd [CCP ConfReq id=0x1 &lt;deflate 15&gt; &lt;deflate(old#) 15&gt; &lt;bsd v1 15&gt;]
+sent [CCP ConfAck id=0x1 &lt;deflate 15&gt; &lt;deflate(old#) 15&gt; &lt;bsd v1 15&gt;]
+rcvd [IPCP ConfReq id=0x1 &lt;compress VJ 0f 01&gt; &lt;addr 192.168.47.1&gt;]
+sent [IPCP ConfAck id=0x1 &lt;compress VJ 0f 01&gt; &lt;addr 192.168.47.1&gt;]
+rcvd [IPV6CP ConfReq id=0x1 &lt;addr fe80::ba27:ebff:fe9d:81ac&gt;]
+sent [IPV6CP ConfAck id=0x1 &lt;addr fe80::ba27:ebff:fe9d:81ac&gt;]
+rcvd [CCP ConfAck id=0x1 &lt;deflate 15&gt; &lt;deflate(old#) 15&gt; &lt;bsd v1 15&gt;]
+Deflate (15) compression enabled
+rcvd [IPCP ConfNak id=0x1 &lt;addr 192.168.47.2&gt;]
+sent [IPCP ConfReq id=0x2 &lt;compress VJ 0f 01&gt; &lt;addr 192.168.47.2&gt;]
+rcvd [IPV6CP ConfAck id=0x1 &lt;addr fe80::f0be:679d:88b0:3b9c&gt;]
+local  LL address fe80::f0be:679d:88b0:3b9c
+remote LL address fe80::ba27:ebff:fe9d:81ac
+Script /etc/ppp/ipv6-up started (pid 25100)
+rcvd [IPCP ConfAck id=0x2 &lt;compress VJ 0f 01&gt; &lt;addr 192.168.47.2&gt;]
+local  IP address 192.168.47.2
+remote IP address 192.168.47.1
+Script /etc/ppp/ip-up started (pid 25104)
+Script /etc/ppp/ipv6-up finished (pid 25100), status = 0x0
+Script /etc/ppp/ip-up finished (pid 25104), status = 0x0
+   </pre>
+  </div>
+ </div>
+ <p>
+  Now, in order to be independant from hostnames in the configuration:
+ </p>
+ <ul>
+  <li>replace <code>pi-red</code> by <code>slavedev</code> in the <code>/etc/ppp/chap-secrets</code> file on the server
+  </li>
+  <li>replace <code>pi-gold</code> by <code>uplinkdev</code> in the <code>/etc/ppp/chap-secrets</code> file on the client
+  </li>
+  <li>
+   <p>run pppd on the client forcing the hostnames using the <code>name</code> and <code>remotename</code> options:
+   </p>
+   <code class="cpp plain">sudo /usr/sbin/pppd /dev/ttyUSB0 115200 -detach -crtscts debug local +ipv6 name slavedev remotename uplinkdev</code>
+  </li>
+ </ul>
+ <p>
+  On the final system, other authentication mechanisms (MSCHAP, PAP etc...) should be forbidden and a switch to EAP would raise security to a much higher level.
+ </p>
+ <h2 id="ProofOfConceptIPoverRS485-References">
+  References
+ </h2>
+ <ul>
+  <li>
+   <a href="http://psg.com/~brian/doc/comms/ppp.htm" class="external-link" rel="nofollow">
+    http://psg.com/~brian/doc/comms/ppp.htm
+   </a>
+  </li>
+  <li>
+   <a href="http://www.rjsystems.nl/en/2100-dhcpv6-stateful-autocfg.php" class="external-link" rel="nofollow">
+    http://www.rjsystems.nl/en/2100-dhcpv6-stateful-autocfg.php
+   </a>
+  </li>
+ </ul>
+ <p>
+ </p>
+</div>
+
