@@ -66,13 +66,10 @@ Let's call:
 ### Root node properties
 
 We can get the identity of the root node ID:
-
 n = (B+1)/2 = 2^(R<sub>max</sub>-1) = 2^2 = 4
-
 (N4 is the root node and has segment S4 as uplink).
 
 The root can thus self-generate its ID by knowing B (or R<sub>max</sub>).
-
 
 Once the root is determined, we can number all subnodes in the tree.
 
@@ -83,9 +80,7 @@ Based on the value of its parent node number <i>p</i>, and parent node rank R<i>
 #### Rank determination
 
 Practically, R<i>p</i> can even be calculated if we know <i>p</i> and R<sub>max</sub>:
-
 We count the right most 0 bits from the right of our node ID p, this count will be called b
-
 R<i>p</i> = R(<i>p</i>) = R<sub>max</sub> - b
 
 So let say we have b = 2 bits set to 0 (third least significant bit is 1), R(p) = R<sub>max</sub> - 2
@@ -98,24 +93,20 @@ So let say we have b = 2 bits set to 0 (third least significant bit is 1), R(p) 
 #### Left children
 
 As a left child, a node will get its node number:
-
 <i>n</i> = LC(<i>p</i>) = <i>p</i> - 2^(R<sub>max</sub> - 1 - R<i>p</i>)
 
 #### Right children
 
 As a left child, a node will get its node number:
-
 <i>n</i> = RC(<i>p</i>) = <i>p</i> + 2^(R<sub>max</sub> - 1 - R<i>p</i>)
 
 ### Example
 
 For example, for the left child of N4 (the root node in our example):
-
 * <i>p</i> = 4
 * R<i>p</i> = 1
 
 LC(4) = 4 - 2^(3-1-1) = 4 - 2 = 2
-
 Left child for N4 is thus N2
 
 The right child of N4 will have an ID: RC(4) = 4 + 2^(3-1-1) = 6, thus this will be node N6
@@ -129,7 +120,6 @@ The right child of N6 being: RC(6) = 6 + 2^(3-1-2) = 7
 [The integer example above](#integer-case) is now applied to IPv4 addresses.
 
 The specificities of IPv4 are that:
-
 * Nodes will be routing devices, but also addressable endpoints.
 * Network segments Sn between two nodes will have their own IPv4 subnet.
 * In this example, we only need to reach routing nodes, so addresses are only allocated for nodes.
@@ -163,7 +153,6 @@ The data can be exchanged within the binary tree from any node to any other.
 Nodes can generate their routing table automatically, given their node number n and rank Rn
 
 Indeed:
-
 * <i>n</i> allows us to know the associated top subnet S<i>n</i>
 * <i>n</i> and R<i>n</i> allow us to calculate child node numbers LC(<i>n</i>) and RC(<i>n</i>)
 * LC(<i>n</i>) and RC(<i>n</i>) allow us to know the associated subnets
@@ -189,53 +178,46 @@ A last rule will be a default gateway via our parent to reach the part of the tr
 ## Example using IPv4 private range 192.168.0.0/24
 
 In this example, we are using a /24 range:
-
 P = 24
 
 Interconnection networks are /30 subnets:
-
 A = 2
 
 Therefore our maximum depth is:
-
 R<sub>max</sub> = 32 - 24 - 2 = 6
 
 We thus have 6 bits for nodes numbering.
 
-B = 2^6 - 1 = 63
+B = 2^6 - 1 = 63 nodes in this tree
 
 ### Root subnet
 
 Root node ID:
+<i>n</i> = 2^(6-1) = <span style="color:green;">32</span> = 100000b
 
-<i>n</i> = 2^(6-1) = 32 = 100000b
+Root is thus N<span style="color:green;">32</span>
 
-Root is thus N32
+Its uplink network is S<span style="color:green;">32</span>.
 
-Its uplink network is S32.
-
+> Note:
+>
 > Each node can actually guess its node ID based on the size of the tree (R<sub>max</sub>, that would be harcoded on all devices), and on the top interface subnetwork characteristics (that are provided when using ppp IPv4 configuration via ppp's LCP).
 > 
 > A node can thus build all its configuration when the ppp link is brought up on the top interface:
-> 
 > From the uplink network subnet, we apply a "bitwise and" mask with ((2^R<sub>max</sub> - 1 << A), the result will be right shifted of A bits to get the R<sub>max</sub> bits of the network ID (S<i>n</i>) and thus get the node ID (<i>n</i>)
 > 
 > In our case, the root node will get IPv4 address 192.168.0.130/30 via ppp.
 > 
 > It knows R<sub>max</sub> = 6, and we use /30 interconnecting subnets by convention (A = 2) thus the mask would be:
-> 
 > 2^6 - 1 << 2 = 11111100b
 > 
 > We represent the IPv4 address 192.168.0.130 as binary:
-> 
 > uint32(192.168.0.130) = ((192 * 256) + 168) * 65536) + 130 = 11000000 10101000 00000000 10000010b
 > 
 > We apply the mask, then right shift:
-> 
 > (11000000 10101000 00000000 10000010b & 11111100b)>>2 = 100000b = 32
 > 
 > From the node ID, we also can also calculate our [rank calculation from node ID](#rank-determination). In 100000b, there are 5 right bits set to 0, so b = 5:
-> 
 > R(32) = R<sub>max</sub> - 5 = 1
 
 S32 subnet prefix is built using the network ID (32) left shifted to give room for the 2 last bits (host ID)
